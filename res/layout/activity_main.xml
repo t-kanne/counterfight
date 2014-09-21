@@ -33,4 +33,13 @@
         android:layout_marginBottom="50dp"
         android:text="Aktualisieren" />
 
+    <Button
+        android:id="@+id/btnCountUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnRefreshCounter"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="18dp"
+        android:text="+1" />
+
 </RelativeLayout>

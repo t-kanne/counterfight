@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-//import org.apache.http.NameValuePair;
-//import org.json.JSONArray;
-//import org.json.JSONException;
-//import org.json.JSONObject;
+import org.apache.http.NameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,13 +24,15 @@ public class MainActivity extends ActionBarActivity {
 
 	TextView counterDesc;
 	TextView counter;
-	Button refreshCounter;
+	Button refreshCounterButton;
+	Button increaseCounterButton;
 	
 	// JSONParser Objekt erstellen
 	JSONParser jParser = new JSONParser();
 	
-	// Server-Url, um Counter abzurufen
-	private static String url_counter = "http://localhost/counterfight/get_counter.php";
+	// Server-Urls
+	private static String url_read_counter = "http://tks.bplaced.net/counterfight/get_counter.php";
+	private static String url_update_counter = "http://tks.bplaced.net/counterfight/update_counter.php";
 	
 	// JSON Node names
 	private static final String TAG_SUCCESS = "success";
@@ -39,7 +41,9 @@ public class MainActivity extends ActionBarActivity {
 	private static final String TAG_COUNTERSTAND = "counterstand";
 	
 	// JSONArray für Counterdaten
-//	JSONArray counterData = null;
+	JSONArray counterData = null;
+	String user;
+	String counterValue = null;
 	
 	
 	@Override
@@ -48,31 +52,46 @@ public class MainActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_main);
 		
 		counter = (TextView) findViewById(R.id.txtMainCounter);
-		refreshCounter = (Button) findViewById(R.id.btnRefreshCounter);
+		refreshCounterButton = (Button) findViewById(R.id.btnRefreshCounter);
+		increaseCounterButton = (Button) findViewById(R.id.btnCountUp);
+		
 		
 		// Loading products in Background Thread
-		//new LoadCounter().execute();
+		new LoadCounter().execute();
 		
-		refreshCounter.setOnClickListener(new OnClickListener() {
+		refreshCounterButton.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View arg0) {
+				counter.setText(counterValue);
 				counter.getText();
 				
 			}
 		});
+		
+		increaseCounterButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				Integer incrCounter = Integer.valueOf(counter.getText().toString());
+				incrCounter = incrCounter++;
+				counter.setText(incrCounter.toString());
+				
+			}
+			
+		});
 	}
-	/*
+	
 	class LoadCounter extends AsyncTask<String, String, String> {
 
 		protected String doInBackground(String... args) {
 			// Building Parameters
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			// getting JSON string from URL
-			JSONObject json = jParser.makeHttpRequest(url_counter, "GET", params);
+			JSONObject json = jParser.makeHttpRequest(url_read_counter, "GET", params);
 			
 			// Check your log cat for JSON reponse
-			Log.d("Counter: ", json.toString());
+			Log.d("MainActivity JSON: ", "JSONObject: " + json.toString());
 
 			try {
 				// Checking for SUCCESS TAG
@@ -83,17 +102,17 @@ public class MainActivity extends ActionBarActivity {
 					// Getting Array of Products
 					counterData = json.getJSONArray(TAG_COUNTER);
 
-					// looping through All Products
+					// looping through All items
 					for (int i = 0; i < counterData.length(); i++) {
 						JSONObject c = counterData.getJSONObject(i);
-
-						// Storing each json item in variable
-						String user = c.getString(TAG_BENUTZER);
-						String counterValue = c.getString(TAG_COUNTERSTAND);
+						Log.d("MainActivity JSON: ", "JSONArray: " + c.toString());
 						
-						counter.setText(counterValue);
-
-					}
+						// Storing each json item in variable
+						user = c.getString(TAG_BENUTZER);
+						Log.d("MainActivity JSON: ", "Counter user: " + user);
+						counterValue = c.getString(TAG_COUNTERSTAND);
+						Log.d("MainActivity JSON: ", "Counter value: " + counterValue);
+					}		
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -103,7 +122,49 @@ public class MainActivity extends ActionBarActivity {
 		}
 		
 	}
-	*/
+	
+	class UpdateCounter extends AsyncTask<String, String, String> {
+
+		protected String doInBackground(String... args) {
+			// Building Parameters
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			// getting JSON string from URL
+			JSONObject json = jParser.makeHttpRequest(url_update_counter, "GET", params);
+			
+			// Check your log cat for JSON reponse
+			Log.d("MainActivity JSON: ", "JSONObject: " + json.toString());
+
+			try {
+				// Checking for SUCCESS TAG
+				int success = json.getInt(TAG_SUCCESS);
+
+				if (success == 1) {
+					// products found
+					// Getting Array of Products
+					counterData = json.getJSONArray(TAG_COUNTER);
+
+					// looping through All items
+					for (int i = 0; i < counterData.length(); i++) {
+						JSONObject c = counterData.getJSONObject(i);
+						Log.d("MainActivity JSON: ", "JSONArray: " + c.toString());
+						
+						// Storing each json item in variable
+						user = c.getString(TAG_BENUTZER);
+						Log.d("MainActivity JSON: ", "Counter user: " + user);
+						counterValue = c.getString(TAG_COUNTERSTAND);
+						Log.d("MainActivity JSON: ", "Counter value: " + counterValue);
+					}		
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+		
+	}
+	
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
