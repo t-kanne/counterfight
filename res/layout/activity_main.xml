@@ -8,30 +8,22 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="de.woodpot.counterfight.MainActivity" >
 
-    <TextView
-        android:id="@+id/textView2"
+    <Button
+        android:id="@+id/btnShowAllCountersOfGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:layout_alignParentBottom="true"
+        android:text="Alle Counter dieser Gruppe anzeigen" />
 
     <TextView
         android:id="@+id/txtMainCounter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="174dp"
+        android:layout_above="@+id/btnCountUp"
+        android:layout_alignLeft="@+id/btnCountUp"
+        android:layout_marginBottom="43dp"
         android:text="TextView"
         android:textSize="20sp" />
-
-    <Button
-        android:id="@+id/btnRefreshCounter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="50dp"
-        android:text="Aktualisieren" />
 
     <Button
         android:id="@+id/btnCountUp"
@@ -39,7 +31,15 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/btnRefreshCounter"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="18dp"
         android:text="+1" />
+
+    <Button
+        android:id="@+id/btnRefreshCounter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnShowAllCountersOfGroup"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="37dp"
+        android:text="Aktualisieren" />
 
 </RelativeLayout>

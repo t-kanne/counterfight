@@ -3,9 +3,9 @@
     package="de.woodpot.counterfight"
     android:versionCode="1"
     android:versionName="1.0" >
-    
-    <uses-permission android:name="android.permission.INTERNET"/>
-    
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-sdk
         android:minSdkVersion="9"
         android:targetSdkVersion="21" />
@@ -24,6 +24,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="de.woodpot.counterfight.ShowAllUsersOfGroupActivity"
+            android:label="@string/title_activity_show_all_users_of_group" >
+        </activity>
+
+        
     </application>
 
 </manifest>
