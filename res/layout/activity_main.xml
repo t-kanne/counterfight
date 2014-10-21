@@ -19,9 +19,10 @@
         android:id="@+id/txtMainCounter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btnCountUp"
-        android:layout_alignLeft="@+id/btnCountUp"
-        android:layout_marginBottom="43dp"
+        android:layout_alignLeft="@+id/btnShowAllCountersOfGroup"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="86dp"
+        android:layout_marginTop="57dp"
         android:text="TextView"
         android:textSize="20sp" />
 
@@ -29,17 +30,26 @@
         android:id="@+id/btnCountUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btnRefreshCounter"
-        android:layout_centerHorizontal="true"
+        android:layout_alignLeft="@+id/btnShowAllCountersOfGroup"
+        android:layout_below="@+id/txtMainCounter"
+        android:layout_marginLeft="86dp"
         android:text="+1" />
 
     <Button
         android:id="@+id/btnRefreshCounter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/btnShowAllCountersOfGroup"
+        android:layout_below="@+id/btnCountUp"
+        android:layout_marginLeft="86dp"
+        android:text="Aktualisieren" />
+
+    <Button
+        android:id="@+id/btnOpenNoGroupActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/btnShowAllCountersOfGroup"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="37dp"
-        android:text="Aktualisieren" />
+        android:text="NoGroupActivity" />
 
 </RelativeLayout>

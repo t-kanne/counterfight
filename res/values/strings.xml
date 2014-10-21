@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="title_activity_show_all_users_of_group">ShowAllUsersOfGroup</string>
+    <string name="title_activity_no_group">NoGroupActivity</string>
+    <string name="title_activity_create_group_dialog">CreateGroupDialog</string>
     <string name="app_name">counterfight</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_show_all_users_of_group">ShowAllUsersOfGroup</string>
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
+    <string name="string_nogroupact_advice">Um die App nutzen zu können, musst du Mitglied in mindestens einer Gruppe sein. Was möchtest du tun?</string>
+    <string name="string_nogroupact_createGroup">Gruppe gründen</string>
+    <string name="string_nogroupact_searchGroup">Gruppe beitreten</string>
+    <string name="string_createGroupDialog_advice">Gruppenname: </string>
+	<string name="string_createGroupDialog_OK">OK</string>
 
 </resources>

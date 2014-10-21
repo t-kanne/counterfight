@@ -25,11 +25,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="de.woodpot.counterfight.ShowAllUsersOfGroupActivity"
+            android:name=".ShowAllUsersOfGroupActivity"
             android:label="@string/title_activity_show_all_users_of_group" >
         </activity>
-
-        
+        <activity
+            android:name=".NoGroupActivity"
+            android:label="@string/title_activity_no_group" >
+        </activity>
+        <activity
+            android:name=".CreateGroupDialog"
+            android:label="@string/title_activity_create_group_dialog" >
+        </activity>
     </application>
 
 </manifest>

@@ -31,6 +31,7 @@ public class MainActivity extends ActionBarActivity {
 	Button refreshCounterButton;
 	Button increaseCounterButton;
 	Button showAllUsersOfGroupButton;
+	Button openNoGroupActivity;
 	
 	// JSONParser Objekt erstellen
 	JSONParser jParser = new JSONParser();
@@ -63,6 +64,7 @@ public class MainActivity extends ActionBarActivity {
 		refreshCounterButton = (Button) findViewById(R.id.btnRefreshCounter);
 		increaseCounterButton = (Button) findViewById(R.id.btnCountUp);
 		showAllUsersOfGroupButton = (Button) findViewById(R.id.btnShowAllCountersOfGroup);
+		openNoGroupActivity = (Button) findViewById(R.id.btnOpenNoGroupActivity);
 		
 		
 		// Loading products in Background Thread
@@ -100,6 +102,15 @@ public class MainActivity extends ActionBarActivity {
 				finish();
 			}
 			
+		});
+		
+		openNoGroupActivity.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(getApplicationContext(), NoGroupActivity.class);
+				startActivity(intent);				
+			}
 		});
 		
 	}
