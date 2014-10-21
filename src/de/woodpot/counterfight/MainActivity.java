@@ -66,7 +66,7 @@ public class MainActivity extends ActionBarActivity {
 		
 		
 		// Loading products in Background Thread
-		//new LoadCounter().execute();
+		new LoadCounter().execute();
 		
 		refreshCounterButton.setOnClickListener(new OnClickListener() {
 						

@@ -1,17 +1,16 @@
 package de.woodpot.counterfight;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.http.NameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -43,8 +42,8 @@ public class ShowAllUsersOfGroupActivity extends ListActivity {
 	
 	// JSONArray für Counterdaten
 	JSONArray counterData = null;
-	String[] user;
-	ArrayList<String[]> users;
+	private Map<String, String> users = new HashMap<String,String>(); 
+	//ArrayList<String> usersAL;
 	ShowAllUsersOfGroupAdapter adapter;
 	
 	// JSON parser class
@@ -58,17 +57,12 @@ public class ShowAllUsersOfGroupActivity extends ListActivity {
 		if (savedInstanceState == null) {
 
 		}
-		users = new ArrayList<String[]>();
-		//String[] erster = {"thomas", "55"};
-		//String [] zweiter = {"richard", "22"};
-		//users.add(erster);
-		//users.add(zweiter);
 		Toast.makeText(this, "Test", Toast.LENGTH_LONG).show();
 		new LoadAllUserCounter().execute();
 		
 		//adapter = new ShowAllUsersOfGroupAdapter(this, users);
 		//this.setListAdapter(adapter);
-		//registerForContextMenu(getListView());
+		registerForContextMenu(getListView());
 		
 	}
 
@@ -114,17 +108,19 @@ public class ShowAllUsersOfGroupActivity extends ListActivity {
 			pDialog.show();
 		}
 	*/	
+		@Override
 		protected String doInBackground(String... args) {
 			// Building Parameters	
-			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			Log.d("ShowAllUsersOfGroupActivity: ", params.toString());
-			// getting JSON string from URL
-			JSONObject json = jParser.makeHttpRequest(url_read_counter, "GET", params);
-			
-			// Check your log cat for JSON reponse
-			Log.d("ShowAllUsersOfGroupFragment JSON: ", "JSONObject: " + json.toString());
-
 			try {
+				List<NameValuePair> params = new ArrayList<NameValuePair>();
+				Log.d("ShowAllUsersOfGroupActivity: ", params.toString());
+				// getting JSON string from URL
+				JSONObject json = jParser.makeHttpRequest(url_read_counter, "GET", params);
+				
+				// Check your log cat for JSON reponse
+				Log.d("ShowAllUsersOfGroupFragment JSON: ", "JSONObject: " + json.toString());
+
+			
 				// Checking for SUCCESS TAG
 				int success = json.getInt(TAG_SUCCESS);
 
@@ -132,6 +128,7 @@ public class ShowAllUsersOfGroupActivity extends ListActivity {
 					// products found
 					// Getting Array of Products
 					counterData = json.getJSONArray(TAG_COUNTER);
+					Log.d("ShowAllUsersOfGroupFragment JSON: ", "counterDataLenght: " + counterData.length());
 
 					// looping through All items
 					for (int i = 0; i < counterData.length(); i++) {
@@ -139,22 +136,24 @@ public class ShowAllUsersOfGroupActivity extends ListActivity {
 						Log.d("ShowAllUsersOfGroupFragment JSON: ", "JSONArray: " + c.toString());
 						
 						// Storing each json item in variable
-						user[i] = c.getString(TAG_USER);
-						Log.d("ShowAllUsersOfGroupFragment JSON: ", "Counter user: " + user[i]);
-						user[i+1] = c.getString(TAG_COUNTERVALUE);
-						Log.d("ShowAllUsersOfGroupFragment JSON: ", "Counter value: " + user[i+1]);
-						users.add(user);
-					}		
+						users.put(c.getString(TAG_USER), c.getString(TAG_COUNTERVALUE)) ;
+						Log.d("ShowAllUsersOfGroupFragment JSON: ", "Counter user: " + users.toString());
+						//Log.d("ShowAllUsersOfGroupFragment JSON: ", "Counter value: " + user[i+1]);
+						//users.add(user);
+						
+						if (isCancelled()) break;
+					}
+					
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 			return null;
 		}
-		
+		@Override
 		protected void onPostExecute(String file_url) {
 			// dismiss the dialog after getting all products
-			pDialog.dismiss();
+			//pDialog.dismiss();
 			// updating UI from Background Thread
 			runOnUiThread(new Runnable() {
 				public void run() {
@@ -164,12 +163,11 @@ public class ShowAllUsersOfGroupActivity extends ListActivity {
 					ShowAllUsersOfGroupAdapter adapter = new ShowAllUsersOfGroupAdapter(
 							ShowAllUsersOfGroupActivity.this, users);
 					// updating listview
+					Log.d("ShowAllUsersOfGroupFragment JSON: ", "Adapterusers: " + users.toString());
 					setListAdapter(adapter);
 				}
-			});
-
+			}); 
 		}
-		
-	}
-	
+			
+	}	
 }

@@ -1,6 +1,8 @@
 package de.woodpot.counterfight;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,23 +12,24 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 public class ShowAllUsersOfGroupAdapter extends BaseAdapter {
-	private ArrayList<String[]> users = new ArrayList<String[]>();
+	private Map<String, String> users = new HashMap<String,String>(); 
+	private String[] usersArray;
 	private final LayoutInflater inflater;
 	
-	public ShowAllUsersOfGroupAdapter(Context context, ArrayList<String[]> users){
+	public ShowAllUsersOfGroupAdapter(Context context, Map<String, String> users){
 		this.users = users;
+		usersArray = users.keySet().toArray(new String[users.size()]);
 		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 	
-
 	@Override
 	public int getCount() {
 		return users.size();
 	}
 
 	@Override
-	public String[] getItem(int index) {
-		return users.get(index);
+	public String getItem(int index) {
+		return users.get(usersArray[index]);
 	}
 
 	@Override
@@ -59,8 +62,8 @@ public class ShowAllUsersOfGroupAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		
-		holder.userName.setText(getItem(index)[index]);
-		holder.counterValue.setText(getItem(index)[index]);
+		holder.userName.setText(usersArray[index]);
+		holder.counterValue.setText(getItem(index));
 		
 		return convertView;
 	}
