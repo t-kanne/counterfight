@@ -37,8 +37,8 @@ public class MainActivity extends ActionBarActivity {
 	JSONParser jParser = new JSONParser();
 	
 	// Server-Urls
-	private static String url_read_counter = "http://www.dayvision.de/counterfight/get_counter.php";
-	private static String url_update_counter = "http://www.dayvision.de/counterfight/update_counter.php";
+	private static String url_read_counter = "http://www.counterfight.net/get_counter.php";
+	private static String url_update_counter = "http://www.counterfight.net/update_counter.php";
 	
 	// JSON Node names
 	private static final String TAG_SUCCESS = "success";
