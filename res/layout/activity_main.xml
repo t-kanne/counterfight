@@ -19,12 +19,8 @@
         android:id="@+id/txtMainCounter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/btnShowAllCountersOfGroup"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="86dp"
-        android:layout_marginTop="57dp"
         android:text="TextView"
-        android:textSize="20sp" />
+        android:textSize="50sp" />
 
     <Button
         android:id="@+id/btnCountUp"
@@ -51,5 +47,13 @@
         android:layout_above="@+id/btnShowAllCountersOfGroup"
         android:layout_centerHorizontal="true"
         android:text="NoGroupActivity" />
+
+    <Button
+        android:id="@+id/btnLoginActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnOpenNoGroupActivity"
+        android:layout_alignLeft="@+id/btnRefreshCounter"
+        android:text="Login" />
 
 </RelativeLayout>

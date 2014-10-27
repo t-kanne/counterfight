@@ -32,7 +32,7 @@ public class CreateGroupDialog extends ActionBarActivity {
 	JSONParser jParser = new JSONParser();
 	
 	// Server-Urls
-	private static String url_create_group = "http://www.dayvision.de/counterfight/create_group.php";
+	private static String url_create_group = "http://www.counterfight.net/create_group.php";
 
 	// JSON Node names
 	private static final String TAG_SUCCESS = "success";
@@ -102,7 +102,7 @@ public class CreateGroupDialog extends ActionBarActivity {
 						  public void run() {
 						    Toast.makeText(CreateGroupDialog.this, "Gruppe " + newGroup + " erfolgreich erstellt.", Toast.LENGTH_SHORT).show();
 						  }
-						});
+					});
 					finish();
 					
 				} else {
@@ -110,7 +110,7 @@ public class CreateGroupDialog extends ActionBarActivity {
 						  public void run() {
 						    Toast.makeText(CreateGroupDialog.this, "Gruppe konnte nicht erstellt werden.", Toast.LENGTH_SHORT).show();
 						  }
-						});
+					});
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();

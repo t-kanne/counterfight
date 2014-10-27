@@ -4,6 +4,8 @@
     <string name="title_activity_show_all_users_of_group">ShowAllUsersOfGroup</string>
     <string name="title_activity_no_group">NoGroupActivity</string>
     <string name="title_activity_create_group_dialog">CreateGroupDialog</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_register">RegisterActivity</string>
     <string name="app_name">counterfight</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -14,6 +16,18 @@
     <string name="string_nogroupact_createGroup">Gruppe gründen</string>
     <string name="string_nogroupact_searchGroup">Gruppe beitreten</string>
     <string name="string_createGroupDialog_advice">Gruppenname: </string>
-	<string name="string_createGroupDialog_OK">OK</string>
+    <string name="string_createGroupDialog_OK">OK</string>
+    <string name="string_loginact_advice">Bitte logge dich ein oder registriere dir ein neues Konto</string>
+    <string name="string_loginact_login">Login</string>
+    <string name="string_loginact_welcome">Counterfight</string>
+    <string name="string_loginact_usernamehint">Benutzername</string>
+    <string name="string_loginact_passwordhint">Passwort</string>
+    <string name="string_loginact_register">Registrieren</string>
+	<string name="string_registeract_advice">Bitte ausfüllen:</string>
+	<string name="string_registeract_realnamehint">Anzeigename</string>
+	<string name="string_registeract_repeatpasswordhint">Passwort wiederholen</string>
+	<string name="string_registeract_register">Registrieren</string>
+	<string name="string_registeract_fillallfields">Bitte alle Felder ausfüllen</string>
+	<string name="string_registeract_wrongpassword">Das Passwort ist nicht gleich!</string>
 
 </resources>

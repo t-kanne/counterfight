@@ -32,13 +32,14 @@ public class MainActivity extends ActionBarActivity {
 	Button increaseCounterButton;
 	Button showAllUsersOfGroupButton;
 	Button openNoGroupActivity;
+	Button loginActivity;
 	
 	// JSONParser Objekt erstellen
 	JSONParser jParser = new JSONParser();
 	
 	// Server-Urls
-	private static String url_read_counter = "http://www.dayvision.de/counterfight/get_counter.php";
-	private static String url_update_counter = "http://www.dayvision.de/counterfight/update_counter.php";
+	private static String url_read_counter = "http://www.counterfight.net/get_counter.php";
+	private static String url_update_counter = "http://www.counterfight.net/update_counter.php";
 	
 	// JSON Node names
 	private static final String TAG_SUCCESS = "success";
@@ -65,6 +66,7 @@ public class MainActivity extends ActionBarActivity {
 		increaseCounterButton = (Button) findViewById(R.id.btnCountUp);
 		showAllUsersOfGroupButton = (Button) findViewById(R.id.btnShowAllCountersOfGroup);
 		openNoGroupActivity = (Button) findViewById(R.id.btnOpenNoGroupActivity);
+		loginActivity = (Button) findViewById(R.id.btnLoginActivity);
 		
 		
 		// Loading products in Background Thread
@@ -110,6 +112,15 @@ public class MainActivity extends ActionBarActivity {
 			public void onClick(View v) {
 				Intent intent = new Intent(getApplicationContext(), NoGroupActivity.class);
 				startActivity(intent);				
+			}
+		});
+		
+		loginActivity.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+				startActivity(intent);		
 			}
 		});
 		

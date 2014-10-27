@@ -36,6 +36,14 @@
             android:name=".CreateGroupDialog"
             android:label="@string/title_activity_create_group_dialog" >
         </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/title_activity_login" >
+        </activity>
+        <activity
+            android:name=".RegisterActivity"
+            android:label="@string/title_activity_register" >
+        </activity>
     </application>
 
 </manifest>
