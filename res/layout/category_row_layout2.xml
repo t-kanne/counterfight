@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout 
+	 xmlns:android="http://schemas.android.com/apk/res/android" 
+	 android:layout_width="match_parent" 
+	 android:layout_height="match_parent" 
+	 android:background="#ffffff"> 
+
+ <TableRow 
+	 android:layout_height="wrap_content" 
+	 android:layout_width="fill_parent" 
+	 android:gravity="center_horizontal" > 
+
+ <TextView
+	 android:id="@+id/user_row_groupName"
+	 android:layout_width="fill_parent"
+	 android:layout_height="fill_parent"
+	 android:textSize="20sp" 
+	 android:textStyle="bold"
+	 android:background="#b0b0b0"
+	 android:padding="10dip" 
+	 android:layout_weight="1"
+	 android:gravity="center_horizontal" />
+
+ </TableRow> 
+ 
+ 
+ <TableRow 
+	 android:layout_height="wrap_content" 
+	 android:layout_width="fill_parent" 
+	 android:gravity="center_horizontal"> 
+ 
+ <TextView
+	 android:id="@+id/user_row_countervalue"
+	 android:layout_width="fill_parent"
+	 android:layout_height="fill_parent"
+	 android:layout_weight="1"
+	 android:layout_below="@id/user_row_groupName"
+	 android:background="#dcdcdc"
+	 android:padding="10dip" 
+	 android:gravity="center"
+	 android:textSize="18sp" />
+ 
+ <TextView
+	 android:id="@+id/user_row_countervalue2test"
+	 android:layout_width="fill_parent"
+	 android:layout_height="fill_parent" 
+	 android:layout_weight="1"
+	 android:layout_below="@id/user_row_groupName"
+	 android:background="#d3d3d3"
+	 android:padding="10dip" 
+	 android:gravity="center"
+	 android:textSize="18sp" />
+ 
+ </TableRow> 
+
+</TableLayout>
