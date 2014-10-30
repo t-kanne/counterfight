@@ -36,7 +36,7 @@ public class LoginActivity extends ActionBarActivity {
 	JSONParser jParser = new JSONParser();
 	
 	// Server-Urls
-	private static String url_check_user = "http://www.counterfight.net/check_user_login.php";
+	private static String url_check_user = "http://www.counterfight.net/login_user.php";
 	
 	// JSON Node names
 	private static final String TAG_SUCCESS = "success";
@@ -95,8 +95,13 @@ public class LoginActivity extends ActionBarActivity {
 			params.add(new BasicNameValuePair(TAG_USERNAME, usernameString));
 			params.add(new BasicNameValuePair(TAG_PASSWORD, passwordString)); 
 			Log.d("LoginActivity", "username: " + usernameString + " password: " + passwordString);
+			JSONObject json = null;
 			
-			JSONObject json = jParser.makeHttpRequest(url_check_user, "POST", params);
+			try {
+				json = jParser.makeHttpRequest(url_check_user, "POST", params);
+			} catch (Exception e){
+				Log.e("LoginActivity", "JSON: " + e.getMessage());
+			}
 
 			try {
 				int success = json.getInt(TAG_SUCCESS);

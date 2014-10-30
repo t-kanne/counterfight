@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mysqlerror_user_already_exists">Der Benutzer existiert bereits</string>
+    <string name="mysqlerror_registration_failed">Registrierung fehlgeschlagen</string>
+    
+</resources>

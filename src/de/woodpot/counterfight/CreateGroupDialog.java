@@ -87,11 +87,11 @@ public class CreateGroupDialog extends ActionBarActivity {
 
 			// sending modified data through http request
 			// Notice that update product url accepts POST method
-			JSONObject json = jsonParser.makeHttpRequest(url_create_group,
-					"POST", params);
+			JSONObject json = null;
 
 			// check json success tag
 			try {
+				json = jsonParser.makeHttpRequest(url_create_group, "POST", params);
 				int success = json.getInt(TAG_SUCCESS);
 				
 				if (success == 1) {
@@ -113,6 +113,9 @@ public class CreateGroupDialog extends ActionBarActivity {
 					});
 				}
 			} catch (JSONException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 

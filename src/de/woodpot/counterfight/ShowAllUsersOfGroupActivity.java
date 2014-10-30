@@ -147,6 +147,9 @@ public class ShowAllUsersOfGroupActivity extends ListActivity {
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			return null;
 		}

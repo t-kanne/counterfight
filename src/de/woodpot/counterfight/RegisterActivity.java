@@ -1,8 +1,10 @@
 package de.woodpot.counterfight;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.HttpException;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -13,6 +15,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,10 +44,13 @@ public class RegisterActivity extends ActionBarActivity {
 
 	// JSON Node names
 	private static final String TAG_SUCCESS = "success";
-	private static final String TAG_GROUPNAME = "groupName";
+	private static final String TAG_ERRORCODE = "errorcode";
 	private static final String TAG_USERNAME = "username";
 	private static final String TAG_REALNAME = "realname";
 	private static final String TAG_PASSWORD = "password";
+	
+	// MYSQL Fehlercodes
+	private static final String MYSQL_ERRORCODE_USER_ALREADY_EXISTS = "1062";
 	
 	// JSONArray für Counterdaten
 	JSONArray userTable = null;
@@ -100,7 +106,9 @@ public class RegisterActivity extends ActionBarActivity {
 	}
 	
 	class RegisterUser extends AsyncTask<String, String, String> {
+		String errorString = null;
 		
+		@Override
 		protected String doInBackground(String... args) {
 			final String usernameString = usernameEditText.getText().toString();
 			final String realnameString = realnameEditText.getText().toString();
@@ -111,34 +119,51 @@ public class RegisterActivity extends ActionBarActivity {
 			params.add(new BasicNameValuePair(TAG_PASSWORD, passwordString));
 			params.add(new BasicNameValuePair(TAG_REALNAME, realnameString));
 			
-			JSONObject json = jParser.makeHttpRequest(url_create_user, "POST", params);
-
+			JSONObject json = null;
+			final String mysqlError;
+			
+			try {
+				json = jParser.makeHttpRequest(url_create_user, "POST", params);	
+			} catch (Exception e){
+				this.errorString = e.getMessage();
+			}
+			
 			try {
 				int success = json.getInt(TAG_SUCCESS);
-
 				if (success == 1) {
 					RegisterActivity.this.runOnUiThread(new Runnable() {
 						  public void run() {
-						    Toast.makeText(RegisterActivity.this, "Username " + usernameString + " erstellt", Toast.LENGTH_SHORT).show();
+							  Toast.makeText(RegisterActivity.this, "Username " + usernameString + " erstellt", Toast.LENGTH_SHORT).show();
 						  }
 					});
-					Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-					startActivity(intent);
+					//Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+					//startActivity(intent);
 				}
 				else {
+					if (json.getString(TAG_ERRORCODE).equals(MYSQL_ERRORCODE_USER_ALREADY_EXISTS)){
+						mysqlError = getString(R.string.mysqlerror_user_already_exists);
+					}
+					else {
+						mysqlError = getString(R.string.mysqlerror_registration_failed);
+					}						
 					RegisterActivity.this.runOnUiThread(new Runnable() {
-						  public void run() {
-						    Toast.makeText(RegisterActivity.this, "Registrierung fehlgeschlagen...", Toast.LENGTH_LONG).show();
-						  }
-					});
+						public void run() {
+							Toast.makeText(RegisterActivity.this, mysqlError, Toast.LENGTH_LONG).show();
+						}
+					});					
 				}
 				
 			} catch (JSONException e) {
-				e.printStackTrace();
+				Log.e("RegisterActivity", e.getMessage());
 			}
 			return null;
 		}
 		
+		@Override
+		protected void onPostExecute(String args) {
+			
+			Log.e("RegisterActivity", "onPostExecute: " + errorString);
+		}
 		
 	}
 		

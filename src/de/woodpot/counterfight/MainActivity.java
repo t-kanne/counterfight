@@ -139,7 +139,13 @@ public class MainActivity extends ActionBarActivity {
 			// Building Parameters
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			// getting JSON string from URL
-			JSONObject json = jParser.makeHttpRequest(url_read_counter, "GET", params);
+			JSONObject json = null;
+			
+			try {
+				json = jParser.makeHttpRequest(url_read_counter, "GET", params);
+			} catch (Exception e){
+				e.printStackTrace();
+			}
 			
 			// Check your log cat for JSON reponse
 			Log.d("MainActivity JSON: ", "JSONObject: " + json.toString());
@@ -190,8 +196,14 @@ public class MainActivity extends ActionBarActivity {
 
 			// sending modified data through http request
 			// Notice that update product url accepts POST method
-			JSONObject json = jsonParser.makeHttpRequest(url_update_counter,
-					"POST", params);
+			JSONObject json = null;
+
+			try {
+				json = jsonParser.makeHttpRequest(url_update_counter, "POST", params);
+			} catch (Exception e){
+				e.printStackTrace();
+			}
+
 
 			// check json success tag
 			try {
