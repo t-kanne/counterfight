@@ -33,14 +33,15 @@ public class AllGroupsActivity extends ListActivity  {
 		JSONParser jParser = new JSONParser();
 		
 		// Server-Urls
-		private static String url_read_user = "http://counterfight.net/get_all_groups.php";
+		private static String url_get_groups = "http://counterfight.net/get_all_groups.php";
 		
 		// JSON Node names
 		private static final String TAG_SUCCESS = "success";
-		private static final String TAG_COUNTER = "counter";
+		private static final String TAG_COUNTER = "groupTable";
 		private static final String TAG_COUNTER2 = "counter2";
 		private static final String TAG_USER = "user";
 		private static final String TAG_GROUPNAME = "groupName";
+		private static final String TAG_GROUPID = "groupId";
 		private static final String TAG_COUNTERVALUE = "counterValue";
 		
 		// JSONArray für Counterdaten
@@ -61,9 +62,7 @@ public class AllGroupsActivity extends ListActivity  {
 			}
 			Toast.makeText(this, "AllGroupsActivity", Toast.LENGTH_LONG).show();
 			new LoadAllUserCounter().execute();
-			
-			//adapter = new ShowAllUsersOfGroupAdapter(this, users);
-			//this.setListAdapter(adapter);
+
 			registerForContextMenu(getListView());
 			
 		}
@@ -71,9 +70,6 @@ public class AllGroupsActivity extends ListActivity  {
 
 		@Override
 		public boolean onOptionsItemSelected(MenuItem item) {
-			// Handle action bar item clicks here. The action bar will
-			// automatically handle clicks on the Home/Up button, so long
-			// as you specify a parent activity in AndroidManifest.xml.
 			int id = item.getItemId();
 			if (id == R.id.action_settings) {
 				return true;
@@ -100,31 +96,31 @@ public class AllGroupsActivity extends ListActivity  {
 		class LoadAllUserCounter extends AsyncTask<String, String, String> {
 			ProgressDialog pDialog;
 			
-		/*	@Override
-			protected void onPreExecute() {
-				super.onPreExecute();
-				pDialog = new ProgressDialog(ShowAllUsersOfGroupActivity.this);
-				pDialog.setMessage("Loading products. Please wait...");
-				pDialog.setIndeterminate(false);
-				pDialog.setCancelable(false);
-				pDialog.show();
-			}
-		*/	
+		
 			@Override
 			protected String doInBackground(String... args) {
 				// Building Parameters	
-				try {
+				
 					List<NameValuePair> params = new ArrayList<NameValuePair>();
 					Log.d("AllGroupsActivity: ", params.toString());
 					// getting JSON string from URL
-					JSONObject json = jParser.makeHttpRequest(url_read_user, "GET", params);
+					//JSONObject json = jParser.makeHttpRequest(url_get_groups, "GET", params);
+					JSONObject json = null;
+					try {
+						json = jParser.makeHttpRequest(url_get_groups, "GET", params);
+					} catch (Exception e){
+						Log.e("AllGroupsActivity", "JSON: " + e.getMessage());
+					}
+					
 					
 					// Check your log cat for JSON reponse
-					Log.d("AllGroupsActivityFragment JSON: ", "JSONObject: " + json.toString());
+					Log.d("AllGroupsActivityFragment JSON:: ", "JSONObject: " + json.toString());
 
 				
 					// Checking for SUCCESS TAG
-					int success = json.getInt(TAG_SUCCESS);
+					
+					try {
+						int success = json.getInt(TAG_SUCCESS);
 
 					if (success == 1) {
 						// products found
@@ -138,8 +134,8 @@ public class AllGroupsActivity extends ListActivity  {
 							Log.d("AllGroupsActivityFragment JSON: ", "JSONArray: " + c.toString());
 							
 							// Storing each json item in variable
-							users.put(c.getString(TAG_GROUPNAME), c.getString(TAG_COUNTERVALUE));
-							Log.d("AllGroupsActivityFragment JSON: ", "Counter user: " + users.toString());
+							users.put(c.getString(TAG_GROUPID), c.getString(TAG_GROUPNAME));
+							Log.d("AllGroupsActivityFragment JSON: ", "COUNTER USER: " + users.toString());
 							
 							if (isCancelled()) break;
 						}

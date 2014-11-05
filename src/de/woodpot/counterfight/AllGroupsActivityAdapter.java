@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,7 @@ public class AllGroupsActivityAdapter extends BaseAdapter {
 	
 	@Override
 	public View getView(int index, View convertView, ViewGroup parent) {
+		Log.d("ÂllGroupsActivityAdapter JSON: ", "wert: " + usersArray[index]);
 		
 		ViewHolder holder;
 		
