@@ -41,8 +41,8 @@ public class AllGroupsActivityAdapter extends BaseAdapter {
 
 	static class ViewHolder {
 		TextView groupName;
-		TextView counterValue;
-		TextView counterValue2test;
+		TextView firstPlace;
+		TextView ownPlace;
 	}
 	
 	@Override
@@ -56,8 +56,8 @@ public class AllGroupsActivityAdapter extends BaseAdapter {
 			
 			holder = new ViewHolder();
 			holder.groupName = (TextView) convertView.findViewById(R.id.user_row_groupName);
-			holder.counterValue = (TextView) convertView.findViewById(R.id.user_row_countervalue);
-			holder.counterValue2test = (TextView) convertView.findViewById(R.id.user_row_countervalue2test);
+			holder.firstPlace = (TextView) convertView.findViewById(R.id.user_row_first_place);
+			holder.ownPlace = (TextView) convertView.findViewById(R.id.user_row_own_place);
 			convertView.setTag(holder);
 		}
 		else {
@@ -65,8 +65,8 @@ public class AllGroupsActivityAdapter extends BaseAdapter {
 		}
 		
 		holder.groupName.setText(usersArray[index]);
-		holder.counterValue.setText(getItem(index));
-		holder.counterValue2test.setText(getItem(index));
+		holder.firstPlace.setText("1.:" + getItem(index));
+		holder.ownPlace.setText("Du: " + getItem(index));
 		
 		return convertView;
 	}

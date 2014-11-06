@@ -32,6 +32,7 @@
     <string name="string_registeract_wrongpassword">Das Passwort ist nicht gleich!</string>
 	<string name="string_allgroupsact_title">Gruppenübersicht</string>
  	<string name="string_allgroupsact_subtitle">blabla</string>
+ 	
 
 
 </resources>

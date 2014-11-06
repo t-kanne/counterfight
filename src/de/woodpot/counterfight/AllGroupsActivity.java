@@ -1,5 +1,6 @@
 package de.woodpot.counterfight;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,20 +11,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import de.woodpot.counterfight.ShowAllUsersOfGroupActivity.LoadAllUserCounter;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.ListAdapter;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,12 +37,13 @@ public class AllGroupsActivity extends ListActivity  {
 		
 		// JSON Node names
 		private static final String TAG_SUCCESS = "success";
-		private static final String TAG_COUNTER = "groupTable";
-		private static final String TAG_COUNTER2 = "counter2";
+		private static final String TAG_COUNTER = "get_groups";
 		private static final String TAG_USER = "user";
-		private static final String TAG_GROUPNAME = "groupName";
 		private static final String TAG_GROUPID = "groupId";
 		private static final String TAG_COUNTERVALUE = "counterValue";
+		private static final String TAG_GROUPNAME = "groupName";
+		private static final String TAG_USERFIRST = "user_first";
+		private static final String TAG_OWNPLACE = "own_place";
 		
 		// JSONArray für Counterdaten
 		JSONArray counterData = null;
@@ -50,6 +51,8 @@ public class AllGroupsActivity extends ListActivity  {
 		//ArrayList<String> usersAL;
 		ShowAllUsersOfGroupAdapter adapter;
 		
+		ArrayList<HashMap<String, String>> contactList = new ArrayList<HashMap<String, String>>();
+
 		// JSON parser class
 		JSONParser jsonParser = new JSONParser();
 		
@@ -57,13 +60,14 @@ public class AllGroupsActivity extends ListActivity  {
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
-
+				
 			if (savedInstanceState == null) {
 			}
 			Toast.makeText(this, "AllGroupsActivity", Toast.LENGTH_LONG).show();
 			new LoadAllUserCounter().execute();
-
+			
 			registerForContextMenu(getListView());
+			
 			
 		}
 
@@ -123,8 +127,7 @@ public class AllGroupsActivity extends ListActivity  {
 						int success = json.getInt(TAG_SUCCESS);
 
 					if (success == 1) {
-						// products found
-						// Getting Array of Products
+
 						counterData = json.getJSONArray(TAG_COUNTER);
 						Log.d("AllGroupsActivityFragment JSON: ", "counterDataLenght: " + counterData.length());
 
@@ -134,12 +137,31 @@ public class AllGroupsActivity extends ListActivity  {
 							Log.d("AllGroupsActivityFragment JSON: ", "JSONArray: " + c.toString());
 							
 							// Storing each json item in variable
-							users.put(c.getString(TAG_GROUPID), c.getString(TAG_GROUPNAME));
+							users.put(c.getString(TAG_GROUPNAME), c.getString(TAG_USERFIRST));
 							Log.d("AllGroupsActivityFragment JSON: ", "COUNTER USER: " + users.toString());
 							
 							if (isCancelled()) break;
 						}
 						
+						for (int i = 0; i < counterData.length(); i++) {
+							JSONObject c = counterData.getJSONObject(i);
+							
+							String groupName = c.getString(TAG_GROUPNAME);
+							String firstPlace = c.getString(TAG_USERFIRST);
+							String ownPlace = c.getString(TAG_OWNPLACE);
+							
+							// tmp hashmap for single contact
+							HashMap<String, String> contact = new HashMap<String, String>();
+
+							// adding each child node to HashMap key => value
+							contact.put(TAG_GROUPNAME, groupName);
+							contact.put(TAG_USERFIRST, firstPlace);
+							contact.put(TAG_OWNPLACE, ownPlace);
+							
+							// adding contact to contact list
+							contactList.add(contact);
+						}
+					
 					}
 				} catch (JSONException e) {
 					e.printStackTrace();
@@ -148,6 +170,7 @@ public class AllGroupsActivity extends ListActivity  {
 			}
 			@Override
 			protected void onPostExecute(String file_url) {
+				
 				// dismiss the dialog after getting all products
 				//pDialog.dismiss();
 				// updating UI from Background Thread
@@ -156,11 +179,14 @@ public class AllGroupsActivity extends ListActivity  {
 						/**
 						 * Updating parsed JSON data into ListView
 						 * */
-						AllGroupsActivityAdapter adapter = new AllGroupsActivityAdapter(
-								AllGroupsActivity.this, users);
+						ListAdapter adapter = new SimpleAdapter(
+								AllGroupsActivity.this, contactList,
+								R.layout.category_row_layout2, new String[] { TAG_GROUPNAME, TAG_USERFIRST,
+										TAG_OWNPLACE }, new int[] { R.id.user_row_groupName,
+										R.id.user_row_first_place, R.id.user_row_own_place });
 						// updating listview
 						Log.d("AllGroupsActivityFragment JSON: ", "Adapterusers: " + users.toString());
-						setListAdapter((ListAdapter) adapter);
+						setListAdapter (adapter);
 					}
 				}); 
 			}
