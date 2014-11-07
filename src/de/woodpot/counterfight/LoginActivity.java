@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -31,7 +32,10 @@ public class LoginActivity extends ActionBarActivity {
 	
 	private String usernameString;
 	private String passwordString;
-		
+	
+	// Objekt vom SessionManager erstellen
+	SessionManager sessionManager;
+	
 	// JSONParser Objekt erstellen
 	JSONParser jParser = new JSONParser();
 	
@@ -56,32 +60,39 @@ public class LoginActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
+		sessionManager = new SessionManager(getApplicationContext());
 		
-		usernameEditText = (EditText)findViewById(R.id.edittext_loginact_username);
-		passwordEditText = (EditText)findViewById(R.id.edittext_loginact_password);
-		loginButton = (Button)findViewById(R.id.button_loginact_login);
-		registerTextView = (TextView)findViewById(R.id.textview_loginact_register);
-		
-		registerTextView.setOnClickListener(new OnClickListener() {
+		if (sessionManager.isLoggedIn() == false) {
+
+			usernameEditText = (EditText)findViewById(R.id.edittext_loginact_username);
+			passwordEditText = (EditText)findViewById(R.id.edittext_loginact_password);
+			loginButton = (Button)findViewById(R.id.button_loginact_login);
+			registerTextView = (TextView)findViewById(R.id.textview_loginact_register);
 			
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
-				startActivity(intent);
-			}
-		});
-		
-		loginButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// String-Variablen erzeugen
-				usernameString = usernameEditText.getText().toString();
-				passwordString = passwordEditText.getText().toString();	
+			registerTextView.setOnClickListener(new OnClickListener() {
 				
-				new GetUser().execute();
-			}
-		});
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
+					startActivity(intent);
+				}
+			});
+			
+			loginButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// String-Variablen erzeugen
+					usernameString = usernameEditText.getText().toString();
+					passwordString = passwordEditText.getText().toString();	
+					
+					new GetUser().execute();
+				}
+			});
+		} else {
+			Intent intent = new Intent(this, AllGroupsActivity.class);
+			startActivity(intent);
+		}
 
 	}
 	
@@ -112,7 +123,8 @@ public class LoginActivity extends ActionBarActivity {
 						    Toast.makeText(LoginActivity.this, "Username " + usernameString + " gefunden", Toast.LENGTH_SHORT).show();
 						  }
 					});
-					finish();
+					// Erstellen der Session
+					sessionManager.createSession(usernameString, passwordString);
 				}
 				else {
 					LoginActivity.this.runOnUiThread(new Runnable() {
@@ -126,6 +138,15 @@ public class LoginActivity extends ActionBarActivity {
 				e.printStackTrace();
 			}
 			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(String result){
+			if (sessionManager.isLoggedIn() == true){
+				Intent intent = new Intent(LoginActivity.this, AllGroupsActivity.class);
+				startActivity(intent);
+				
+			}
 		}
 		
 		

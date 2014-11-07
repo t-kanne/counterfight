@@ -1,7 +1,6 @@
 package de.woodpot.counterfight;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
@@ -10,7 +9,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
 public class MainActivity extends ActionBarActivity {
@@ -34,6 +31,7 @@ public class MainActivity extends ActionBarActivity {
 	Button openNoGroupActivity;
 	Button loginActivity;
 	Button openAllGroupsActivity;
+	Button logoutButton;
 	
 	// JSONParser Objekt erstellen
 	JSONParser jParser = new JSONParser();
@@ -69,6 +67,7 @@ public class MainActivity extends ActionBarActivity {
 		openNoGroupActivity = (Button) findViewById(R.id.btnOpenNoGroupActivity);
 		loginActivity = (Button) findViewById(R.id.btnLoginActivity);
 		openAllGroupsActivity = (Button) findViewById(R.id.btnOpenAllGroupsActivity);
+		logoutButton = (Button) findViewById(R.id.btnLogout);
 		
 		
 		// Loading products in Background Thread
@@ -135,7 +134,17 @@ public class MainActivity extends ActionBarActivity {
 			 startActivity(intent); 
 			 }
 			 
-			 });
+		});
+		
+		logoutButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				SessionManager sm = new SessionManager(getApplicationContext());
+				sm.clearSession();
+			}
+			
+		});
 		
 	}
 	

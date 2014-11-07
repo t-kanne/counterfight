@@ -80,6 +80,11 @@ public class AllGroupsActivity extends ListActivity  {
 			}
 			return super.onOptionsItemSelected(item);
 		}
+		
+		@Override
+		public void onBackPressed() {
+			super.finish();
+		}
 
 
 		public static class PlaceholderFragment extends Fragment {
