@@ -30,9 +30,8 @@
     <string name="string_registeract_register">Registrieren</string>
     <string name="string_registeract_fillallfields">Bitte alle Felder ausfüllen</string>
     <string name="string_registeract_wrongpassword">Das Passwort ist nicht gleich!</string>
-	<string name="string_allgroupsact_title">Gruppenübersicht</string>
- 	<string name="string_allgroupsact_subtitle">blabla</string>
- 	
-
+    <string name="string_allgroupsact_title">Gruppenübersicht</string>
+    <string name="string_allgroupsact_subtitle">blabla</string>
+    <string name="title_activity_group_detail">GroupDetailActivity</string>
 
 </resources>

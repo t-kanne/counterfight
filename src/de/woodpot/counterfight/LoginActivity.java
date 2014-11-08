@@ -41,6 +41,7 @@ public class LoginActivity extends ActionBarActivity {
 	
 	// Server-Urls
 	private static String url_check_user = "http://www.counterfight.net/login_user.php";
+	private static String url_count_user_groups = "http://www.counterfight.net/count_user_groups.php";
 	
 	// JSON Node names
 	private static final String TAG_SUCCESS = "success";
@@ -48,8 +49,9 @@ public class LoginActivity extends ActionBarActivity {
 	private static final String TAG_USERNAME = "username";
 	private static final String TAG_PASSWORD = "password";
 	
-	// JSONArray für Counterdaten
+	// JSON Arrays
 	JSONArray userData = null;
+	String noOfGroups = null;
 	Boolean correctUserdata = false;
 	
 	// JSON parser class
@@ -85,13 +87,11 @@ public class LoginActivity extends ActionBarActivity {
 					// String-Variablen erzeugen
 					usernameString = usernameEditText.getText().toString();
 					passwordString = passwordEditText.getText().toString();	
-					
 					new GetUser().execute();
 				}
 			});
 		} else {
-			Intent intent = new Intent(this, AllGroupsActivity.class);
-			startActivity(intent);
+			startGroupDependingActivity();
 		}
 
 	}
@@ -143,14 +143,72 @@ public class LoginActivity extends ActionBarActivity {
 		@Override
 		protected void onPostExecute(String result){
 			if (sessionManager.isLoggedIn() == true){
-				Intent intent = new Intent(LoginActivity.this, AllGroupsActivity.class);
-				startActivity(intent);
-				
+				startGroupDependingActivity();
 			}
-		}
-		
+		}	
 		
 	}
+	
+	class CountUserGroups extends AsyncTask <String, String, String> {
+
+		protected String doInBackground(String... args) {
+			Log.d("LoginAcitivty: ", "CountUserGroups");
+			final List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair(TAG_USERNAME, usernameString));
+			JSONObject json = null;
+			
+			try {
+				json = jParser.makeHttpRequest(url_count_user_groups, "POST", params);
+			} catch (Exception e){
+				Log.e("LoginActivity", "JSON (UserGroups): " + e.getMessage());
+			}
+
+			try {
+				int success = json.getInt(TAG_SUCCESS);
+
+				if (success == 1) {
+					noOfGroups = json.getString("noOfGroups");
+					startGroupDependingActivity();
+				}
+				else {
+					LoginActivity.this.runOnUiThread(new Runnable() {
+						  public void run() {
+						    Toast.makeText(LoginActivity.this, "Anzahl der Gruppen nicht ermittelt", Toast.LENGTH_LONG).show();
+						  }
+					});
+				}
+				
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+	}
+	
+	public void startGroupDependingActivity() {
+		int noOfGroupsInt;
+		
+		
+		try {
+			noOfGroupsInt = Integer.valueOf(noOfGroups);
+			if (noOfGroupsInt == 1) {
+				Intent intent = new Intent(this, GroupDetailActivity.class);
+				startActivity(intent);
+				finish();
+			}
+			if (noOfGroupsInt >= 1) {
+				Intent intent = new Intent(this, AllGroupsActivity.class);
+				startActivity(intent);
+				finish();
+			}
+		} catch (NumberFormatException e) {
+			Intent intent = new Intent(this, NoGroupActivity.class);
+			startActivity(intent);
+			finish();
+		}
+				
+	}
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

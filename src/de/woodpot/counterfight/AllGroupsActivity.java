@@ -11,8 +11,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,10 +23,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.widget.ListAdapter;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class AllGroupsActivity extends ListActivity  {
@@ -83,7 +83,10 @@ public class AllGroupsActivity extends ListActivity  {
 		
 		@Override
 		public void onBackPressed() {
-			super.finish();
+		    Intent startMain = new Intent(Intent.ACTION_MAIN);      
+	        startMain.addCategory(Intent.CATEGORY_HOME);                        
+	        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);          
+	        startActivity(startMain); 
 		}
 
 
