@@ -61,10 +61,10 @@ public class LoginActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_login);
 		sessionManager = new SessionManager(getApplicationContext());
 		
 		if (sessionManager.isLoggedIn() == false) {
+			setContentView(R.layout.activity_login);
 
 			usernameEditText = (EditText)findViewById(R.id.edittext_loginact_username);
 			passwordEditText = (EditText)findViewById(R.id.edittext_loginact_password);
@@ -91,7 +91,7 @@ public class LoginActivity extends ActionBarActivity {
 				}
 			});
 		} else {
-			startGroupDependingActivity();
+			new CountUserGroups().execute();
 		}
 
 	}
@@ -143,7 +143,7 @@ public class LoginActivity extends ActionBarActivity {
 		@Override
 		protected void onPostExecute(String result){
 			if (sessionManager.isLoggedIn() == true){
-				startGroupDependingActivity();
+				new CountUserGroups().execute();
 			}
 		}	
 		
@@ -154,7 +154,7 @@ public class LoginActivity extends ActionBarActivity {
 		protected String doInBackground(String... args) {
 			Log.d("LoginAcitivty: ", "CountUserGroups");
 			final List<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair(TAG_USERNAME, usernameString));
+			params.add(new BasicNameValuePair(TAG_USERNAME, sessionManager.getUsername()));
 			JSONObject json = null;
 			
 			try {
@@ -168,7 +168,7 @@ public class LoginActivity extends ActionBarActivity {
 
 				if (success == 1) {
 					noOfGroups = json.getString("noOfGroups");
-					startGroupDependingActivity();
+					Log.d("LoginActivity: ", "noOfGroups: " + noOfGroups + " for user " + sessionManager.getUsername());
 				}
 				else {
 					LoginActivity.this.runOnUiThread(new Runnable() {
@@ -183,20 +183,36 @@ public class LoginActivity extends ActionBarActivity {
 			}
 			return null;
 		}
+		
+		@Override
+		protected void onPostExecute(String result){
+			if (sessionManager.isLoggedIn() == true){
+				startGroupDependingActivity(noOfGroups);
+			}
+		}
+		
+		
 	}
 	
-	public void startGroupDependingActivity() {
+	public void startGroupDependingActivity(String noOfGroups) {
 		int noOfGroupsInt;
-		
 		
 		try {
 			noOfGroupsInt = Integer.valueOf(noOfGroups);
+			Log.d("LoginActivity: ", "Anzahl Gruppen: " + noOfGroupsInt);
+			
+			if (noOfGroupsInt == 0) {
+				Intent intent = new Intent(this, NoGroupActivity.class);
+				startActivity(intent);
+				finish();
+			}
+			
 			if (noOfGroupsInt == 1) {
 				Intent intent = new Intent(this, GroupDetailActivity.class);
 				startActivity(intent);
 				finish();
 			}
-			if (noOfGroupsInt >= 1) {
+			if (noOfGroupsInt > 1) {
 				Intent intent = new Intent(this, AllGroupsActivity.class);
 				startActivity(intent);
 				finish();
