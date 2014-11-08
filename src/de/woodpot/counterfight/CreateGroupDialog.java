@@ -27,6 +27,7 @@ public class CreateGroupDialog extends ActionBarActivity {
 	private TextView adviceTextView;
 	private EditText groupNameEditText;
 	private Button okayButton;
+	SessionManager sm;
 	
 	// JSONParser Objekt erstellen
 	JSONParser jParser = new JSONParser();
@@ -37,6 +38,7 @@ public class CreateGroupDialog extends ActionBarActivity {
 	// JSON Node names
 	private static final String TAG_SUCCESS = "success";
 	private static final String TAG_GROUPNAME = "groupName";
+	private static final String TAG_GROUPADMIN = "admin";
 	
 	// JSONArray für Counterdaten
 	JSONArray groupTable = null;
@@ -79,11 +81,19 @@ public class CreateGroupDialog extends ActionBarActivity {
 			// Gruppenname vom EditText holen
 			final String newGroup = groupNameEditText.getText().toString();
 
+			// SessionManager nach aktuellen Usernamen fragen
+			String username = null;
+			sm = new SessionManager(getApplicationContext());
+			if (sm.isLoggedIn() == true) {
+				username = sm.getUsername();
+			}
+
 			// Building Parameters
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			params.add(new BasicNameValuePair(TAG_GROUPNAME, newGroup));
+			params.add(new BasicNameValuePair(TAG_GROUPADMIN, username));
 
-			Log.d("CreateGroupDialog: ", "Group name: " + newGroup);
+			Log.d("CreateGroupDialog: ", "Group name: " + newGroup + " with admin: " + username);
 
 			// sending modified data through http request
 			// Notice that update product url accepts POST method

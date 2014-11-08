@@ -39,4 +39,8 @@ public class SessionManager {
 		editor.clear();
 		editor.commit();
 	}
+	
+	public String getUsername() {
+		return sharedPrefs.getString(USERNAME_KEY, null);
+	}
 }
