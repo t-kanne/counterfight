@@ -52,6 +52,10 @@
             android:name=".GroupDetailActivity"
             android:label="@string/title_activity_group_detail" >
         </activity>
+        <activity
+            android:name=".SearchGroupDialog"
+            android:label="@string/title_activity_search_group_dialog" >
+        </activity>
     </application>
 
 </manifest>

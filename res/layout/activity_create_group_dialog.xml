@@ -9,19 +9,19 @@
     tools:context="de.woodpot.counterfight.CreateGroupDialog" >
 
     <TextView
-        android:id="@+id/textview_createGroupDialog_advice"
+        android:id="@+id/textview_creategroupdialog_advice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/string_createGroupDialog_advice" />
+        android:text="@string/string_creategroupdialog_advice" />
 
     <EditText
-        android:id="@+id/edittext_createGroupDialog_groupName"
+        android:id="@+id/edittext_creategroupdialog_groupname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textview_createGroupDialog_advice"
+        android:layout_below="@+id/textview_creategroupdialog_advice"
         android:layout_marginLeft="24dp"
         android:layout_marginTop="147dp"
-        android:layout_toRightOf="@+id/textview_createGroupDialog_advice"
+        android:layout_toRightOf="@+id/textview_creategroupdialog_advice"
         android:ems="10" 
         android:inputType="text">
 
@@ -29,10 +29,10 @@
     </EditText>
     
     <Button 
-        android:id="@+id/button_createGroupDialog_OK"
-        android:layout_below="@+id/edittext_createGroupDialog_groupName"
-        android:text="@string/string_createGroupDialog_OK" 
+        android:id="@+id/button_creategroupdialog_ok"
+        android:layout_below="@+id/edittext_creategroupdialog_groupname"
+        android:text="@string/string_creategroupdialog_ok" 
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

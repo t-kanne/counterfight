@@ -22,10 +22,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class CreateGroupDialog extends ActionBarActivity {
+public class SearchGroupDialog extends ActionBarActivity {
 	
 	private TextView adviceTextView;
-	private EditText groupNameEditText;
+	private EditText groupIdEditText;
 	private Button okayButton;
 	SessionManager sm;
 	
@@ -33,16 +33,17 @@ public class CreateGroupDialog extends ActionBarActivity {
 	JSONParser jParser = new JSONParser();
 	
 	// Server-Urls
-	private static String url_create_group = "http://www.counterfight.net/create_group.php";
+	private static String url_search_group = "http://www.counterfight.net/search_group.php";
 
 	// JSON Node names
 	private static final String TAG_SUCCESS = "success";
+	private static final String TAG_USERNAME = "username";
+	private static final String TAG_GROUP_ID = "groupId";
 	private static final String TAG_GROUPNAME = "groupName";
-	private static final String TAG_GROUPADMIN = "admin";
 	
 	// JSONArray für Counterdaten
 	JSONArray groupTable = null;
-	String groupName;
+	String groupName = null;
 	
 	// JSON parser class
 	JSONParser jsonParser = new JSONParser();
@@ -50,39 +51,33 @@ public class CreateGroupDialog extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_create_group_dialog);
+		setContentView(R.layout.activity_search_group_dialog);
 		
-		adviceTextView = (TextView)findViewById(R.id.textview_creategroupdialog_advice);
-		groupNameEditText = (EditText)findViewById(R.id.edittext_creategroupdialog_groupname);
-		okayButton = (Button)findViewById(R.id.button_creategroupdialog_ok);
+		adviceTextView = (TextView)findViewById(R.id.textview_searchgroupdialog_advice);
+		groupIdEditText = (EditText)findViewById(R.id.edittext_searchgroupdialog_groupid);
+		okayButton = (Button)findViewById(R.id.button_searchgroupdialog_ok);
 		
 		okayButton.setOnClickListener(new OnClickListener() {
 						
 			@Override
 			public void onClick(View v) {		
-				int editTextLength = groupNameEditText.getText().toString().length();
-				Log.d("CreateGroupDialog:","editTextLength: " + editTextLength);
-				
-				if (editTextLength >= 3) {
-					new CreateGroup().execute();
-				}
-				else {
-					Toast.makeText(getApplicationContext(), "Der Gruppenname muss aus mind. 3 Zeichen bestehen", Toast.LENGTH_SHORT).show();
-				}
+				new SearchGroup().execute();		
 			}
 		});
 	}
 
 	
-	class CreateGroup extends AsyncTask<String, String, String> {
+	class SearchGroup extends AsyncTask<String, String, String> {
 		
 		protected String doInBackground(String... args) {
 
-			// Gruppenname vom EditText holen
-			final String newGroup = groupNameEditText.getText().toString();
+			// Gruppen-Id vom EditText holen
+			final String groupId = groupIdEditText.getText().toString();
 
 			// SessionManager nach aktuellen Usernamen fragen
 			String username = null;
+			final String groupName;
+			
 			sm = new SessionManager(getApplicationContext());
 			if (sm.isLoggedIn() == true) {
 				username = sm.getUsername();
@@ -90,10 +85,10 @@ public class CreateGroupDialog extends ActionBarActivity {
 
 			// Building Parameters
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair(TAG_GROUPNAME, newGroup));
-			params.add(new BasicNameValuePair(TAG_GROUPADMIN, username));
+			params.add(new BasicNameValuePair(TAG_GROUP_ID, groupId));
+			params.add(new BasicNameValuePair(TAG_USERNAME, username));
 
-			Log.d("CreateGroupDialog: ", "Group name: " + newGroup + " with admin: " + username);
+			Log.d("SearchGroupDialog: ", "Group Id: " + groupId + " with user: " + username);
 
 			// sending modified data through http request
 			// Notice that update product url accepts POST method
@@ -101,24 +96,25 @@ public class CreateGroupDialog extends ActionBarActivity {
 
 			// check json success tag
 			try {
-				json = jsonParser.makeHttpRequest(url_create_group, "POST", params);
+				json = jsonParser.makeHttpRequest(url_search_group, "POST", params);
 				int success = json.getInt(TAG_SUCCESS);
 				
 				if (success == 1) {
 					// successfully updated
+					groupName = json.getString(TAG_GROUPNAME);
 					Log.d("CreateGroupDialog JSON: ", json.toString());
 					
-					CreateGroupDialog.this.runOnUiThread(new Runnable() {
+					SearchGroupDialog.this.runOnUiThread(new Runnable() {
 						  public void run() {
-						    Toast.makeText(CreateGroupDialog.this, "Gruppe " + newGroup + " erfolgreich erstellt.", Toast.LENGTH_SHORT).show();
+						    Toast.makeText(SearchGroupDialog.this, "Gruppe '" + groupName + "' erfolgreich beigetreten.", Toast.LENGTH_SHORT).show();
 						  }
 					});
 					finish();
 					
 				} else {
-					CreateGroupDialog.this.runOnUiThread(new Runnable() {
+					SearchGroupDialog.this.runOnUiThread(new Runnable() {
 						  public void run() {
-						    Toast.makeText(CreateGroupDialog.this, "Gruppe konnte nicht erstellt werden.", Toast.LENGTH_SHORT).show();
+						    Toast.makeText(SearchGroupDialog.this, "Gruppe konnte nicht gefunden werden.", Toast.LENGTH_SHORT).show();
 						  }
 					});
 				}
@@ -136,7 +132,7 @@ public class CreateGroupDialog extends ActionBarActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.create_group_dialog, menu);
+		getMenuInflater().inflate(R.menu.search_group_dialog, menu);
 		return true;
 	}
 

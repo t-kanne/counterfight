@@ -34,6 +34,16 @@ public class NoGroupActivity extends ActionBarActivity {
 			}
 			
 		});
+		
+		searchGroupButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(getBaseContext(), SearchGroupDialog.class);
+				startActivity(intent);
+				
+			}
+		});
 	}
 
 	@Override

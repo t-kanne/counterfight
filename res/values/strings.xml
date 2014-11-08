@@ -7,6 +7,8 @@
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_register">RegisterActivity</string>
     <string name="title_activity_all_groups">AllGroupsActivity</string>
+    <string name="title_activity_group_detail">GroupDetailActivity</string>
+    <string name="title_activity_search_group_dialog">SearchGroupDialog</string>
     <string name="app_name">counterfight</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -16,8 +18,11 @@
     <string name="string_nogroupact_advice">Um die App nutzen zu können, musst du Mitglied in mindestens einer Gruppe sein. Was möchtest du tun?</string>
     <string name="string_nogroupact_createGroup">Gruppe gründen</string>
     <string name="string_nogroupact_searchGroup">Gruppe beitreten</string>
-    <string name="string_createGroupDialog_advice">Gruppenname: </string>
-    <string name="string_createGroupDialog_OK">OK</string>
+    <string name="string_creategroupdialog_advice">Gruppenname: </string>
+    <string name="string_creategroupdialog_ok">OK</string>
+    <string name="string_searchgroupdialog_advice">Wenn du von einem anderen Counterfight-Nutzer eine Gruppen-Id bekommen hast, kannst du dich damit hier in der Gruppe anmelden.</string>
+	<string name="string_searchgroupdialog_ok">Beitreten</string>
+	<string name="string_searchgroupdialog_groupidhint">Gruppen-Id</string>
     <string name="string_loginact_advice">Bitte logge dich ein oder registriere dir ein neues Konto</string>
     <string name="string_loginact_login">Login</string>
     <string name="string_loginact_welcome">Counterfight</string>
@@ -32,6 +37,6 @@
     <string name="string_registeract_wrongpassword">Das Passwort ist nicht gleich!</string>
     <string name="string_allgroupsact_title">Gruppenübersicht</string>
     <string name="string_allgroupsact_subtitle">blabla</string>
-    <string name="title_activity_group_detail">GroupDetailActivity</string>
+
 
 </resources>
