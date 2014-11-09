@@ -8,6 +8,15 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="de.woodpot.counterfight.MainActivity" >
 
+     <Button
+        android:id="@+id/btnOpenGroupDetailActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/btnOpenAllGroupsActivity"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="62dp"
+        android:text="GroupDetailActivity" />
+    
     <Button
         android:id="@+id/btnShowAllCountersOfGroup"
         android:layout_width="wrap_content"
@@ -36,16 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/btnLogout"
-        
         android:text="AllGroupsActivity" />
-    
-    
-    <Button
-        android:id="@+id/btnOpenGroupDetailActivity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/btnOpenAllGroupsActivity"
-        android:text="GroupDetailActivity" />
 
     <Button
         android:id="@+id/btnLogout"
@@ -55,5 +55,7 @@
         android:layout_marginLeft="18dp"
         android:layout_toRightOf="@+id/btnLoginActivity"
         android:text="Logout" />
+
+   
 
 </RelativeLayout>

@@ -52,7 +52,7 @@ public class GroupDetailActivity extends ListActivity {
 	private static final String TAG_GROUPID = "groupId";
 	private static final String TAG_COUNTERVALUE = "counterValue";
 	private static final String TAG_GROUPNAME = "groupName";
-	private static final String TAG_USERNAME = "username";
+	private static final String TAG_USERNAME = "userName";
 	
 	// JSONArray für Counterdaten
 	JSONArray counterData = null;
@@ -67,6 +67,7 @@ public class GroupDetailActivity extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+
 		
 		Toast.makeText(this, "GroupDetailActivity", Toast.LENGTH_LONG).show();
 		new LoadGroupUser().execute();
@@ -179,16 +180,21 @@ public class GroupDetailActivity extends ListActivity {
 					/**
 					 * Updating parsed JSON data into ListView
 					 * */
-					ListAdapter adapter = new SimpleAdapter(
-							GroupDetailActivity.this, contactList,
-							R.layout.activity_group_detail, new String[] { TAG_USERNAME, TAG_COUNTERVALUE,
-								}, new int[] { R.id.user_row_userName, R.id.user_countervalue });
-					// updating listview
-					Log.d("GroupDetailActivityFragment JSON: ", "Adapterusers: " + users.toString());
-					setListAdapter (adapter);
+					 ListAdapter adapter = new SimpleAdapter(
+							 GroupDetailActivity.this, contactList,
+			                 R.layout.activity_group_detail,                                            
+			                 new String[] {TAG_USERNAME, TAG_COUNTERVALUE},          
+			                 new int[] {R.id.user_row_userName, R.id.user_countervalue});  
+
+			         // Bind to our new adapter.
+			         setListAdapter(adapter);
 				}
 			}); 
 		}
+		
+
+		
+		
 			
 	}	
 	

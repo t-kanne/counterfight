@@ -66,8 +66,9 @@ public class MainActivity extends ActionBarActivity {
 		openNoGroupActivity = (Button) findViewById(R.id.btnOpenNoGroupActivity);
 		loginActivity = (Button) findViewById(R.id.btnLoginActivity);
 		openAllGroupsActivity = (Button) findViewById(R.id.btnOpenAllGroupsActivity);
-		logoutButton = (Button) findViewById(R.id.btnLogout);
 		openGroupDetailActivity = (Button) findViewById(R.id.btnOpenGroupDetailActivity);
+		logoutButton = (Button) findViewById(R.id.btnLogout);
+
 		
 		// Loading products in Background Thread
 			
@@ -97,18 +98,7 @@ public class MainActivity extends ActionBarActivity {
 				Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
 				startActivity(intent);		
 			}
-		});
-		
-		openGroupDetailActivity.setOnClickListener(new OnClickListener() {
-
-			 @Override
-			 public void onClick(View v) {
-			 
-			 Intent intent = new Intent(getApplicationContext(), GroupDetailActivity.class);
-			 startActivity(intent); 
-			 }
-			 
-		});
+		});	
 		
 		openAllGroupsActivity.setOnClickListener(new OnClickListener() {
 
@@ -117,6 +107,16 @@ public class MainActivity extends ActionBarActivity {
 			 
 			 Intent intent = new Intent(getApplicationContext(), AllGroupsActivity.class);
 			 startActivity(intent); 
+			 }
+			 
+		});
+		
+		openGroupDetailActivity.setOnClickListener(new OnClickListener() {
+
+			 @Override
+			 public void onClick(View v) {
+				 Intent intent = new Intent(getApplicationContext(), GroupDetailActivity.class);
+				 startActivity(intent); 
 			 }
 			 
 		});
