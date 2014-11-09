@@ -63,6 +63,14 @@
         android:layout_above="@+id/btnLoginActivity"
         android:layout_alignRight="@+id/btnLoginActivity"
         android:text="AllGroupsActivity" />
+    
+    
+    <Button
+        android:id="@+id/btnOpenGroupDetailActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnOpenAllGroupsActivity"
+        android:text="GroupDetailActivity" />
 
     <Button
         android:id="@+id/btnLogout"

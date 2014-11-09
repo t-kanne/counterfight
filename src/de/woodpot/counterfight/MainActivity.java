@@ -32,6 +32,7 @@ public class MainActivity extends ActionBarActivity {
 	Button loginActivity;
 	Button openAllGroupsActivity;
 	Button logoutButton;
+	Button openGroupDetailActivity;
 	
 	// JSONParser Objekt erstellen
 	JSONParser jParser = new JSONParser();
@@ -68,7 +69,7 @@ public class MainActivity extends ActionBarActivity {
 		loginActivity = (Button) findViewById(R.id.btnLoginActivity);
 		openAllGroupsActivity = (Button) findViewById(R.id.btnOpenAllGroupsActivity);
 		logoutButton = (Button) findViewById(R.id.btnLogout);
-		
+		openGroupDetailActivity = (Button) findViewById(R.id.btnOpenGroupDetailActivity);
 		
 		// Loading products in Background Thread
 		new LoadCounter().execute();
@@ -123,6 +124,17 @@ public class MainActivity extends ActionBarActivity {
 				Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
 				startActivity(intent);		
 			}
+		});
+		
+		openGroupDetailActivity.setOnClickListener(new OnClickListener() {
+
+			 @Override
+			 public void onClick(View v) {
+			 
+			 Intent intent = new Intent(getApplicationContext(), GroupDetailActivity.class);
+			 startActivity(intent); 
+			 }
+			 
 		});
 		
 		openAllGroupsActivity.setOnClickListener(new OnClickListener() {
