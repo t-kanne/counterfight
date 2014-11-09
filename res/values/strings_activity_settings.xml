@@ -1,0 +1,26 @@
+<resources>
+
+    <string name="title_activity_settings">Einstellungen</string>
+
+    <!-- Account settings -->
+    <string name="pref_account_settings">Accounteinstellungen</string>
+    <string name="pref_account_delete">Account löschen</string>
+    <string name="pref_account_warning_header">User löschen?</string>
+    <string name="pref_account_warning_explanation">Möchtest du deinen Account wirklich löschen? Er kann nicht wiederhergestellt werden!</string>
+    <string name="pref_account_warning_positive_button">Account löschen </string>
+    <string name="pref_account_warning_negative_button">Abbrechen</string>
+    
+
+ 
+    
+    <!-- settings for Notifications -->
+    <string name="pref_header_notifications">Benachrichtigungen</string>
+    <string name="pref_vibrate_title">Vibrieren</string>
+    <string name="pref_flashlight_title">LED-Alarm (Beta)</string>
+    
+    <!-- settings for Informations -->
+    <string name="pref_header_informations">Informationen</string>
+    <string name="help_title">Hilfe</string>
+    <string name="about_us_title">Über den Hersteller</string>
+
+</resources>

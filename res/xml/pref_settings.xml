@@ -1,0 +1,43 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+
+	<PreferenceCategory 
+	    android:title="@string/pref_account_settings" >
+	    <Preference	
+	        android:title="@string/pref_account_delete"
+	        android:key="account_delete" />        
+    </PreferenceCategory>
+    
+	<PreferenceCategory
+	    android:title="@string/pref_header_notifications" >
+	
+
+	    <CheckBoxPreference
+	        android:defaultValue="true"
+	        android:key="notifications_vibrate_key"
+	        android:title="@string/pref_vibrate_title" /> 
+	        
+	     <CheckBoxPreference
+	        android:defaultValue="true"
+	        android:key="notifications_flashlight_key"
+	        android:title="@string/pref_flashlight_title" />     
+	   
+	</PreferenceCategory>
+	
+	<PreferenceCategory
+	    android:title="@string/pref_header_informations" >
+	    <Preference android:title="@string/help_title" >
+	       	<intent android:action="android.intent.action.VIEW"
+		        	android:targetPackage="de.mosyapp.snitchdefender"
+		        	android:targetClass="de.mosyapp.snitchdefender.HelpActivity" />       
+	    </Preference>
+	    
+		<Preference android:title="@string/about_us_title" > 	
+	        <intent android:action="android.intent.action.VIEW"
+	            	android:targetPackage="de.mosyapp.snitchdefender"
+	            	android:targetClass="de.mosyapp.snitchdefender.CreditsActivity" />
+   		</Preference>
+   	</PreferenceCategory>
+    
+
+</PreferenceScreen>
