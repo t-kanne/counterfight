@@ -15,31 +15,6 @@
         android:layout_alignParentBottom="true"
         android:text="Alle Counter dieser Gruppe anzeigen" />
 
-    <TextView
-        android:id="@+id/txtMainCounter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textSize="50sp" />
-
-    <Button
-        android:id="@+id/btnCountUp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/btnShowAllCountersOfGroup"
-        android:layout_below="@+id/txtMainCounter"
-        android:layout_marginLeft="86dp"
-        android:text="+1" />
-
-    <Button
-        android:id="@+id/btnRefreshCounter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/btnShowAllCountersOfGroup"
-        android:layout_below="@+id/btnCountUp"
-        android:layout_marginLeft="86dp"
-        android:text="Aktualisieren" />
-
     <Button
         android:id="@+id/btnOpenNoGroupActivity"
         android:layout_width="wrap_content"
@@ -60,8 +35,8 @@
         android:id="@+id/btnOpenAllGroupsActivity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btnLoginActivity"
-        android:layout_alignRight="@+id/btnLoginActivity"
+        android:layout_above="@+id/btnLogout"
+        
         android:text="AllGroupsActivity" />
     
     

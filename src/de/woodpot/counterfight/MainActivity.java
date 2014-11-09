@@ -61,9 +61,7 @@ public class MainActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		counter = (TextView) findViewById(R.id.txtMainCounter);
 		refreshCounterButton = (Button) findViewById(R.id.btnRefreshCounter);
-		increaseCounterButton = (Button) findViewById(R.id.btnCountUp);
 		showAllUsersOfGroupButton = (Button) findViewById(R.id.btnShowAllCountersOfGroup);
 		openNoGroupActivity = (Button) findViewById(R.id.btnOpenNoGroupActivity);
 		loginActivity = (Button) findViewById(R.id.btnLoginActivity);
@@ -72,32 +70,7 @@ public class MainActivity extends ActionBarActivity {
 		openGroupDetailActivity = (Button) findViewById(R.id.btnOpenGroupDetailActivity);
 		
 		// Loading products in Background Thread
-		new LoadCounter().execute();
-		
-		refreshCounterButton.setOnClickListener(new OnClickListener() {
-						
-			@Override
-			public void onClick(View arg0) {
-				new LoadCounter().execute();
-				counter.setText(counterValue);
-			}
-		});
-		
-		increaseCounterButton.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				String incrCounter = counter.getText().toString();
-				int incrCounter_int = Integer.valueOf(incrCounter).intValue();
-				incrCounter_int = incrCounter_int+1;
-				incrCounter = ""+incrCounter_int;
-				Log.d("MainActivity JSON: ", "New Counter: " + incrCounter);
-				counter.setText(incrCounter);
-				new UpdateCounter().execute();
-			}
 			
-		});
-		
 		showAllUsersOfGroupButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -166,53 +139,9 @@ public class MainActivity extends ActionBarActivity {
 		startActivity(intent);
 	}
 	
-	class LoadCounter extends AsyncTask<String, String, String> {
-
 	
-		protected String doInBackground(String... args) {
-			// Building Parameters
-			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			// getting JSON string from URL
-			JSONObject json = null;
-			
-			try {
-				json = jParser.makeHttpRequest(url_read_counter, "GET", params);
-			} catch (Exception e){
-				e.printStackTrace();
-			}
-			
-			// Check your log cat for JSON reponse
-			Log.d("MainActivity JSON: ", "JSONObject: " + json.toString());
-
-			try {
-				// Checking for SUCCESS TAG
-				int success = json.getInt(TAG_SUCCESS);
-
-				if (success == 1) {
-					// products found
-					// Getting Array of Products
-					counterData = json.getJSONArray(TAG_COUNTER);
-
-					// looping through All items
-					for (int i = 0; i < counterData.length(); i++) {
-						JSONObject c = counterData.getJSONObject(i);
-						Log.d("MainActivity JSON: ", "JSONArray: " + c.toString());
-						
-						// Storing each json item in variable
-						user = c.getString(TAG_USER);
-						Log.d("MainActivity JSON: ", "Counter user: " + user);
-						counterValue = c.getString(TAG_COUNTERVALUE);
-						Log.d("MainActivity JSON: ", "Counter value: " + counterValue);
-					}		
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			return null;
-		}
-		
-		
-	}
+	
+	
 	
 	class UpdateCounter extends AsyncTask<String, String, String> {
 
