@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,9 +32,12 @@ public class AllGroupsActivity extends ListActivity  {
 
 	// JSONParser Objekt erstellen
 		JSONParser jParser = new JSONParser();
+		SessionManager sm;
 		
 		// Server-Urls
 		private static String url_get_groups = "http://counterfight.net/get_all_groups.php";
+		
+		private String usernameString;
 		
 		// JSON Node names
 		private static final String TAG_SUCCESS = "success";
@@ -44,6 +48,7 @@ public class AllGroupsActivity extends ListActivity  {
 		private static final String TAG_GROUPNAME = "groupName";
 		private static final String TAG_USERFIRST = "user_first";
 		private static final String TAG_OWNPLACE = "own_place";
+		private static final String TAG_USERNAME = "username";
 		
 		// JSONArray für Counterdaten
 		JSONArray counterData = null;
@@ -112,31 +117,48 @@ public class AllGroupsActivity extends ListActivity  {
 			@Override
 			protected String doInBackground(String... args) {
 				// Building Parameters	
+					
+					String username = null;
+					sm = new SessionManager(getApplicationContext());
+					if (sm.isLoggedIn() == true) {
+						username = sm.getUsername();
+					}
 				
-					List<NameValuePair> params = new ArrayList<NameValuePair>();
-					Log.d("AllGroupsActivity: ", params.toString());
-					// getting JSON string from URL
-					//JSONObject json = jParser.makeHttpRequest(url_get_groups, "GET", params);
+					final List<NameValuePair> params = new ArrayList<NameValuePair>();
+					params.add(new BasicNameValuePair(TAG_USERNAME, username));
 					JSONObject json = null;
+				
 					try {
-						json = jParser.makeHttpRequest(url_get_groups, "GET", params);
+						json = jParser.makeHttpRequest(url_get_groups, "POST", params);
+					} catch (Exception e){
+						Log.e("AllGroupsActivity", "JSON (username POST): " + e.getMessage());
+					}
+				
+								
+					List<NameValuePair> params2 = new ArrayList<NameValuePair>();
+					Log.d("AllGroupsActivity: ", params2.toString());
+					// getting JSON string from URL
+					
+					JSONObject json2 = null;
+					try {
+						json2 = jParser.makeHttpRequest(url_get_groups, "GET", params);
 					} catch (Exception e){
 						Log.e("AllGroupsActivity", "JSON: " + e.getMessage());
 					}
 					
 					
 					// Check your log cat for JSON reponse
-					Log.d("AllGroupsActivityFragment JSON:: ", "JSONObject: " + json.toString());
+					Log.d("AllGroupsActivityFragment JSON:: ", "JSONObject: " + json2.toString());
 
 				
 					// Checking for SUCCESS TAG
 					
 					try {
-						int success = json.getInt(TAG_SUCCESS);
+						int success = json2.getInt(TAG_SUCCESS);
 
 					if (success == 1) {
 
-						counterData = json.getJSONArray(TAG_COUNTER);
+						counterData = json2.getJSONArray(TAG_COUNTER);
 						Log.d("AllGroupsActivityFragment JSON: ", "counterDataLenght: " + counterData.length());
 
 						// looping through All items
