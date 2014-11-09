@@ -136,8 +136,8 @@ public class RegisterActivity extends ActionBarActivity {
 							  Toast.makeText(RegisterActivity.this, "Username " + usernameString + " erstellt", Toast.LENGTH_SHORT).show();
 						  }
 					});
-					//Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-					//startActivity(intent);
+					Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+					startActivity(intent);
 				}
 				else {
 					if (json.getString(TAG_ERRORCODE).equals(MYSQL_ERRORCODE_USER_ALREADY_EXISTS)){
@@ -157,12 +157,6 @@ public class RegisterActivity extends ActionBarActivity {
 				Log.e("RegisterActivity", e.getMessage());
 			}
 			return null;
-		}
-		
-		@Override
-		protected void onPostExecute(String args) {
-			
-			Log.e("RegisterActivity", "onPostExecute: " + errorString);
 		}
 		
 	}

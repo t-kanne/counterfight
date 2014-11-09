@@ -23,6 +23,7 @@
     <string name="string_searchgroupdialog_advice">Wenn du von einem anderen Counterfight-Nutzer eine Gruppen-Id bekommen hast, kannst du dich damit hier in der Gruppe anmelden.</string>
 	<string name="string_searchgroupdialog_ok">Beitreten</string>
 	<string name="string_searchgroupdialog_groupidhint">Gruppen-Id</string>
+	<string name="string_searchgroupdialog_wronggroupid">Bitte gib 5 Ziffern ein</string>
     <string name="string_loginact_advice">Bitte logge dich ein oder registriere dir ein neues Konto</string>
     <string name="string_loginact_login">Login</string>
     <string name="string_loginact_welcome">Counterfight</string>

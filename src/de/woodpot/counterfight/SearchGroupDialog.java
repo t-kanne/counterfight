@@ -28,6 +28,7 @@ public class SearchGroupDialog extends ActionBarActivity {
 	private EditText groupIdEditText;
 	private Button okayButton;
 	SessionManager sm;
+	private String groupIdString;
 	
 	// JSONParser Objekt erstellen
 	JSONParser jParser = new JSONParser();
@@ -40,13 +41,18 @@ public class SearchGroupDialog extends ActionBarActivity {
 	private static final String TAG_USERNAME = "username";
 	private static final String TAG_GROUP_ID = "groupId";
 	private static final String TAG_GROUPNAME = "groupName";
+	private static final String TAG_GROUPDETAILS = "groupDetails";
+	private static final String TAG_ERRORCODE = "errorcode";
+	
+	// MYSQL Fehlercodes
+	private static final String MYSQL_ERRORCODE_GROUP_ALREADY_JOINED = "1062";
+	private static final String MYSQL_ERRORCODE_GROUP_DOES_NOT_EXIST = "0";
+	
 	
 	// JSONArray für Counterdaten
 	JSONArray groupTable = null;
 	String groupName = null;
 	
-	// JSON parser class
-	JSONParser jsonParser = new JSONParser();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -60,63 +66,78 @@ public class SearchGroupDialog extends ActionBarActivity {
 		okayButton.setOnClickListener(new OnClickListener() {
 						
 			@Override
-			public void onClick(View v) {		
-				new SearchGroup().execute();		
+			public void onClick(View v) {	
+				groupIdString = groupIdEditText.getText().toString();
+				
+				if (checkGroupIdEditText()) {
+					new SearchGroup().execute();
+				}
 			}
 		});
 	}
-
+	
+	public boolean checkGroupIdEditText() {
+		if (groupIdString.length() != 5){
+			Toast.makeText(this,R.string.string_searchgroupdialog_wronggroupid, Toast.LENGTH_SHORT).show();
+			return false;
+		} else {
+			return true;
+		}
+	}
 	
 	class SearchGroup extends AsyncTask<String, String, String> {
 		
 		protected String doInBackground(String... args) {
-
-			// Gruppen-Id vom EditText holen
-			final String groupId = groupIdEditText.getText().toString();
-
 			// SessionManager nach aktuellen Usernamen fragen
-			String username = null;
+			String usernameString = null;
 			final String groupName;
 			
 			sm = new SessionManager(getApplicationContext());
 			if (sm.isLoggedIn() == true) {
-				username = sm.getUsername();
+				usernameString = sm.getUsername();
 			}
-
-			// Building Parameters
+			
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair(TAG_GROUP_ID, groupId));
-			params.add(new BasicNameValuePair(TAG_USERNAME, username));
+			params.add(new BasicNameValuePair(TAG_GROUP_ID, groupIdString));
+			params.add(new BasicNameValuePair(TAG_USERNAME, usernameString));
 
-			Log.d("SearchGroupDialog: ", "Group Id: " + groupId + " with user: " + username);
+			Log.d("SearchGroupDialog: ", "Group Id: " + groupIdString + " with user: " + usernameString);
 
-			// sending modified data through http request
-			// Notice that update product url accepts POST method
 			JSONObject json = null;
+			final String mysqlError;
 
 			// check json success tag
 			try {
-				json = jsonParser.makeHttpRequest(url_search_group, "POST", params);
+				json = jParser.makeHttpRequest(url_search_group, "POST", params);
 				int success = json.getInt(TAG_SUCCESS);
 				
 				if (success == 1) {
-					// successfully updated
-					groupName = json.getString(TAG_GROUPNAME);
-					Log.d("CreateGroupDialog JSON: ", json.toString());
+					Log.d("SearchGroupDialog JSON: ", json.toString());
+					groupName = json.getJSONArray(TAG_GROUPDETAILS).getString(0);
 					
 					SearchGroupDialog.this.runOnUiThread(new Runnable() {
 						  public void run() {
-						    Toast.makeText(SearchGroupDialog.this, "Gruppe '" + groupName + "' erfolgreich beigetreten.", Toast.LENGTH_SHORT).show();
+						    Toast.makeText(SearchGroupDialog.this, "Gruppe " + groupName + " erfolgreich beigetreten.", Toast.LENGTH_SHORT).show();
 						  }
 					});
 					finish();
 					
 				} else {
-					SearchGroupDialog.this.runOnUiThread(new Runnable() {
-						  public void run() {
-						    Toast.makeText(SearchGroupDialog.this, "Gruppe konnte nicht gefunden werden.", Toast.LENGTH_SHORT).show();
-						  }
-					});
+					mysqlError = json.getString(TAG_ERRORCODE);
+					if (mysqlError.equals(MYSQL_ERRORCODE_GROUP_ALREADY_JOINED)) {
+						SearchGroupDialog.this.runOnUiThread(new Runnable() {
+							public void run() {
+								Toast.makeText(SearchGroupDialog.this, R.string.mysqlerror_group_already_joined, Toast.LENGTH_SHORT).show();
+							}
+						});
+					}
+					if (mysqlError.equals(MYSQL_ERRORCODE_GROUP_DOES_NOT_EXIST)) {
+						SearchGroupDialog.this.runOnUiThread(new Runnable() {
+							public void run() {
+								Toast.makeText(SearchGroupDialog.this, R.string.mysqlerror_group_does_not_exist, Toast.LENGTH_SHORT).show();
+							}
+						});
+					}
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();

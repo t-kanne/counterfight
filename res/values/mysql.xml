@@ -2,5 +2,7 @@
 <resources>
     <string name="mysqlerror_user_already_exists">Der Benutzer existiert bereits</string>
     <string name="mysqlerror_registration_failed">Registrierung fehlgeschlagen</string>
+    <string name="mysqlerror_group_already_joined">Du bist bereits in dieser Gruppe</string>
+    <string name="mysqlerror_group_does_not_exist">Die eingegebene Gruppen-Id existiert nicht</string>
     
 </resources>
