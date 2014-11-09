@@ -124,6 +124,7 @@ public class AllGroupsActivity extends ListActivity  {
 				
 					final List<NameValuePair> params = new ArrayList<NameValuePair>();
 					params.add(new BasicNameValuePair(TAG_USERNAME, username));
+					Log.d("AllGroupsActivity: ", params.toString());
 					JSONObject json = null;
 				
 					try {
@@ -134,7 +135,6 @@ public class AllGroupsActivity extends ListActivity  {
 				
 								
 					List<NameValuePair> params2 = new ArrayList<NameValuePair>();
-					Log.d("AllGroupsActivity: ", params2.toString());
 					// getting JSON string from URL
 					
 					JSONObject json2 = null;

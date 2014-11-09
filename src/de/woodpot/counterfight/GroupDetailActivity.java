@@ -47,7 +47,7 @@ public class GroupDetailActivity extends ListActivity {
 	private static String url_get_groups = "http://counterfight.net/get_group_details.php";
 	
 	private static final String TAG_SUCCESS = "success";
-	private static final String TAG_COUNTER = "get_groups";
+	private static final String TAG_COUNTER = "get_details";
 	private static final String TAG_USER = "user";
 	private static final String TAG_GROUPID = "groupId";
 	private static final String TAG_COUNTERVALUE = "counterValue";
@@ -66,7 +66,7 @@ public class GroupDetailActivity extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_group_detail);
+		
 		
 		Toast.makeText(this, "GroupDetailActivity", Toast.LENGTH_LONG).show();
 		new LoadGroupUser().execute();
@@ -86,15 +86,18 @@ public class GroupDetailActivity extends ListActivity {
 		@Override
 		protected String doInBackground(String... args) {
 			// Building Parameters	
+			
+				/*
+				//groupId aus AllGroupsActivity übergeben
 				
 				String username = null;
 				sm = new SessionManager(getApplicationContext());
 				if (sm.isLoggedIn() == true) {
 					username = sm.getUsername();
 				}
-			
+				
 				final List<NameValuePair> params = new ArrayList<NameValuePair>();
-				params.add(new BasicNameValuePair(TAG_USERNAME, username));
+				params.add(new BasicNameValuePair(TAG_GROUPID, username));
 				JSONObject json = null;
 			
 				try {
@@ -102,24 +105,24 @@ public class GroupDetailActivity extends ListActivity {
 				} catch (Exception e){
 					Log.e("GroupDetailActivity", "JSON (username POST): " + e.getMessage());
 				}
-			
-							
+				*/	
+				
+				
+				String username = null;
 				List<NameValuePair> params2 = new ArrayList<NameValuePair>();
+				params2.add(new BasicNameValuePair(TAG_GROUPID, username));
 				Log.d("GroupDetailActivity: ", params2.toString());
-				// getting JSON string from URL
 				
 				JSONObject json2 = null;
 				try {
-					json2 = jParser.makeHttpRequest(url_get_groups, "GET", params);
+					json2 = jParser.makeHttpRequest(url_get_groups, "GET", params2);
 				} catch (Exception e){
 					Log.e("GroupDetailActivity", "JSON: " + e.getMessage());
 				}
 				
-				
 				// Check your log cat for JSON reponse
 				Log.d("GroupDetailActivityFragment JSON: ", "JSONObject: " + json2.toString());
 
-			
 				// Checking for SUCCESS TAG
 				
 				try {
@@ -128,7 +131,7 @@ public class GroupDetailActivity extends ListActivity {
 				if (success == 1) {
 
 					counterData = json2.getJSONArray(TAG_COUNTER);
-					Log.d("GroupDetailActivityFragment JSON: ", "counterDataLenght: " + counterData.length());
+					Log.d("GroupDetailActivityFragment JSON: ", "counterDataLength: " + counterData.length());
 
 					// looping through All items
 					for (int i = 0; i < counterData.length(); i++) {
@@ -136,7 +139,7 @@ public class GroupDetailActivity extends ListActivity {
 						Log.d("GroupDetailActivityFragment JSON: ", "JSONArray: " + c.toString());
 						
 						// Storing each json item in variable
-						users.put(c.getString(TAG_GROUPNAME), c.getString(TAG_USERNAME));
+						users.put(c.getString(TAG_USERNAME), c.getString(TAG_COUNTERVALUE));
 						Log.d("GroupDetailActivityFragment JSON: ", "COUNTER USER: " + users.toString());
 						
 						if (isCancelled()) break;
@@ -145,16 +148,18 @@ public class GroupDetailActivity extends ListActivity {
 					for (int i = 0; i < counterData.length(); i++) {
 						JSONObject c = counterData.getJSONObject(i);
 						
-						String groupName = c.getString(TAG_GROUPNAME);
+						String userName = c.getString(TAG_USERNAME);
+						String countervalue = c.getString(TAG_COUNTERVALUE);
 						
 						// tmp hashmap for single contact
 						HashMap<String, String> contact = new HashMap<String, String>();
 
 						// adding each child node to HashMap key => value
-						contact.put(TAG_GROUPNAME, groupName);
-
-						// adding contact to contact list
+						contact.put(TAG_USERNAME, userName);
+						contact.put(TAG_COUNTERVALUE, countervalue);
+						//adding contact to contact list
 						contactList.add(contact);
+						
 					}
 				
 				}
