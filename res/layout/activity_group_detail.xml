@@ -11,6 +11,27 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:layout_centerHorizontal="true"
+        android:text="Gruppenname" />
+    
+     <TextView
+	 android:id="@+id/user_row_userName"
+	 android:layout_width="fill_parent"
+	 android:layout_height="fill_parent"
+	 android:textSize="20sp" 
+	 android:textStyle="bold"
+	 android:background="#b0b0b0"
+	 android:padding="10dip" 
+	 android:layout_weight="1" />
+     
+      <TextView
+	 android:id="@+id/user_countervalue"
+	 android:layout_width="fill_parent"
+	 android:layout_height="fill_parent"
+	 android:textSize="20sp" 
+	 android:textStyle="bold"
+	 android:background="#a0a0a0"
+	 android:padding="10dip" 
+	 android:layout_weight="1" />
 
 </RelativeLayout>

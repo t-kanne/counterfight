@@ -53,8 +53,6 @@ public class AllGroupsActivity extends ListActivity  {
 		// JSONArray für Counterdaten
 		JSONArray counterData = null;
 		private Map<String, String> users = new HashMap<String,String>(); 
-		//ArrayList<String> usersAL;
-		ShowAllUsersOfGroupAdapter adapter;
 		
 		ArrayList<HashMap<String, String>> contactList = new ArrayList<HashMap<String, String>>();
 
