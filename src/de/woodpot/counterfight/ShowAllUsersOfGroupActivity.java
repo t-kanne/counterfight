@@ -32,13 +32,16 @@ public class ShowAllUsersOfGroupActivity extends ListActivity {
 	JSONParser jParser = new JSONParser();
 	
 	// Server-Urls
-	private static String url_read_counter = "http://www.counterfight.net/get_counter.php";
+	private static String url_read_counter = "http://counterfight.net/get_group_details.php";
 	
 	// JSON Node names
 	private static final String TAG_SUCCESS = "success";
-	private static final String TAG_COUNTER = "counter";
+	private static final String TAG_COUNTER = "get_details";
 	private static final String TAG_USER = "user";
 	private static final String TAG_COUNTERVALUE = "counterValue";
+	private static final String TAG_GROUPID = "groupId";
+	private static final String TAG_GROUPNAME = "groupName";
+	private static final String TAG_USERNAME = "userName";
 	
 	// JSONArray für Counterdaten
 	JSONArray counterData = null;
@@ -133,13 +136,11 @@ public class ShowAllUsersOfGroupActivity extends ListActivity {
 					// looping through All items
 					for (int i = 0; i < counterData.length(); i++) {
 						JSONObject c = counterData.getJSONObject(i);
-						Log.d("ShowAllUsersOfGroupFragment JSON: ", "JSONArray: " + c.toString());
+						Log.d("ShowAllUsersOfGroupFragment JSON1: ", "JSONArray: " + c.toString());
 						
 						// Storing each json item in variable
-						users.put(c.getString(TAG_USER), c.getString(TAG_COUNTERVALUE)) ;
-						Log.d("ShowAllUsersOfGroupFragment JSON: ", "Counter user: " + users.toString());
-						//Log.d("ShowAllUsersOfGroupFragment JSON: ", "Counter value: " + user[i+1]);
-						//users.add(user);
+						users.put(c.getString(TAG_USERNAME), c.getString(TAG_COUNTERVALUE)) ;
+						Log.d("ShowAllUsersOfGroupFragment JSON2: ", "Counter user: " + users.toString());
 						
 						if (isCancelled()) break;
 					}

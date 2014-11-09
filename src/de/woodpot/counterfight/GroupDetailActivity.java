@@ -10,29 +10,16 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import android.app.Activity;
+
 import android.app.ListActivity;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ListAdapter;
-import android.widget.SimpleAdapter;
-import android.widget.Toast;
-import android.app.ProgressDialog;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
@@ -67,7 +54,11 @@ public class GroupDetailActivity extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-
+		setContentView(R.layout.activity_group_detail);
+		 
+        contactList = new ArrayList<HashMap<String, String>>();
+ 
+        ListView lv = getListView();
 		
 		Toast.makeText(this, "GroupDetailActivity", Toast.LENGTH_LONG).show();
 		new LoadGroupUser().execute();
@@ -172,14 +163,27 @@ public class GroupDetailActivity extends ListActivity {
 		@Override
 		protected void onPostExecute(String file_url) {
 			
-			// dismiss the dialog after getting all products
-			//pDialog.dismiss();
 			// updating UI from Background Thread
 			runOnUiThread(new Runnable() {
 				public void run() {
 					/**
 					 * Updating parsed JSON data into ListView
 					 * */
+					
+					
+					
+					ListAdapter adapter = new SimpleAdapter(
+							GroupDetailActivity.this, contactList,
+		                    R.layout.list_item, new String[] { TAG_USERNAME, TAG_COUNTERVALUE }, 
+		                    new int[] { R.id.user_row_userName, R.id.user_countervalue });
+		 
+		            setListAdapter(adapter);
+					
+					
+					
+					
+					/*
+					
 					 ListAdapter adapter = new SimpleAdapter(
 							 GroupDetailActivity.this, contactList,
 			                 R.layout.activity_group_detail,                                            
@@ -188,6 +192,9 @@ public class GroupDetailActivity extends ListActivity {
 
 			         // Bind to our new adapter.
 			         setListAdapter(adapter);
+			         */
+			         
+			         
 				}
 			}); 
 		}
