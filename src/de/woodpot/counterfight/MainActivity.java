@@ -9,9 +9,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -33,6 +37,10 @@ public class MainActivity extends ActionBarActivity {
 	Button openAllGroupsActivity;
 	Button logoutButton;
 	Button openGroupDetailActivity;
+	
+	// Variablen für den NavigationDrawer
+	private DrawerLayout drawer;
+	private ActionBarDrawerToggle toggle;
 	
 	// JSONParser Objekt erstellen
 	JSONParser jParser = new JSONParser();
@@ -56,22 +64,28 @@ public class MainActivity extends ActionBarActivity {
 	JSONParser jsonParser = new JSONParser();
 	
 	
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		refreshCounterButton = (Button) findViewById(R.id.btnRefreshCounter);
 		showAllUsersOfGroupButton = (Button) findViewById(R.id.btnShowAllCountersOfGroup);
 		openNoGroupActivity = (Button) findViewById(R.id.btnOpenNoGroupActivity);
 		loginActivity = (Button) findViewById(R.id.btnLoginActivity);
 		openAllGroupsActivity = (Button) findViewById(R.id.btnOpenAllGroupsActivity);
 		openGroupDetailActivity = (Button) findViewById(R.id.btnOpenGroupDetailActivity);
 		logoutButton = (Button) findViewById(R.id.btnLogout);
-
 		
-		// Loading products in Background Thread
-			
+		// Zuweisungen für den NavigationDrawer
+		drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+		toggle = new ActionBarDrawerToggle(this, drawer, R.drawable.ic_drawer, R.string.string_navigationdrawer_open, R.string.string_navigationdrawer_close);
+		drawer.setDrawerListener(toggle);
+		
+		getActionBar().setHomeButtonEnabled(true);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		
+		// Button Listener		
 		showAllUsersOfGroupButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -196,14 +210,38 @@ public class MainActivity extends ActionBarActivity {
 		return true;
 	}
 
+	
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
+		
+		toggle.syncState();
+	}
+	
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		
+		toggle.onConfigurationChanged(newConfig);
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
+		Log.d("MainActivity:" , "menüitem id: " + id + "R.id: " + R.id.action_settings);
 		if (id == R.id.action_settings) {
 			Intent intent = new Intent(this, SettingsActivity.class);
 			startActivity(intent);
 			return true;
 		}
+		
+		if (toggle.onOptionsItemSelected(item)){
+			return true;
+		}
+	
 		return super.onOptionsItemSelected(item);
 	}
+
+	
+	
 }
