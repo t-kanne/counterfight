@@ -30,6 +30,7 @@
     <string name="string_loginact_usernamehint">Benutzername</string>
     <string name="string_loginact_passwordhint">Passwort</string>
     <string name="string_loginact_register">Registrieren</string>
+    <string name="string_loginact_loading">Lädt...</string>
     <string name="string_registeract_advice">Bitte ausfüllen:</string>
     <string name="string_registeract_realnamehint">Anzeigename</string>
     <string name="string_registeract_repeatpasswordhint">Passwort wiederholen</string>

@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 class DeleteUserAsyncTask extends AsyncTask<String, Boolean, Boolean> {
 	private Context context;
+	private ProgressDialog pDialog;
 	
 	// Tag-Strings
 	private static String TAG_USERNAME = "username";
@@ -34,8 +36,17 @@ class DeleteUserAsyncTask extends AsyncTask<String, Boolean, Boolean> {
 	public DeleteUserAsyncTask(Context context) {
 		this.context = context;
 		sm = new SessionManager(this.context.getApplicationContext());
+		pDialog = new ProgressDialog(this.context);
 	};
 	
+	@Override
+	protected void onPreExecute() {
+			
+		pDialog.setMessage(this.context.getResources().getString(R.string.string_loginact_loading));
+		pDialog.setIndeterminate(false);
+		pDialog.setCancelable(false);
+		pDialog.show();
+	}
 	
 	@Override
 	protected Boolean doInBackground(String... args) {
@@ -70,6 +81,7 @@ class DeleteUserAsyncTask extends AsyncTask<String, Boolean, Boolean> {
 	protected void onPostExecute(Boolean result) {
 		super.onPostExecute(result);
 		Log.d("DeleteUserAsyncTask", "onPostExecute() ausgeführt");
+		pDialog.dismiss();
 		
 		if (result == true) {
 			sm.clearSession();

@@ -9,8 +9,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -29,6 +29,7 @@ public class LoginActivity extends ActionBarActivity {
 	private EditText passwordEditText;
 	private Button loginButton;
 	private TextView registerTextView;
+	private ProgressDialog pDialog;
 	
 	private String usernameString;
 	private String passwordString;
@@ -150,7 +151,15 @@ public class LoginActivity extends ActionBarActivity {
 	}
 	
 	class CountUserGroups extends AsyncTask <String, String, String> {
-
+		
+		protected void onPreExecute() {
+			pDialog = new ProgressDialog(LoginActivity.this);
+			pDialog.setMessage(LoginActivity.this.getString(R.string.string_loginact_loading));
+			pDialog.setIndeterminate(false);
+			pDialog.setCancelable(false);
+			pDialog.show();
+		}
+		
 		protected String doInBackground(String... args) {
 			Log.d("LoginAcitivty: ", "CountUserGroups");
 			final List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -187,6 +196,7 @@ public class LoginActivity extends ActionBarActivity {
 		@Override
 		protected void onPostExecute(String result){
 			if (sessionManager.isLoggedIn() == true){
+				pDialog.dismiss();
 				startGroupDependingActivity(noOfGroups);
 			}
 		}

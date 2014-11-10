@@ -83,7 +83,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 				String value = pw.getText().toString();
 				
 				if(value.equals(sm.getPassword())){
-					DeleteUserAsyncTask delUser = new DeleteUserAsyncTask(getApplicationContext());
+					DeleteUserAsyncTask delUser = new DeleteUserAsyncTask(SettingsActivity.this);
 					delUser.execute();
 				} else {
 					Toast.makeText(getBaseContext(), R.string.string_registeract_wrongpassword, Toast.LENGTH_SHORT).show();
