@@ -43,4 +43,8 @@ public class SessionManager {
 	public String getUsername() {
 		return sharedPrefs.getString(USERNAME_KEY, null);
 	}
+	
+	public String getPassword() {
+		return sharedPrefs.getString(PASSWORD_KEY, null);
+	}
 }

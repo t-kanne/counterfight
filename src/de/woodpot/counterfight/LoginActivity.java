@@ -203,17 +203,20 @@ public class LoginActivity extends ActionBarActivity {
 			
 			if (noOfGroupsInt == 0) {
 				Intent intent = new Intent(this, NoGroupActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
 				startActivity(intent);
 				finish();
 			}
 			
 			if (noOfGroupsInt == 1) {
 				Intent intent = new Intent(this, GroupDetailActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
 				startActivity(intent);
 				finish();
 			}
 			if (noOfGroupsInt > 1) {
 				Intent intent = new Intent(this, AllGroupsActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
 				startActivity(intent);
 				finish();
 			}

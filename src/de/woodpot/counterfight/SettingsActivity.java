@@ -1,7 +1,6 @@
 package de.woodpot.counterfight;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,58 +11,91 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
+import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.Toast;
 
 @SuppressWarnings("deprecation")
 
 public class SettingsActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 
+    SessionManager sm;
+    
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sm = new SessionManager(this);
         
         addPreferencesFromResource(R.xml.pref_settings);
-
+        
         Preference deleteUser = findPreference("account_delete");
-        deleteUser.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference deleteUser){
-            	deleteAccount();
-            	return true;
-            }
-         
-        });
+        Preference loginLogoutUser = findPreference("account_loginlogout");
         
-        /*
-        SharedPreferences sp = getPreferenceScreen().getSharedPreferences();
+        if (sm.isLoggedIn() == false) {
+        	deleteUser.setEnabled(false);
+        	loginLogoutUser.setTitle(R.string.pref_account_login);
+        } else {
+        	loginLogoutUser.setTitle(R.string.pref_account_logout);	 
+        	
+            deleteUser.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference deleteUser){
+                	deleteAccount();
+                	return true;
+                }
+             
+            });
+        }
         
-        //Einstellungen für die Bewegungsempfindlichkeit aufrufen und verarbeiten
-        ListPreference listPref = (ListPreference) findPreference("sensitivity_key");
-        String listPrefSelected = sp.getString("sensitivity_key", null);
-        String listPrefEntry = (String) listPref.getEntry();
-        listPref.setSummary(listPrefEntry);
-        
-        //Einstellungen für die Countdowndauer aufrufen und verarbeiten
-        listPref = (ListPreference) findPreference("countdown_key");
-        listPrefSelected = sp.getString("countdown_key", null);
-        listPrefEntry = (String) listPref.getEntry();
-        listPref.setSummary(listPrefEntry);
-         */
+    	loginLogoutUser.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				if (sm.isLoggedIn() == true) {
+					sm.clearSession();
+				} 
+				Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+				startActivity(intent);
+				return true;
+			}
+    	});
+   
     }
 	
 	public void deleteAccount() {
+		sm = new SessionManager(this);
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		
+		// Edittext für die Sicherheits-Passwortabfrage
+		final EditText pw = new EditText(this);
+		pw.setTransformationMethod(PasswordTransformationMethod.getInstance());
+		pw.setHint(R.string.string_loginact_passwordhint);
     	
+		builder.setView(pw);
         builder.setTitle(R.string.pref_account_warning_header);
-        builder.setPositiveButton(R.string.pref_account_warning_positive_button, null); 
+        builder.setPositiveButton(R.string.pref_account_warning_positive_button, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				String value = pw.getText().toString();
+				
+				if(value.equals(sm.getPassword())){
+					DeleteUserAsyncTask delUser = new DeleteUserAsyncTask(getApplicationContext());
+					delUser.execute();
+				} else {
+					Toast.makeText(getBaseContext(), R.string.string_registeract_wrongpassword, Toast.LENGTH_SHORT).show();
+				}
+			}
+		}); 
         builder.setNegativeButton(R.string.pref_account_warning_negative_button, null);
         builder.setMessage(R.string.pref_account_warning_explanation);
-        AlertDialog errorDialog = builder.create();
-        errorDialog.show();
+        AlertDialog warningDialog = builder.create();
+        warningDialog.show();
+
+        
 		
 	}
 	
