@@ -70,11 +70,30 @@
 	    android:background="#3D3D3D" >
 	    
 	    <TextView
-	        android:id="@+id/main_activity_menu_txt"
+	        android:id="@+id/textview_navigationdrawer_accountsettings"
 	        android:layout_width="match_parent"
 	        android:layout_height="match_parent"
-	        android:text="Menü"
-	        android:gravity="left" />
+	        android:text="Account-Einstellungen"
+	        android:textSize="25sp"
+	        android:gravity="start" />
+	    
+	    <Button
+	        android:id="@+id/btnLogout2"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_above="@+id/textview_navigationdrawer_accountsettings"
+	        android:layout_marginLeft="18dp"
+	        android:text="Logout" />
+	        
+	    <ListView
+	        android:id="@+id/navigation_drawer_listview"
+			android:layout_width="240dp"
+	        android:layout_height="match_parent"
+	        android:layout_gravity="left"
+	        android:choiceMode="singleChoice"
+	        android:divider="@android:color/transparent"
+	        android:dividerHeight="0dp"
+	        android:background="#111" />
 	    
 	    
 	</RelativeLayout>

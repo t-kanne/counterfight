@@ -24,5 +24,15 @@
     <string name="pref_header_informations">Informationen</string>
     <string name="help_title">Hilfe</string>
     <string name="about_us_title">Über den Hersteller</string>
+    
+    
+    <!--  ListView Einträge für den Navigation Drawer -->
+    <string-array name="navigation_drawer_string_array" >
+        <item>Gruppenverwaltung</item>
+        <item>Account</item>
+        <item>sonstiges</item>
+        <item>Testbutton mit Funktion</item>
+    </string-array>
+        
 
 </resources>

@@ -23,7 +23,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 
@@ -43,6 +46,8 @@ public class MainActivity extends ActionBarActivity {
 	// Variablen für den NavigationDrawer
 	private DrawerLayout drawer;
 	private ActionBarDrawerToggle toggle;
+	private String[] navDrawArray;
+	private ListView navDrawListView;
 	
 	// JSONParser Objekt erstellen
 	JSONParser jParser = new JSONParser();
@@ -79,9 +84,18 @@ public class MainActivity extends ActionBarActivity {
 		logoutButton = (Button) findViewById(R.id.btnLogout);
 		
 		// Zuweisungen für den NavigationDrawer
-		drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+		navDrawArray = getResources().getStringArray(R.array.navigation_drawer_string_array);
+		drawer = (DrawerLayout) findViewById(R.id.drawer_layout); // befindet sich innerhalb activity_main.xml
+		navDrawListView = (ListView) findViewById(R.id.navigation_drawer_listview);
 		toggle = new ActionBarDrawerToggle(this, drawer, R.drawable.ic_drawer, R.string.string_navigationdrawer_open, R.string.string_navigationdrawer_close);
 		drawer.setDrawerListener(toggle);
+		
+		// ListView Adapter für den NavigationDrawer
+		navDrawListView.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, navDrawArray));
+		
+		// OnClickListener für die NavigationDrawer-Items
+		navDrawListView.setOnItemClickListener(new DrawerItemClickListener());
+		
 		
 		getSupportActionBar();
 		
@@ -246,7 +260,20 @@ public class MainActivity extends ActionBarActivity {
 	
 		return super.onOptionsItemSelected(item);
 	}
+	
+	private class DrawerItemClickListener implements ListView.OnItemClickListener {
+	    @Override
+	    public void onItemClick(AdapterView parent, View view, int position, long id) {
+	        selectItem(position);
+	    }
+	    
+	    public void selectItem(int position){
+	    	if (position == 0) {
+	    		Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+	    		startActivity(intent);
+	    	}
+	    }
+	}
 
-	
-	
+
 }
