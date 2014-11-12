@@ -74,7 +74,7 @@
 	        android:layout_width="match_parent"
 	        android:layout_height="match_parent"
 	        android:text="Menü"
-	        android:gravity="center" />
+	        android:gravity="left" />
 	    
 	    
 	</RelativeLayout>
