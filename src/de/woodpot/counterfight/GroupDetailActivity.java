@@ -40,10 +40,13 @@ public class GroupDetailActivity extends ListActivity {
 	private static final String TAG_SUCCESS = "success";
 	private static final String TAG_COUNTER = "get_details";
 	private static final String TAG_USER = "user";
-	private static final String TAG_GROUPID = "groupId";
 	private static final String TAG_COUNTERVALUE = "counterValue";
 	private static final String TAG_GROUPNAME = "groupName";
 	private static final String TAG_USERNAME = "userName";
+	private static final String TAG_GROUPID = "groupId";
+	
+	String parameter1;
+	String parameter2;
 	
 	// JSONArray für Counterdaten
 	JSONArray counterData = null;
@@ -64,7 +67,8 @@ public class GroupDetailActivity extends ListActivity {
  
         ListView lv = getListView();
 		
-		Toast.makeText(this, "GroupDetailActivity", Toast.LENGTH_LONG).show();
+		//Toast.makeText(this, "GroupDetailActivity", Toast.LENGTH_LONG).show();
+       
 		new LoadGroupUser().execute();
 		
 		registerForContextMenu(getListView());
@@ -81,13 +85,13 @@ public class GroupDetailActivity extends ListActivity {
 		@Override
 		 protected void onPreExecute() {
 		 	
-		
 		Intent intent = getIntent();
 		Bundle extras = intent.getExtras();
 		if(extras != null){
-			String groupName = extras.getString("groupName");	
-			String groupId = extras.getString("groupId");
-			Log.d("GroupDetailActivity,intent", "Intent: " + groupId);
+			parameter1 = extras.getString("groupId");
+			parameter2 = extras.getString("groupName");	
+			Log.d("GroupDetailActivity", "groupId: " + parameter1);
+			Log.d("GroupDetailActivity,", "groupName: " + parameter2);
 		}
 		else{
 			Log.d("GroupDetailActivity,intent", "Intent groupId fail");	
@@ -114,8 +118,9 @@ public class GroupDetailActivity extends ListActivity {
 					username = sm.getUsername();
 				}
 				
-				final List<NameValuePair> params = new ArrayList<NameValuePair>();
-				params.add(new BasicNameValuePair(TAG_GROUPID, groupId));
+				final List<NameValuePair> params = new ArrayList<NameValuePair>();	
+				params.add(new BasicNameValuePair(TAG_GROUPID, parameter1));
+				Log.d("GroupDetailActivity params: ", params.toString());
 				JSONObject json = null;
 			
 				try {
@@ -126,14 +131,14 @@ public class GroupDetailActivity extends ListActivity {
 					
 				
 				
-				//String username = null;
+				
 				List<NameValuePair> params2 = new ArrayList<NameValuePair>();
-				params2.add(new BasicNameValuePair(TAG_GROUPID, username));
-				Log.d("GroupDetailActivity: ", params2.toString());
+				params2.add(new BasicNameValuePair(TAG_GROUPID, groupId));
+				Log.d("GroupDetailActivity params2: ", params2.toString());
 				
 				JSONObject json2 = null;
 				try {
-					json2 = jParser.makeHttpRequest(url_get_groups, "GET", params2);
+					json2 = jParser.makeHttpRequest(url_get_groups, "GET", params);
 				} catch (Exception e){
 					Log.e("GroupDetailActivity", "JSON: " + e.getMessage());
 				}

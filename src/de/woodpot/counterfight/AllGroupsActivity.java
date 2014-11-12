@@ -24,6 +24,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -35,6 +37,8 @@ public class AllGroupsActivity extends ListActivity  {
 	// JSONParser Objekt erstellen
 		JSONParser jParser = new JSONParser();
 		SessionManager sm;
+		
+		ArrayList<String> searchList = new ArrayList<String>();
 		
 		// Server-Urls
 		private static String url_get_groups = "http://counterfight.net/get_all_groups.php";
@@ -142,19 +146,21 @@ public class AllGroupsActivity extends ListActivity  {
 						username = sm.getUsername();
 					}
 				
-					final List<NameValuePair> params = new ArrayList<NameValuePair>();
+					final ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
 					params.add(new BasicNameValuePair(TAG_USERNAME, username));
-					Log.d("AllGroupsActivity: ", params.toString());
+					Log.d("AllGroupsActivity post: ", params.toString());
 					JSONObject json = null;
 				
+					 
+					
 					try {
 						json = jParser.makeHttpRequest(url_get_groups, "POST", params);
 					} catch (Exception e){
-						Log.e("AllGroupsActivity", "JSON (username POST): " + e.getMessage());
+						Log.d("AllGroupsActivity post", "JSON (username POST): " + e.getMessage());
 					}
 				
 								
-					List<NameValuePair> params2 = new ArrayList<NameValuePair>();
+					ArrayList<NameValuePair> params2 = new ArrayList<NameValuePair>();
 					// getting JSON string from URL
 					
 					JSONObject json2 = null;
@@ -200,11 +206,14 @@ public class AllGroupsActivity extends ListActivity  {
 							String firstPlace = c.getString(TAG_USERFIRST);
 							String ownPlace = c.getString(TAG_OWNPLACE);
 							
-							
+							//int addItem = Integer.parseInt(groupId);
+							searchList.add(groupId);
+								
 							// tmp hashmap for single contact
 							HashMap<String, String> contact = new HashMap<String, String>();
 
 							// adding each child node to HashMap key => value
+							contact.put(TAG_GROUPID, groupId);
 							contact.put(TAG_GROUPNAME, groupName);
 							contact.put(TAG_USERFIRST, firstPlace);
 							contact.put(TAG_OWNPLACE, ownPlace);
@@ -248,24 +257,32 @@ public class AllGroupsActivity extends ListActivity  {
 		}	
 		
 		
-		
-		
 		protected void onListItemClick(ListView list, View view, int position, long id) {
-		    super.onListItemClick(list, view, position, id);
-		    
-		    String groupName2 = groupName;
-		    String groupId2 = groupId;
-		    
-		    Intent intent = new Intent(getApplicationContext(), GroupDetailActivity.class);
-		    intent.putExtra("groupName", groupName2);
-		    intent.putExtra("groupId", groupId2);
-		    Log.d("AllGroupsActivity,intent", "Intent: " + groupName);
-		    Log.d("AllGroupsActivity,intent", "Intent: " + groupId2);
+		    super.onListItemClick(list, view, position, id);	 
+
+            @SuppressWarnings("unchecked")
+			HashMap<String,String> map=(HashMap<String, String>) list.getItemAtPosition(position);
+            groupId = map.get(TAG_GROUPID);
+            groupName = map.get(TAG_GROUPNAME);
+            
+            Log.d("GroupDetailActivity:", "groupId: " + groupId);
+            Log.d("GroupDetailActivity:", "groupName: " + groupName);
+            Intent intent = new Intent(getApplicationContext(), GroupDetailActivity.class);
+		    intent.putExtra("groupId", groupId);
+		    intent.putExtra("groupName", groupName);
+	
 			startActivity(intent);	
+			    
+		    }
+		    
+		    
+		    
+		    
+		    
 		   
 		}
 		
 		
 		
 		
-}
+
