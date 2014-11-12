@@ -12,7 +12,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -26,7 +25,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class AllGroupsActivity extends ListActivity  {
@@ -38,7 +39,10 @@ public class AllGroupsActivity extends ListActivity  {
 		// Server-Urls
 		private static String url_get_groups = "http://counterfight.net/get_all_groups.php";
 		
-		private String usernameString;
+		
+		private String groupName;
+		private String groupId;
+		
 		
 		// JSON Node names
 		private static final String TAG_SUCCESS = "success";
@@ -71,9 +75,12 @@ public class AllGroupsActivity extends ListActivity  {
 			new LoadAllUserCounter().execute();
 			
 			registerForContextMenu(getListView());
-			
-			
+
 		}
+		
+		
+		
+		
 		
 		@Override
 		public boolean onOptionsItemSelected(MenuItem item) {
@@ -187,9 +194,12 @@ public class AllGroupsActivity extends ListActivity  {
 						for (int i = 0; i < counterData.length(); i++) {
 							JSONObject c = counterData.getJSONObject(i);
 							
-							String groupName = c.getString(TAG_GROUPNAME);
+							//Parameter für Übergabe an GroupDetailActivity
+							groupId = c.getString(TAG_GROUPID);
+							groupName = c.getString(TAG_GROUPNAME);
 							String firstPlace = c.getString(TAG_USERFIRST);
 							String ownPlace = c.getString(TAG_OWNPLACE);
+							
 							
 							// tmp hashmap for single contact
 							HashMap<String, String> contact = new HashMap<String, String>();
@@ -209,6 +219,8 @@ public class AllGroupsActivity extends ListActivity  {
 				}
 				return null;
 			}
+						
+			
 			@Override
 			protected void onPostExecute(String file_url) {
 				
@@ -231,6 +243,29 @@ public class AllGroupsActivity extends ListActivity  {
 					}
 				}); 
 			}
+					
 				
 		}	
+		
+		
+		
+		
+		protected void onListItemClick(ListView list, View view, int position, long id) {
+		    super.onListItemClick(list, view, position, id);
+		    
+		    String groupName2 = groupName;
+		    String groupId2 = groupId;
+		    
+		    Intent intent = new Intent(getApplicationContext(), GroupDetailActivity.class);
+		    intent.putExtra("groupName", groupName2);
+		    intent.putExtra("groupId", groupId2);
+		    Log.d("AllGroupsActivity,intent", "Intent: " + groupName);
+		    Log.d("AllGroupsActivity,intent", "Intent: " + groupId2);
+			startActivity(intent);	
+		   
+		}
+		
+		
+		
+		
 }

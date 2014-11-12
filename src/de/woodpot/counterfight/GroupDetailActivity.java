@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -30,6 +31,8 @@ public class GroupDetailActivity extends ListActivity {
 	// JSONParser Objekt erstellen
 	JSONParser jParser = new JSONParser();
 	SessionManager sm;
+	
+	private ProgressDialog pDialog;
 	
 	// Server-Urls
 	private static String url_get_groups = "http://counterfight.net/get_group_details.php";
@@ -74,23 +77,45 @@ public class GroupDetailActivity extends ListActivity {
 	
 	
 	class LoadGroupUser extends AsyncTask<String, String, String> {
-		ProgressDialog pDialog;
+	
+		@Override
+		 protected void onPreExecute() {
+		 	
+		
+		Intent intent = getIntent();
+		Bundle extras = intent.getExtras();
+		if(extras != null){
+			String groupName = extras.getString("groupName");	
+			String groupId = extras.getString("groupId");
+			Log.d("GroupDetailActivity,intent", "Intent: " + groupId);
+		}
+		else{
+			Log.d("GroupDetailActivity,intent", "Intent groupId fail");	
+		}
+		
+		 
+		// pDialog.setMessage(GroupDetailActivity.this.getResources().getString(R.string.string_loginact_loading));
+		// pDialog.setIndeterminate(false);
+		// pDialog.setCancelable(false);
+		// pDialog.show();
+		 }
 		
 		@Override
 		protected String doInBackground(String... args) {
 			// Building Parameters	
 			
-				/*
-				//groupId aus AllGroupsActivity übergeben
 				
+				//groupId aus AllGroupsActivity übergeben
 				String username = null;
+				String groupId = null;
+				
 				sm = new SessionManager(getApplicationContext());
 				if (sm.isLoggedIn() == true) {
 					username = sm.getUsername();
 				}
 				
 				final List<NameValuePair> params = new ArrayList<NameValuePair>();
-				params.add(new BasicNameValuePair(TAG_GROUPID, username));
+				params.add(new BasicNameValuePair(TAG_GROUPID, groupId));
 				JSONObject json = null;
 			
 				try {
@@ -98,10 +123,10 @@ public class GroupDetailActivity extends ListActivity {
 				} catch (Exception e){
 					Log.e("GroupDetailActivity", "JSON (username POST): " + e.getMessage());
 				}
-				*/	
+					
 				
 				
-				String username = null;
+				//String username = null;
 				List<NameValuePair> params2 = new ArrayList<NameValuePair>();
 				params2.add(new BasicNameValuePair(TAG_GROUPID, username));
 				Log.d("GroupDetailActivity: ", params2.toString());
@@ -180,21 +205,8 @@ public class GroupDetailActivity extends ListActivity {
 		 
 		            setListAdapter(adapter);
 					
-					
-					
-					
-					/*
-					
-					 ListAdapter adapter = new SimpleAdapter(
-							 GroupDetailActivity.this, contactList,
-			                 R.layout.activity_group_detail,                                            
-			                 new String[] {TAG_USERNAME, TAG_COUNTERVALUE},          
-			                 new int[] {R.id.user_row_userName, R.id.user_countervalue});  
-
-			         // Bind to our new adapter.
-			         setListAdapter(adapter);
-			         */
-			         
+				
+		           // pDialog.dismiss();
 			         
 				}
 			}); 
