@@ -33,6 +33,7 @@ public class LoginActivity extends ActionBarActivity {
 	
 	private String usernameString;
 	private String passwordString;
+	private String groupId;
 	
 	// Objekt vom SessionManager erstellen
 	SessionManager sessionManager;
@@ -49,6 +50,7 @@ public class LoginActivity extends ActionBarActivity {
 	private static final String TAG_USER = "user";
 	private static final String TAG_USERNAME = "username";
 	private static final String TAG_PASSWORD = "password";
+	private static final String TAG_GROUPID = "groupId";
 	
 	// JSON Arrays
 	JSONArray userData = null;
@@ -126,6 +128,9 @@ public class LoginActivity extends ActionBarActivity {
 					});
 					// Erstellen der Session
 					sessionManager.createSession(usernameString, passwordString);
+					
+					groupId = json.getString("groupId");
+					Log.d("LoginActivity: ", "groupId Json: " + groupId);
 				}
 				else {
 					LoginActivity.this.runOnUiThread(new Runnable() {
@@ -168,16 +173,19 @@ public class LoginActivity extends ActionBarActivity {
 			
 			try {
 				json = jParser.makeHttpRequest(url_count_user_groups, "POST", params);
+				Log.d("LoginActivity", "JSON countusergroups post ");
 			} catch (Exception e){
 				Log.e("LoginActivity", "JSON (UserGroups): " + e.getMessage());
 			}
-
+			
 			try {
 				int success = json.getInt(TAG_SUCCESS);
-
+				
 				if (success == 1) {
+					
 					noOfGroups = json.getString("noOfGroups");
 					Log.d("LoginActivity: ", "noOfGroups: " + noOfGroups + " for user " + sessionManager.getUsername());
+				
 				}
 				else {
 					LoginActivity.this.runOnUiThread(new Runnable() {
@@ -220,6 +228,8 @@ public class LoginActivity extends ActionBarActivity {
 			
 			if (noOfGroupsInt == 1) {
 				Intent intent = new Intent(this, GroupDetailActivity.class);
+				intent.putExtra("groupId", groupId);
+				Log.d("LoginActivity", "groupId: " + groupId);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
 				startActivity(intent);
 				finish();

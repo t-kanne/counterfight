@@ -90,7 +90,7 @@ public class AllGroupsActivity extends ListActivity  {
 		@Override
 		public boolean onOptionsItemSelected(MenuItem item) {
 			
-			
+		//ohne Funktion
 		switch (item.getItemId()) {
 			case R.id.action_settings:
 			Intent intent = new Intent(this, SettingsActivity.class);

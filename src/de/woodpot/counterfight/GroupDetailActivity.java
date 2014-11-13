@@ -125,7 +125,7 @@ public class GroupDetailActivity extends ListActivity {
 			groupName.setText(groupNameIntent);
 		}
 		else{
-			Log.d("GroupDetailActivity, Intent", "extras.getString: fail");	
+			Log.d("GroupDetailActivity, Intent von AllGroups:", "extras: fail");	
 		}
 
 		 }
@@ -358,7 +358,9 @@ public class GroupDetailActivity extends ListActivity {
                 new int[] { R.id.user_row_username, R.id.user_countervalue });
 
 		contactList.clear();
+		Log.d("GroupDetailActivity: ", "alte ListView gecleart");	
 		adapter.notifyDataSetChanged();
+		Log.d("GroupDetailActivity: ", "neue ListView erstellt");	
         return true;
             
 		default:
