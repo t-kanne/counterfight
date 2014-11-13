@@ -38,16 +38,16 @@ public class AllGroupsActivity extends ListActivity  {
 		JSONParser jParser = new JSONParser();
 		SessionManager sm;
 		
+		private ProgressDialog pDialog;
+		
 		ArrayList<String> searchList = new ArrayList<String>();
 		
 		// Server-Urls
 		private static String url_get_groups = "http://counterfight.net/get_all_groups.php";
 		
-		
 		private String groupName;
 		private String groupId;
-		
-		
+			
 		// JSON Node names
 		private static final String TAG_SUCCESS = "success";
 		private static final String TAG_COUNTER = "get_groups";
@@ -133,9 +133,14 @@ public class AllGroupsActivity extends ListActivity  {
 		}
 		
 		class LoadAllUserCounter extends AsyncTask<String, String, String> {
-			ProgressDialog pDialog;
 			
-		
+			protected void onPreExecute() {
+				pDialog = new ProgressDialog(AllGroupsActivity.this);
+				pDialog.setMessage(AllGroupsActivity.this.getString(R.string.string_loginact_loading));
+				pDialog.setIndeterminate(false);
+				pDialog.setCancelable(false);
+				pDialog.show();
+			}
 			@Override
 			protected String doInBackground(String... args) {
 				// Building Parameters	
@@ -250,6 +255,8 @@ public class AllGroupsActivity extends ListActivity  {
 						// updating listview
 						Log.d("AllGroupsActivityFragment JSON: ", "Adapterusers: " + users.toString());
 						setListAdapter (adapter);
+						
+						 pDialog.dismiss();
 					}
 				}); 
 			}
