@@ -155,6 +155,7 @@ public class AllGroupsActivity extends ListActivity  {
 					
 					try {
 						json = jParser.makeHttpRequest(url_get_groups, "POST", params);
+						Log.d("AllGroupsActivity post", "JSON post variablen: " + params);
 					} catch (Exception e){
 						Log.d("AllGroupsActivity post", "JSON (username POST): " + e.getMessage());
 					}

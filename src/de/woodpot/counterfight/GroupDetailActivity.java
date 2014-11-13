@@ -20,9 +20,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -32,10 +36,14 @@ public class GroupDetailActivity extends ListActivity {
 	JSONParser jParser = new JSONParser();
 	SessionManager sm;
 	
+	Button increaseCounterButton;
+	TextView groupName;
+	
 	private ProgressDialog pDialog;
 	
 	// Server-Urls
 	private static String url_get_groups = "http://counterfight.net/get_group_details.php";
+	private static String url_update_counter = "http://counterfight.net/update_counter_value.php";
 	
 	private static final String TAG_SUCCESS = "success";
 	private static final String TAG_COUNTER = "get_details";
@@ -44,9 +52,10 @@ public class GroupDetailActivity extends ListActivity {
 	private static final String TAG_GROUPNAME = "groupName";
 	private static final String TAG_USERNAME = "userName";
 	private static final String TAG_GROUPID = "groupId";
-	
-	String parameter1;
-	String parameter2;
+
+	//Strings IntentExtra
+	String groupIdIntent;
+	String groupNameIntent;
 	
 	// JSONArray für Counterdaten
 	JSONArray counterData = null;
@@ -62,7 +71,10 @@ public class GroupDetailActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.activity_group_detail);
-		 
+		
+		groupName = (TextView) findViewById(R.id.group_name);
+		increaseCounterButton = (Button) findViewById(R.id.increase_button);
+		
         contactList = new ArrayList<HashMap<String, String>>();
  
         ListView lv = getListView();
@@ -72,29 +84,35 @@ public class GroupDetailActivity extends ListActivity {
 		new LoadGroupUser().execute();
 		
 		registerForContextMenu(getListView());
+		
+		increaseCounterButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				
+				new UpdateCounterValue().execute();
+				
+			}	
+		});
 	}
 
-	
-	
-	
-	
 	
 	
 	class LoadGroupUser extends AsyncTask<String, String, String> {
 	
 		@Override
-		 protected void onPreExecute() {
+		protected void onPreExecute() {
 		 	
 		Intent intent = getIntent();
 		Bundle extras = intent.getExtras();
 		if(extras != null){
-			parameter1 = extras.getString("groupId");
-			parameter2 = extras.getString("groupName");	
-			Log.d("GroupDetailActivity", "groupId: " + parameter1);
-			Log.d("GroupDetailActivity,", "groupName: " + parameter2);
+			groupIdIntent = extras.getString("groupId");
+			groupNameIntent = extras.getString("groupName");	
+			Log.d("GroupDetailActivity", "intent groupId: " + groupIdIntent);
+			Log.d("GroupDetailActivity,", "intent groupName: " + groupNameIntent);
+			groupName.setText(groupNameIntent);
 		}
 		else{
-			Log.d("GroupDetailActivity,intent", "Intent groupId fail");	
+			Log.d("GroupDetailActivity, Intent", "extras.getString: fail");	
 		}
 		
 		 
@@ -108,7 +126,6 @@ public class GroupDetailActivity extends ListActivity {
 		protected String doInBackground(String... args) {
 			// Building Parameters	
 			
-				
 				//groupId aus AllGroupsActivity übergeben
 				String username = null;
 				String groupId = null;
@@ -119,19 +136,18 @@ public class GroupDetailActivity extends ListActivity {
 				}
 				
 				final List<NameValuePair> params = new ArrayList<NameValuePair>();	
-				params.add(new BasicNameValuePair(TAG_GROUPID, parameter1));
+				params.add(new BasicNameValuePair(TAG_GROUPID, groupIdIntent));
 				Log.d("GroupDetailActivity params: ", params.toString());
 				JSONObject json = null;
 			
 				try {
 					json = jParser.makeHttpRequest(url_get_groups, "POST", params);
+					Log.d("GroupDetailActivity post anfrage: ", params.toString());
 				} catch (Exception e){
 					Log.e("GroupDetailActivity", "JSON (username POST): " + e.getMessage());
 				}
 					
-				
-				
-				
+
 				List<NameValuePair> params2 = new ArrayList<NameValuePair>();
 				params2.add(new BasicNameValuePair(TAG_GROUPID, groupId));
 				Log.d("GroupDetailActivity params2: ", params2.toString());
@@ -205,8 +221,8 @@ public class GroupDetailActivity extends ListActivity {
 					
 					ListAdapter adapter = new SimpleAdapter(
 							GroupDetailActivity.this, contactList,
-		                    R.layout.list_item, new String[] { TAG_USERNAME, TAG_COUNTERVALUE }, 
-		                    new int[] { R.id.user_row_userName, R.id.user_countervalue });
+		                    R.layout.group_detail_list_item, new String[] { TAG_USERNAME, TAG_COUNTERVALUE }, 
+		                    new int[] { R.id.user_row_username, R.id.user_countervalue });
 		 
 		            setListAdapter(adapter);
 					
@@ -216,10 +232,6 @@ public class GroupDetailActivity extends ListActivity {
 				}
 			}); 
 		}
-		
-
-		
-		
 			
 	}	
 	
@@ -233,6 +245,92 @@ public class GroupDetailActivity extends ListActivity {
 	
 	
 	
+	class UpdateCounterValue extends AsyncTask<String, String, String> {
+		
+		@Override
+		protected void onPreExecute() {}
+			
+		@Override
+		protected String doInBackground(String... args) {
+		
+			//groupId aus AllGroupsActivity übergeben
+			String username = null;
+			String groupId = null;
+			
+			sm = new SessionManager(getApplicationContext());
+			if (sm.isLoggedIn() == true) {
+				username = sm.getUsername();
+			}	
+			
+			final List<NameValuePair> increase_params = new ArrayList<NameValuePair>();	
+			increase_params.add(new BasicNameValuePair(TAG_GROUPID, groupIdIntent));
+			increase_params.add(new BasicNameValuePair(TAG_USERNAME, username));
+			Log.d("GroupDetailActivity increase_params: ", increase_params.toString());
+			JSONObject json4 = null;
+		
+			try {
+				json4 = jParser.makeHttpRequest(url_update_counter, "POST", increase_params);
+				Log.d("GroupDetailActivity POST: ", increase_params.toString());
+			} catch (Exception e){
+				Log.e("GroupDetailActivity", "JSON POST: " + e.getMessage());
+			}
+			try {
+				int success = json4.getInt(TAG_SUCCESS);
+
+				if (success == 1) {
+					Log.d("GroupDetailActivityFragment JSON: ", "(get) success 1: update");		
+				}
+				else {
+					Log.d("GroupDetailActivityFragment JSON: ", "(get) success 0: kein update");		
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			
+			
+			
+			/*
+			JSONObject json3 = null;
+			try {
+				json3 = jParser.makeHttpRequest(url_update_counter, "GET", increase_params);
+			} catch (Exception e){
+				Log.e("GroupDetailActivity", "JSON GET: " + e.getMessage());
+			}
+
+			Log.d("GroupDetailActivityFragment JSON: ", "JSONObject: " + json3.toString());
+
+			try {
+				int success = json3.getInt(TAG_SUCCESS);
+
+				if (success == 1) {
+					Log.d("GroupDetailActivityFragment JSON: ", "(get) success 1: update");		
+				}
+				else {
+					Log.d("GroupDetailActivityFragment JSON: ", "(get) success 0: kein update");		
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			*/
+			
+			return null;
+		}
+		
+		
+		protected void onPostExecute(String file_url) {
+			
+			// updating UI from Background Thread
+			runOnUiThread(new Runnable() {
+				public void run() {
+					/**
+					 * Updating parsed JSON data into ListView
+					 * */			
+			         
+				}
+			}); 
+		}
+		
+	}
 	
 	
 	
@@ -241,6 +339,13 @@ public class GroupDetailActivity extends ListActivity {
 	
 	
 	
+	
+	
+	
+	
+	
+	
+
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
