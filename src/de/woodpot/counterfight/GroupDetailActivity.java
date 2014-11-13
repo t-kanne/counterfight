@@ -11,6 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -38,6 +39,8 @@ public class GroupDetailActivity extends ListActivity {
 	
 	Button increaseCounterButton;
 	TextView groupName;
+	
+	final Context context = this;
 	
 	private ProgressDialog pDialog;
 	
@@ -78,7 +81,8 @@ public class GroupDetailActivity extends ListActivity {
         contactList = new ArrayList<HashMap<String, String>>();
  
         ListView lv = getListView();
-		
+        
+      //  ListView listView = (ListView) findViewById(R.id.list);
 		//Toast.makeText(this, "GroupDetailActivity", Toast.LENGTH_LONG).show();
        
 		new LoadGroupUser().execute();
@@ -101,6 +105,11 @@ public class GroupDetailActivity extends ListActivity {
 	
 		@Override
 		protected void onPreExecute() {
+			pDialog = new ProgressDialog(GroupDetailActivity.this);
+			pDialog.setMessage(GroupDetailActivity.this.getString(R.string.string_loginact_loading));
+			pDialog.setIndeterminate(false);
+			pDialog.setCancelable(false);
+			pDialog.show();
 		 	
 		Intent intent = getIntent();
 		Bundle extras = intent.getExtras();
@@ -111,15 +120,11 @@ public class GroupDetailActivity extends ListActivity {
 			Log.d("GroupDetailActivity,", "intent groupName: " + groupNameIntent);
 			groupName.setText(groupNameIntent);
 		}
+
 		else{
 			Log.d("GroupDetailActivity, Intent", "extras.getString: fail");	
 		}
-		
-		 
-		// pDialog.setMessage(GroupDetailActivity.this.getResources().getString(R.string.string_loginact_loading));
-		// pDialog.setIndeterminate(false);
-		// pDialog.setCancelable(false);
-		// pDialog.show();
+
 		 }
 		
 		@Override
@@ -198,6 +203,21 @@ public class GroupDetailActivity extends ListActivity {
 						contact.put(TAG_COUNTERVALUE, countervalue);
 						//adding contact to contact list
 						contactList.add(contact);
+	
+						//background-color hier ändern
+						sm = new SessionManager(getApplicationContext());
+						if (sm.isLoggedIn() == true) {
+							username = sm.getUsername();
+						}
+						
+						for (int j = 0; j < contactList.size(); j++) {
+						    if(contactList.get(j).equals(username)){
+						       
+						    }
+						}
+						
+										
+						
 						
 					}
 				
@@ -227,7 +247,7 @@ public class GroupDetailActivity extends ListActivity {
 		            setListAdapter(adapter);
 					
 				
-		           // pDialog.dismiss();
+		            pDialog.dismiss();
 			         
 				}
 			}); 
@@ -279,6 +299,7 @@ public class GroupDetailActivity extends ListActivity {
 
 				if (success == 1) {
 					Log.d("GroupDetailActivityFragment JSON: ", "(get) success 1: update");		
+									
 				}
 				else {
 					Log.d("GroupDetailActivityFragment JSON: ", "(get) success 0: kein update");		
@@ -286,32 +307,6 @@ public class GroupDetailActivity extends ListActivity {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-			
-			
-			
-			/*
-			JSONObject json3 = null;
-			try {
-				json3 = jParser.makeHttpRequest(url_update_counter, "GET", increase_params);
-			} catch (Exception e){
-				Log.e("GroupDetailActivity", "JSON GET: " + e.getMessage());
-			}
-
-			Log.d("GroupDetailActivityFragment JSON: ", "JSONObject: " + json3.toString());
-
-			try {
-				int success = json3.getInt(TAG_SUCCESS);
-
-				if (success == 1) {
-					Log.d("GroupDetailActivityFragment JSON: ", "(get) success 1: update");		
-				}
-				else {
-					Log.d("GroupDetailActivityFragment JSON: ", "(get) success 0: kein update");		
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			*/
 			
 			return null;
 		}
@@ -325,27 +320,23 @@ public class GroupDetailActivity extends ListActivity {
 					/**
 					 * Updating parsed JSON data into ListView
 					 * */			
-			         
+					showAlert();
 				}
 			}); 
 		}
 		
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+		
+	public void showAlert(){
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+		alertDialogBuilder.setTitle(R.string.string_groupdetailact_alerttitle);
+		alertDialogBuilder.setMessage(R.string.string_groupdetailact_alerttext);
+		alertDialogBuilder.setCancelable(false);
+		alertDialogBuilder.setPositiveButton(R.string.string_groupdetailact_alertokay, null); 
+		AlertDialog alertDialog = alertDialogBuilder.create();
+		alertDialog.show();
 
+	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

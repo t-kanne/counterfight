@@ -41,6 +41,9 @@
     <string name="string_registeract_wrongpassword">Das Passwort ist nicht gleich!</string>
     <string name="string_allgroupsact_title">Gruppenübersicht</string>
     <string name="string_allgroupsact_subtitle">blabla</string>
+    <string name="string_groupdetailact_alerttitle">+1</string>
+    <string name="string_groupdetailact_alerttext">Dein Counterstand wurde erhöht!</string>
+    <string name="string_groupdetailact_alertokay">Gut!</string>
     
     
     <!-- Drawer -->

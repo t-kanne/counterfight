@@ -14,7 +14,6 @@
         android:paddingTop="6dip"
         android:textColor="#000000"
         android:textSize="25sp"
-        android:text="Gruppenname"
         android:textStyle="bold" />
      
   <ListView
