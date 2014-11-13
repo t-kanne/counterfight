@@ -20,9 +20,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -36,6 +38,8 @@ public class GroupDetailActivity extends ListActivity {
 	// JSONParser Objekt erstellen
 	JSONParser jParser = new JSONParser();
 	SessionManager sm;
+	
+	ListAdapter adapter;
 	
 	Button increaseCounterButton;
 	TextView groupName;
@@ -120,7 +124,6 @@ public class GroupDetailActivity extends ListActivity {
 			Log.d("GroupDetailActivity,", "intent groupName: " + groupNameIntent);
 			groupName.setText(groupNameIntent);
 		}
-
 		else{
 			Log.d("GroupDetailActivity, Intent", "extras.getString: fail");	
 		}
@@ -209,13 +212,13 @@ public class GroupDetailActivity extends ListActivity {
 						if (sm.isLoggedIn() == true) {
 							username = sm.getUsername();
 						}
-						
+					/*	für listview item highlighten
 						for (int j = 0; j < contactList.size(); j++) {
 						    if(contactList.get(j).equals(username)){
 						       
 						    }
 						}
-						
+					*/	
 										
 						
 						
@@ -236,17 +239,14 @@ public class GroupDetailActivity extends ListActivity {
 					/**
 					 * Updating parsed JSON data into ListView
 					 * */
-					
-					
-					
-					ListAdapter adapter = new SimpleAdapter(
+					Log.d("GroupDetailActivity JSON: ", "onPostExecute ausgeführt");
+					BaseAdapter adapter = new SimpleAdapter(
 							GroupDetailActivity.this, contactList,
 		                    R.layout.group_detail_list_item, new String[] { TAG_USERNAME, TAG_COUNTERVALUE }, 
 		                    new int[] { R.id.user_row_username, R.id.user_countervalue });
 		 
 		            setListAdapter(adapter);
-					
-				
+
 		            pDialog.dismiss();
 			         
 				}
@@ -256,13 +256,7 @@ public class GroupDetailActivity extends ListActivity {
 	}	
 	
 	
-	
-	
-	
-	
-	
-	
-	
+
 	
 	
 	class UpdateCounterValue extends AsyncTask<String, String, String> {
@@ -340,19 +334,35 @@ public class GroupDetailActivity extends ListActivity {
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.group_detail, menu);
-		return true;
+	    // Inflate the menu items for use in the action bar
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.reload_groups, menu);
+	    return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		
+		
+	switch (item.getItemId()) {
+		case R.id.action_settings:
 			Intent intent = new Intent(this, SettingsActivity.class);
 			startActivity(intent);
 			return true;
-		}
-		return super.onOptionsItemSelected(item);
+        
+		case R.id.action_reload:
+			new LoadGroupUser().execute();
+			BaseAdapter adapter = new SimpleAdapter(
+				GroupDetailActivity.this, contactList,
+                R.layout.group_detail_list_item, new String[] { TAG_USERNAME, TAG_COUNTERVALUE }, 
+                new int[] { R.id.user_row_username, R.id.user_countervalue });
+
+		contactList.clear();
+		adapter.notifyDataSetChanged();
+        return true;
+            
+		default:
+        return super.onOptionsItemSelected(item);
+    }			
 	}
 }

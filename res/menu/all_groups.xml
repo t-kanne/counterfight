@@ -9,5 +9,14 @@
 		android:icon="@drawable/ic_settings"
         android:title="@string/action_settings"
         app:showAsAction="always"/>
+    
+	 <item
+        android:id="@+id/action_reload"
+        android:orderInCategory="100"
+		android:icon="@drawable/ic_action_refresh"
+        android:title="@string/action_reload"
+        app:showAsAction="always"/>
+    
+
 
 </menu>

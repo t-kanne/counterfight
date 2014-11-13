@@ -21,6 +21,7 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,21 +89,33 @@ public class AllGroupsActivity extends ListActivity  {
 		
 		@Override
 		public boolean onOptionsItemSelected(MenuItem item) {
-			int id = item.getItemId();
-			if (id == R.id.action_settings) {
-				Intent intent = new Intent(this, SettingsActivity.class);
-				startActivity(intent);
-				return true;
-			}
-			return super.onOptionsItemSelected(item);
+			
+			
+		switch (item.getItemId()) {
+			case R.id.action_settings:
+			Intent intent = new Intent(this, SettingsActivity.class);
+			startActivity(intent);
+	        return true;
+	            
+			case R.id.action_reload:
+			Intent intent2 = new Intent(this, AllGroupsActivity.class);
+			finish();
+			startActivity(intent2);
+	        return true;
+	            
+			default:
+	        return super.onOptionsItemSelected(item);
+	    }			
 		}
 		
 		@Override
 		public boolean onCreateOptionsMenu(Menu menu) {
-			// Inflate the menu; this adds items to the action bar if it is present.
-			getMenuInflater().inflate(R.menu.all_groups, menu);
-			return true;
+		    // Inflate the menu items for use in the action bar
+		    MenuInflater inflater = getMenuInflater();
+		    inflater.inflate(R.menu.reload_groups, menu);
+		    return super.onCreateOptionsMenu(menu);
 		}
+		
 		
 		/*
 		 * Wieder auskommentiert, weil auf dem Weg zu dieser Activity beim Intent ein Flag gesetzt wird
