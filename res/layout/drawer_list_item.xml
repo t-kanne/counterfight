@@ -13,12 +13,42 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   -->
+  
+ <!--  
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/imageview_navigationdrawer_onegroup"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:contentDescription="Show All Groups Of User"
+	android:src="@drawable/ic_navdraw_onegroup" />
 
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@android:id/text1"
+<TextView xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:id="@android:id/textview_navigationdrawer_onegroup"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:paddingLeft="16dp"
+    android:paddingLeft="20dp"
     android:paddingRight="16dp"
-    android:textColor="#fff" />
+    android:textColor="#fff" /> -->
+
+	   	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackground" >
+            
+	        <ImageView 
+	            android:id="@+id/imageview_navigationdrawer_onegroup"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:contentDescription="One Group"
+	            android:src="@drawable/ic_navdraw_onegroup" />
+	    
+		  	<TextView
+		        android:id="@+id/textview_navigationdrawer_onegroup"
+		        android:layout_width="wrap_content"
+		        android:layout_height="match_parent"
+		        android:textSize="20sp"
+		        android:textColor="#FFF" />
+		</LinearLayout>

@@ -21,12 +21,17 @@ import android.widget.TextView;
 
 public class MainActivity extends ActionBarActivity {
 	
+	/** Die MainActivity ist für den Nutzer im Prinzip nicht sichtbar. Sie entscheidet nur,
+	 * wohin der Nutzer geleitet werden soll und ist Layout für den NavigationDrawer
+	 */
+	
 	// Variablen für den NavigationDrawer
 	private DrawerLayout drawer;
 	private ActionBarDrawerToggle toggle;
-	private String[] navDrawArray;
-	private ListView navDrawListView;
-	private TextView allGroupsNavDrawTextView;
+	
+	// Menüeinträge
+	private String[] allgroupsStringArray;
+	private ListView allgroupsListView;
 	
 
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -37,35 +42,25 @@ public class MainActivity extends ActionBarActivity {
 
 		
 		// Zuweisungen für den NavigationDrawer
-		navDrawArray = getResources().getStringArray(R.array.stringarray_navigationdrawer_othersettings);
-		drawer = (DrawerLayout) findViewById(R.id.drawer_layout); // befindet sich innerhalb activity_main.xml
-		navDrawListView = (ListView) findViewById(R.id.listview_navigationdrawer_allgroups);
+		drawer = (DrawerLayout) findViewById(R.id.drawer_layout); // befindet sich innerhalb activity_main.xml		
 		toggle = new ActionBarDrawerToggle(this, drawer, R.drawable.ic_drawer, R.string.string_navigationdrawer_open, R.string.string_navigationdrawer_close);
 		drawer.setDrawerListener(toggle);
-		allGroupsNavDrawTextView = (TextView) findViewById(R.id.textview_navigationdrawer_allgroups);
+
+		allgroupsStringArray = getResources().getStringArray(R.array.stringarray_navigationdrawer_groups);
+		allgroupsListView = (ListView) findViewById(R.id.listview_navigationdrawer_allgroups);
 		
 		// ListView Adapter für den NavigationDrawer
-		navDrawListView.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, navDrawArray));
+		allgroupsListView.setAdapter(new ArrayAdapter<String>(
+				this, R.layout.drawer_list_item, R.id.textview_navigationdrawer_onegroup, allgroupsStringArray));
 		
-		// OnClickListener für die NavigationDrawer-Items
-		navDrawListView.setOnItemClickListener(new DrawerItemClickListener());
+		// OnClickListener für die NavigationDrawer-ARRAY-Items (einzelne Gruppen)
+		allgroupsListView.setOnItemClickListener(new DrawerItemClickListener());
 		
 		
 		getSupportActionBar();
 		getSupportActionBar().setHomeButtonEnabled(true);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		
-		
-		
-		// ButtonListener für NavigationDrawer
-		allGroupsNavDrawTextView.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(getApplicationContext(), AllGroupsActivity.class);
-				startActivity(intent);
-			}
-		});
+	
 		
 	}
 	

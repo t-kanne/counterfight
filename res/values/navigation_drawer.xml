@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="string_navigationdrawer_open">öffnen</string>
+    <string name="string_navigationdrawer_close">schließen</string>
+    
+    <string name="string_navigationdrawer_groupsettings">Gruppenverwaltung</string>
+    <string name="string_navigationdrawer_allgroups">Alle Gruppen</string>
+    <string name="string_navigationdrawer_creategroup">Gruppe gründen</string>
+    <string name="string_navigationdrawer_searchgroup">Gruppe beitreten</string>
+    
+    <!--  Dieses String-Array muss später im Code dynamisch an die Gruppen des Nutzers angepasst werden -->
+    <string-array name="stringarray_navigationdrawer_groups" >
+        <item>Gruppe 1</item>
+        <item>Gruppe 2</item>
+        <item>Gruppe 3</item>
+    </string-array>
+    
+    <string name="string_navigationdrawer_accountsettings">Account</string>
+    <string name="string_navigationdrawer_changeaccountdata">Accountdaten ändern</string>
+    <string name="string_navigationdrawer_logout">Ausloggen</string>
+    
+    <string name="string_navigationdrawer_othersettings">sonstiges</string>
+    <string name="string_navigationdrawer_settings">Einstellungen</string>
+    <string name="string_navigationdrawer_faq">F.A.Q.</string>
+    <string name="string_navigationdrawer_developerinfo">Über den Hersteller</string>
+    
+</resources>

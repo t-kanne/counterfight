@@ -45,11 +45,7 @@
     <string name="string_groupdetailact_alerttitle">+1</string>
     <string name="string_groupdetailact_alerttext">Dein Counterstand wurde erhöht!</string>
     <string name="string_groupdetailact_alertokay">Gut!</string>
-    
-    
-    <!-- Drawer -->
-    <string name="string_navigationdrawer_open">öffnen</string>
-    <string name="string_navigationdrawer_close">schließen</string>
+
 
 
 </resources>

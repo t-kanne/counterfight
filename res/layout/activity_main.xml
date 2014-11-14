@@ -41,11 +41,13 @@
 	    
 	    <TextView
 	        android:id="@+id/textview_navigationdrawer_groupsettings"
-	        android:layout_width="wrap_content"
+	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
-	        android:text="Gruppenverwaltung"
-	        android:textSize="25sp"
+	        android:text="@string/string_navigationdrawer_groupsettings"
+	        android:background="@drawable/background_navdraw_subtitles"    
+	        android:textSize="22sp"
 	        android:textColor="#FFF"
+	  	    android:layout_marginBottom="2sp"
 	        android:gravity="start" />
 	    
 	    <LinearLayout
@@ -53,6 +55,7 @@
 	        android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:clickable="true"
+            android:padding="3sp"
             android:background="?attr/selectableItemBackground" >
             
 	        <ImageView 
@@ -66,10 +69,13 @@
 		        android:id="@+id/textview_navigationdrawer_allgroups"
 		        android:layout_width="wrap_content"
 		        android:layout_height="match_parent"
-		        android:text="Alle Gruppen"
+		        android:text="@string/string_navigationdrawer_allgroups"
 		        android:textSize="20sp"
 		        android:textColor="#FFF" />
 		</LinearLayout>
+		
+	    <!-- Separator-Line -->
+		<include layout="@layout/separator_navdraw"	/>
 	  	
 	  	<!--  ListView mit allen Gruppen des Nutzers -->
 	  	
@@ -81,56 +87,222 @@
 	        android:choiceMode="singleChoice"
 	        android:divider="@android:color/transparent"
 	        android:textSize="15sp"
+	        android:padding="3sp"
 	        android:dividerHeight="dp" />
+
+	    <!-- Separator-Line -->
+		<include layout="@layout/separator_navdraw"	/>  	
 	  		  	
-	   	<TextView
-	        android:id="@+id/textview_navigationdrawer_creategroup"
-	        android:layout_width="wrap_content"
+	   	<LinearLayout
+	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
-	        android:text="Gruppe erstellen"
-	        android:textSize="15sp"
-	        android:textColor="#FFF" /> 
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:padding="3sp"
+            android:background="?attr/selectableItemBackground" >
+            
+	        <ImageView 
+	            android:id="@+id/imageview_navigationdrawer_creategroup"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:contentDescription="Create Group"
+	            android:src="@drawable/ic_navdraw_creategroup" />
 	    
-	   	<TextView
-	        android:id="@+id/textview_navigationdrawer_searchgroup"
-	        android:layout_width="wrap_content"
+		  	<TextView
+		        android:id="@+id/textview_navigationdrawer_creategroup"
+		        android:layout_width="wrap_content"
+		        android:layout_height="match_parent"
+		        android:text="@string/string_navigationdrawer_creategroup"
+		        android:textSize="20sp"
+		        android:textColor="#FFF" />
+		</LinearLayout>
+
+	    <!-- Separator-Line -->
+		<include layout="@layout/separator_navdraw"	/>	   	
+	   			
+	   	<LinearLayout
+	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
-	        android:text="Gruppe beitreten"
-	        android:textSize="15sp"
-	        android:textColor="#FFF" />
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:padding="3sp"
+            android:background="?attr/selectableItemBackground" >
+		
+	        <ImageView 
+	            android:id="@+id/imageview_navigationdrawer_searchgroup"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:contentDescription="Create Group"
+	            android:src="@drawable/ic_navdraw_searchgroup" />
+	    
+		  	<TextView
+		        android:id="@+id/textview_navigationdrawer_searchgroup"
+		        android:layout_width="wrap_content"
+		        android:layout_height="match_parent"
+		        android:text="@string/string_navigationdrawer_searchgroup"
+		        android:textSize="20sp"
+		        android:textColor="#FFF" />
+		</LinearLayout>
+
 	    
 	    <!-- ##################################################### --> 
 		<!-- Account-Verwaltung -->
 	    
 	   	<TextView
 	        android:id="@+id/textview_navigationdrawer_accountsettings"
-	        android:layout_width="wrap_content"
+	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
-	        android:text="Account"
-	        android:textSize="20sp"
-	        android:textColor="#FFF"
-	        android:gravity="start" />
-	    
-	   	<TextView
-	        android:id="@+id/textview_navigationdrawer_othersettings"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:text="sonstiges"
-	        android:textSize="20sp"
+	        android:layout_marginTop="5sp"
+	        android:layout_marginBottom="2sp"
+	        android:text="@string/string_navigationdrawer_accountsettings"
+	        android:background="@drawable/background_navdraw_subtitles"
+	        android:textSize="22sp"
 	        android:textColor="#FFF"
 	        android:gravity="start" />
 	   	
+	   	<LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:padding="3sp"
+            android:background="?attr/selectableItemBackground" >
+            
+	        <ImageView 
+	            android:id="@+id/imageview_navigationdrawer_changeaccountdata"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:contentDescription="Show All Groups Of User"
+	            android:src="@drawable/ic_navdraw_changepassword" />
+	    
+		  	<TextView
+		        android:id="@+id/textview_navigationdrawer_changeaccountdata"
+		        android:layout_width="wrap_content"
+		        android:layout_height="match_parent"
+		        android:text="@string/string_navigationdrawer_changeaccountdata"
+		        android:textSize="20sp"
+		        android:textColor="#FFF" />
+		</LinearLayout>
+
+	    <!-- Separator-Line -->
+		<include layout="@layout/separator_navdraw"	/>	   	
+	   			
+	   	<LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:padding="3sp"
+            android:background="?attr/selectableItemBackground" >
+            
+	        <ImageView 
+	            android:id="@+id/imageview_navigationdrawer_logout"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:contentDescription="Show All Groups Of User"
+	            android:src="@drawable/ic_navdraw_logout" />
+	    
+		  	<TextView
+		        android:id="@+id/textview_navigationdrawer_logout"
+		        android:layout_width="wrap_content"
+		        android:layout_height="match_parent"
+		        android:text="@string/string_navigationdrawer_logout"
+		        android:textSize="20sp"
+		        android:textColor="#FFF" />
+		</LinearLayout>
+	   	
 	   	<!-- ##################################################### -->
 	   	<!-- sonstige Einstellungen -->
-	   <ListView
-	        android:id="@+id/listview_navigationdrawer_test"
-			android:layout_width="240dp"
+	   	
+	   	<TextView
+	        android:id="@+id/textview_navigationdrawer_othersettings"
+	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
-	        android:layout_gravity="left"
-	        android:choiceMode="singleChoice"
-	        android:divider="@android:color/transparent"
-	        android:textSize="15sp"
-	        android:dividerHeight="dp" />
+	        android:text="@string/string_navigationdrawer_othersettings"
+	        android:background="@drawable/background_navdraw_subtitles"
+	        android:textSize="22sp"
+	        android:layout_marginTop="5sp"
+	        android:layout_marginBottom="2sp"
+	        android:textColor="#FFF"
+	        android:gravity="start" />
+	   	
+	   	<LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:padding="3sp"
+            android:background="?attr/selectableItemBackground" >
+            
+	        <ImageView 
+	            android:id="@+id/imageview_navigationdrawer_settings"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:contentDescription="Show All Groups Of User"
+	            android:src="@drawable/ic_navdraw_settings" />
+	    
+		  	<TextView
+		        android:id="@+id/textview_navigationdrawer_settings"
+		        android:layout_width="wrap_content"
+		        android:layout_height="match_parent"
+		        android:text="@string/string_navigationdrawer_settings"
+		        android:textSize="20sp"
+		        android:textColor="#FFF" />
+		</LinearLayout>
+
+	    <!-- Separator-Line -->
+		<include layout="@layout/separator_navdraw"	/>   	
+	   			
+	   	<LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:padding="3sp"
+            android:background="?attr/selectableItemBackground" >
+            
+	        <ImageView 
+	            android:id="@+id/imageview_navigationdrawer_faq"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:contentDescription="Show All Groups Of User"
+	            android:src="@drawable/ic_navdraw_faq" />
+	    
+		  	<TextView
+		        android:id="@+id/textview_navigationdrawer_faq"
+		        android:layout_width="wrap_content"
+		        android:layout_height="match_parent"
+		        android:text="@string/string_navigationdrawer_faq"
+		        android:textSize="20sp"
+		        android:textColor="#FFF" />
+		</LinearLayout>
+		
+	    <!-- Separator-Line -->
+		<include layout="@layout/separator_navdraw"	/>
+	   	
+	   	<LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:padding="3sp"
+            android:background="?attr/selectableItemBackground" >
+            
+	        <ImageView 
+	            android:id="@+id/imageview_navigationdrawer_developerinfo"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:contentDescription="Show All Groups Of User"
+	            android:src="@drawable/ic_navdraw_developerinfo" />
+	    
+		  	<TextView
+		        android:id="@+id/textview_navigationdrawer_developerinfo"
+		        android:layout_width="wrap_content"
+		        android:layout_height="match_parent"
+		        android:text="@string/string_navigationdrawer_developerinfo"
+		        android:textSize="20sp"
+		        android:textColor="#FFF" />
+		</LinearLayout>
 
 	    
 	</LinearLayout>
