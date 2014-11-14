@@ -32,16 +32,20 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         
         addPreferencesFromResource(R.xml.pref_settings);
         
-        Preference deleteUser = findPreference("account_delete");
-        Preference loginLogoutUser = findPreference("account_loginlogout");
+        Preference deleteUserPref = findPreference("account_delete");
+        Preference loginLogoutUserPref = findPreference("account_loginlogout");
+        Preference loginActPref = findPreference("settings_activity_login");
+        Preference noGroupActPref = findPreference("settings_activity_nogroup");
+        Preference groupDetailActPref = findPreference("settings_activity_groupdetail");
+        Preference allGroupsActPref = findPreference("settings_activity_allgroups");
         
         if (sm.isLoggedIn() == false) {
-        	deleteUser.setEnabled(false);
-        	loginLogoutUser.setTitle(R.string.pref_account_login);
+        	deleteUserPref.setEnabled(false);
+        	loginLogoutUserPref.setTitle(R.string.pref_account_login);
         } else {
-        	loginLogoutUser.setTitle(R.string.pref_account_logout);	 
+        	loginLogoutUserPref.setTitle(R.string.pref_account_logout);	 
         	
-            deleteUser.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+            deleteUserPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference deleteUser){
                 	deleteAccount();
                 	return true;
@@ -50,7 +54,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
             });
         }
         
-    	loginLogoutUser.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+    	loginLogoutUserPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
 				if (sm.isLoggedIn() == true) {
@@ -58,6 +62,46 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 				} 
 				Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+				startActivity(intent);
+				return true;
+			}
+    	});
+    	
+    	loginActPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				
+				Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
+				startActivity(intent);
+				return true;
+			}
+    	});
+    	
+    	noGroupActPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				
+				Intent intent = new Intent(SettingsActivity.this, NoGroupActivity.class);
+				startActivity(intent);
+				return true;
+			}
+    	});
+    	
+    	groupDetailActPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				
+				Intent intent = new Intent(SettingsActivity.this, GroupDetailActivity.class);
+				startActivity(intent);
+				return true;
+			}
+    	});
+    	
+    	allGroupsActPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				
+				Intent intent = new Intent(SettingsActivity.this, AllGroupsActivity.class);
 				startActivity(intent);
 				return true;
 			}

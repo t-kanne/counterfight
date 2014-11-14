@@ -12,6 +12,26 @@
 		</Preference>
 	  
     </PreferenceCategory>
+    
+	<PreferenceCategory 
+	    android:title="Alle Activities" >
+	    <Preference
+	        android:title="LoginActivity"
+	        android:key="settings_activity_login" >
+	    </Preference>
+	    <Preference
+	        android:title="NoGroupActivity"
+	        android:key="settings_activity_nogroup" >
+	    </Preference>
+	   	<Preference
+	        android:title="GroupDetailActivity"
+	        android:key="settings_activity_groupdetail" >
+	    </Preference>
+	    <Preference
+	        android:title="AllGroupsActivity"
+	        android:key="settings_activity_allgroups" >
+	    </Preference>
+	</PreferenceCategory>
    
     
 

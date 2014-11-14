@@ -6,7 +6,7 @@
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
-		android:icon="@drawable/ic_settings"
+		android:icon="@drawable/ic_action_settings_alt"
         android:title="@string/action_settings"
         app:showAsAction="always"/>
     

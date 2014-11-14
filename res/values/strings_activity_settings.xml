@@ -13,25 +13,14 @@
     <string name="pref_account_warning_negative_button">Abbrechen</string>
     
 
- 
-    
-    <!-- settings for Notifications -->
-    <string name="pref_header_notifications">Benachrichtigungen</string>
-    <string name="pref_vibrate_title">Vibrieren</string>
-    <string name="pref_flashlight_title">LED-Alarm (Beta)</string>
-    
-    <!-- settings for Informations -->
-    <string name="pref_header_informations">Informationen</string>
-    <string name="help_title">Hilfe</string>
-    <string name="about_us_title">Über den Hersteller</string>
+
     
     
     <!--  ListView Einträge für den Navigation Drawer -->
-    <string-array name="navigation_drawer_string_array" >
-        <item>Gruppenverwaltung</item>
-        <item>Account</item>
-        <item>sonstiges</item>
-        <item>Testbutton mit Funktion</item>
+    <string-array name="stringarray_navigationdrawer_othersettings" >
+        <item>Einstellungen</item>
+        <item>F.A.Q.</item>
+        <item>Über den Hersteller</item>
     </string-array>
         
 
