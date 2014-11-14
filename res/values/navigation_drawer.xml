@@ -14,6 +14,9 @@
         <item>Gruppe 1</item>
         <item>Gruppe 2</item>
         <item>Gruppe 3</item>
+        <item>Gruppe 4</item>
+        <item>Gruppe 5</item>
+        <item>Gruppe 6</item>
     </string-array>
     
     <string name="string_navigationdrawer_accountsettings">Account</string>

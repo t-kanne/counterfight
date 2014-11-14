@@ -82,12 +82,14 @@
 	  	<ListView
 	        android:id="@+id/listview_navigationdrawer_allgroups"
 			android:layout_width="240dp"
-	        android:layout_height="wrap_content"
+	        android:layout_height="100sp"
 	        android:layout_gravity="left"
 	        android:choiceMode="singleChoice"
 	        android:divider="@android:color/transparent"
 	        android:textSize="15sp"
 	        android:padding="3sp"
+	        android:scrollbars="vertical"
+	        android:scrollbarStyle="insideInset"
 	        android:dividerHeight="dp" />
 
 	    <!-- Separator-Line -->
