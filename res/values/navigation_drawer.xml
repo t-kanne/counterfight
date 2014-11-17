@@ -5,7 +5,8 @@
     <string name="string_navigationdrawer_close">schließen</string>
     
     <string name="string_navigationdrawer_groupsettings">Gruppenverwaltung</string>
-    <string name="string_navigationdrawer_allgroups">Alle Gruppen</string>
+    <string name="string_navigationdrawer_groupsummary">Gruppenübersicht</string>
+    <string name="string_navigationdrawer_expandgroups">Alle Gruppen ausklappen</string>
     <string name="string_navigationdrawer_creategroup">Gruppe gründen</string>
     <string name="string_navigationdrawer_searchgroup">Gruppe beitreten</string>
     
