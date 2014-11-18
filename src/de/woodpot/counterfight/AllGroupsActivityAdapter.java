@@ -52,7 +52,7 @@ public class AllGroupsActivityAdapter extends BaseAdapter {
 		ViewHolder holder;
 		
 		if (convertView == null){
-			convertView = inflater.inflate(R.layout.category_row_layout2, null);
+			convertView = inflater.inflate(R.layout.all_groups_list_item, null);
 			
 			holder = new ViewHolder();
 			holder.groupName = (TextView) convertView.findViewById(R.id.user_row_groupName);

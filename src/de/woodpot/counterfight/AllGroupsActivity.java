@@ -12,8 +12,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -27,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -41,6 +44,9 @@ public class AllGroupsActivity extends ListActivity  {
 		
 		ListAdapter adapter;
 		
+		CheckInternetConnection checkInternet;	
+		final Context context = this;
+		
 		private ProgressDialog pDialog;
 		
 		ArrayList<String> searchList = new ArrayList<String>();
@@ -50,6 +56,8 @@ public class AllGroupsActivity extends ListActivity  {
 		
 		private String groupName;
 		private String groupId;
+		
+		TextView testNameTextView;
 			
 		// JSON Node names
 		private static final String TAG_SUCCESS = "success";
@@ -61,6 +69,11 @@ public class AllGroupsActivity extends ListActivity  {
 		private static final String TAG_USERFIRST = "user_first";
 		private static final String TAG_OWNPLACE = "own_place";
 		private static final String TAG_USERNAME = "username";
+		
+		private static final String TAG_GROUPNAMELAYOUT = "groupName";
+		private static final String TAG_USERFIRSTLAYOUT = "user_first";
+		private static final String TAG_OWNPLACELAYOUT = "own_place";
+	
 		
 		// JSONArray für Counterdaten
 		JSONArray counterData = null;
@@ -76,6 +89,9 @@ public class AllGroupsActivity extends ListActivity  {
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
 				
+			setContentView(R.layout.activity_all_groups);
+			
+			testNameTextView = (TextView) findViewById(R.id.group_name);
 			
 			Toast.makeText(this, "AllGroupsActivity", Toast.LENGTH_LONG).show();
 			
@@ -94,6 +110,8 @@ public class AllGroupsActivity extends ListActivity  {
 		@Override
 		public boolean onOptionsItemSelected(MenuItem item) {
 			
+		checkInternet = new CheckInternetConnection();		
+			
 		//ohne Funktion
 		switch (item.getItemId()) {
 			case R.id.action_settings:
@@ -102,11 +120,20 @@ public class AllGroupsActivity extends ListActivity  {
 	        return true;
 	            
 			case R.id.action_reload:
-			Intent intent2 = new Intent(this, AllGroupsActivity.class);
-			finish();
-			startActivity(intent2);
-	        return true;
-	            
+				
+				if(checkInternet.haveNetworkConnection(context)){
+					Log.d("GroupDetailActivity: ", "hasConnection() true!");	
+						
+					Intent intent2 = new Intent(this, AllGroupsActivity.class);
+					finish();
+					startActivity(intent2);
+					return true;
+			}
+			else{
+				Log.d("GroupDetailActivity: ", "hasConnection() false!");	
+				showFailConnection();
+			}
+			
 			default:
 	        return super.onOptionsItemSelected(item);
 	    }			
@@ -207,7 +234,7 @@ public class AllGroupsActivity extends ListActivity  {
 
 						counterData = json2.getJSONArray(TAG_COUNTER);
 						Log.d("AllGroupsActivityFragment JSON: ", "counterDataLenght: " + counterData.length());
-
+						/*
 						// looping through All items
 						for (int i = 0; i < counterData.length(); i++) {
 							JSONObject c = counterData.getJSONObject(i);
@@ -219,7 +246,7 @@ public class AllGroupsActivity extends ListActivity  {
 							
 							if (isCancelled()) break;
 						}
-						
+						*/
 						for (int i = 0; i < counterData.length(); i++) {
 							JSONObject c = counterData.getJSONObject(i);
 							
@@ -264,13 +291,13 @@ public class AllGroupsActivity extends ListActivity  {
 						/**
 						 * Updating parsed JSON data into ListView
 						 * */
-						ListAdapter adapter = new SimpleAdapter(
+						BaseAdapter adapter = new SimpleAdapter(
 								AllGroupsActivity.this, contactList,
-								R.layout.category_row_layout2, new String[] { TAG_GROUPNAME, TAG_USERFIRST,
+								R.layout.all_groups_list_item, new String[] { TAG_GROUPNAME, TAG_USERFIRST,
 										TAG_OWNPLACE }, new int[] { R.id.user_row_groupName,
 										R.id.user_row_first_place, R.id.user_row_own_place });
 						// updating listview
-						Log.d("AllGroupsActivityFragment JSON: ", "Adapterusers: " + users.toString());
+						//Log.d("AllGroupsActivityFragment JSON: ", "Adapterusers: " + users.toString());
 						setListAdapter (adapter);
 						
 						pDialog.dismiss();
@@ -300,15 +327,16 @@ public class AllGroupsActivity extends ListActivity  {
 			startActivity(intent);	
 			    
 		    }
-		    
-		    
-		    
-		    
-		    
-		   
+		
+		public void showFailConnection(){
+			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+			alertDialogBuilder.setTitle(R.string.string_groupdetailact_fail_alerttitle);
+			alertDialogBuilder.setMessage(R.string.string_groupdetailact_fail_alerttext);
+			alertDialogBuilder.setCancelable(false);
+			alertDialogBuilder.setPositiveButton(R.string.string_groupdetailact_fail_alertokay, null); 
+			AlertDialog alertDialog = alertDialogBuilder.create();
+			alertDialog.show();
 		}
-		
-		
-		
-		
-
+		    
+   
+		}

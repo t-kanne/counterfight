@@ -45,7 +45,11 @@
     <string name="string_groupdetailact_alerttitle">+1</string>
     <string name="string_groupdetailact_alerttext">Dein Counterstand wurde erhöht!</string>
     <string name="string_groupdetailact_alertokay">Gut!</string>
-
+    <string name="string_allgroupsact_view">Gruppenübersicht</string>
+    <string name="string_allgroupsact_first_place">1.Platz:</string>
+    <string name="string_groupdetailact_fail_alerttitle">Warnung</string>
+    <string name="string_groupdetailact_fail_alerttext">Du hast momentan leider keine Interverbindung..</string>
+    <string name="string_groupdetailact_fail_alertokay">OK</string>
 
 
 </resources>

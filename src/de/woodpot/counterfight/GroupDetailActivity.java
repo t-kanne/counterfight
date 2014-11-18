@@ -46,6 +46,8 @@ public class GroupDetailActivity extends ListActivity {
 	
 	final Context context = this;
 	
+	CheckInternetConnection checkInternet;		
+	
 	private ProgressDialog pDialog;
 	
 	// Server-Urls
@@ -314,24 +316,13 @@ public class GroupDetailActivity extends ListActivity {
 					/**
 					 * Updating parsed JSON data into ListView
 					 * */			
-					showAlert();
+					showCountConfirmation();
 				}
 			}); 
 		}
 		
 	}
-		
-	public void showAlert(){
-		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-		alertDialogBuilder.setTitle(R.string.string_groupdetailact_alerttitle);
-		alertDialogBuilder.setMessage(R.string.string_groupdetailact_alerttext);
-		alertDialogBuilder.setCancelable(false);
-		alertDialogBuilder.setPositiveButton(R.string.string_groupdetailact_alertokay, null); 
-		AlertDialog alertDialog = alertDialogBuilder.create();
-		alertDialog.show();
-
-	}
-	
+			
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 	    // Inflate the menu items for use in the action bar
@@ -343,7 +334,9 @@ public class GroupDetailActivity extends ListActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		
-		
+	checkInternet = new CheckInternetConnection();		
+	
+	
 	switch (item.getItemId()) {
 		case R.id.action_settings:
 			Intent intent = new Intent(this, SettingsActivity.class);
@@ -351,20 +344,57 @@ public class GroupDetailActivity extends ListActivity {
 			return true;
         
 		case R.id.action_reload:
-			new LoadGroupUser().execute();
-			BaseAdapter adapter = new SimpleAdapter(
-				GroupDetailActivity.this, contactList,
-                R.layout.group_detail_list_item, new String[] { TAG_USERNAME, TAG_COUNTERVALUE }, 
-                new int[] { R.id.user_row_username, R.id.user_countervalue });
+			
 
-		contactList.clear();
-		Log.d("GroupDetailActivity: ", "alte ListView gecleart");	
-		adapter.notifyDataSetChanged();
-		Log.d("GroupDetailActivity: ", "neue ListView erstellt");	
-        return true;
-            
+			if(checkInternet.haveNetworkConnection(context)){
+				Log.d("GroupDetailActivity: ", "hasConnection() true!");	
+				
+				new LoadGroupUser().execute();
+				BaseAdapter adapter = new SimpleAdapter(
+					GroupDetailActivity.this, contactList,
+	                R.layout.group_detail_list_item, new String[] { TAG_USERNAME, TAG_COUNTERVALUE }, 
+	                new int[] { R.id.user_row_username, R.id.user_countervalue });
+
+			contactList.clear();
+			Log.d("GroupDetailActivity: ", "alte ListView gecleart");	
+			adapter.notifyDataSetChanged();
+			Log.d("GroupDetailActivity: ", "neue ListView erstellt");	
+	        return true;
+	
+			}
+			else{
+				Log.d("GroupDetailActivity: ", "hasConnection() false!");	
+				showFailConnection();
+			}
+			
 		default:
-        return super.onOptionsItemSelected(item);
-    }			
+	        return super.onOptionsItemSelected(item);
+	
+		}			
 	}
+	
+	
+	
+	public void showCountConfirmation(){
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+		alertDialogBuilder.setTitle(R.string.string_groupdetailact_alerttitle);
+		alertDialogBuilder.setMessage(R.string.string_groupdetailact_alerttext);
+		alertDialogBuilder.setCancelable(false);
+		alertDialogBuilder.setPositiveButton(R.string.string_groupdetailact_alertokay, null); 
+		AlertDialog alertDialog = alertDialogBuilder.create();
+		alertDialog.show();
+	}
+	
+	public void showFailConnection(){
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+		alertDialogBuilder.setTitle(R.string.string_groupdetailact_fail_alerttitle);
+		alertDialogBuilder.setMessage(R.string.string_groupdetailact_fail_alerttext);
+		alertDialogBuilder.setCancelable(false);
+		alertDialogBuilder.setPositiveButton(R.string.string_groupdetailact_fail_alertokay, null); 
+		AlertDialog alertDialog = alertDialogBuilder.create();
+		alertDialog.show();
+	}
+	
+	
+	
 }
