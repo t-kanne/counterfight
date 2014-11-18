@@ -51,8 +51,10 @@ public class MainActivity extends ActionBarActivity implements OnChildClickListe
 	private static int LAYOUT_TEXT_ONLY = 3;
 	
 	// Menüeinträge
-	ArrayList<HashMap<String, Object>> groupItems = new ArrayList<HashMap<String, Object>>();	
-	ArrayList<Object> childItems = new ArrayList<Object>();
+	ArrayList<HashMap<String, Object>> groupItems = new ArrayList<HashMap<String, Object>>();						// Array-List für alle Gruppen
+	ArrayList<ArrayList<HashMap<String, Object>>> childItems = new ArrayList<ArrayList<HashMap<String, Object>>>();	// Array-List für alle Gruppenelemente
+	ArrayList<String> expandGroupsChild = new ArrayList<String>();													// Array-List für DYNNAMISCHE GRUPPEN
+	
 	
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	@Override
@@ -84,8 +86,6 @@ public class MainActivity extends ActionBarActivity implements OnChildClickListe
 		expListAdapter = new SimpleExpandableListAdapter(this, groupItems, childItems);
 		allgroupsListView.setAdapter(expListAdapter);
 		
-		// Größe der ExpandableListView anpassen
-		//allgroupsListView.setLayoutParams(new LinearLayout.LayoutParams(240, setListViewHeightBasedOnChildren(expListAdapter.getChildrenCount(0))));
 	
 		// OnClickListener für die NavigationDrawer-ARRAY-Items (einzelne Gruppen)
 		//allgroupsListView.setOnItemClickListener(new DrawerItemClickListener());
@@ -99,14 +99,14 @@ public class MainActivity extends ActionBarActivity implements OnChildClickListe
 		groupSettingsData.put("KEY_LAYOUT", LAYOUT_SECTION_TITLE);											// Layout
 		groupSettingsData.put("KEY_ICON", null);															// Section-Layout enthält kein Icon, daher null bei KEY_ICON
 		groupItems.add(groupSettingsData);	
-		
+		/*
 		// Gruppen aufklappen
 		HashMap<String, Object> expandGroupData = new HashMap<String, Object>();	
 		expandGroupData.put("KEY_TITLE", getString(R.string.string_navigationdrawer_expandgroups));			// Titel
 		expandGroupData.put("KEY_LAYOUT", LAYOUT_TEXT_ONLY);												// Layout
 		expandGroupData.put("KEY_ICON", null);																// LAYOUT_TEXT_ONLY enthält kein Icon, daher null bei KEY_ICON
 		groupItems.add(expandGroupData);	
-		
+		*/
 		// Accountverwaltung
 		HashMap<String, Object> accountSettingsData = new HashMap<String, Object>();
 		accountSettingsData.put("KEY_TITLE", getString(R.string.string_navigationdrawer_accountsettings));	// Titel
@@ -119,39 +119,86 @@ public class MainActivity extends ActionBarActivity implements OnChildClickListe
 		otherSettingsData.put("KEY_TITLE", getString(R.string.string_navigationdrawer_othersettings));		// Titel
 		otherSettingsData.put("KEY_LAYOUT", LAYOUT_SECTION_TITLE);												// Layout
 		otherSettingsData.put("KEY_ICON", null);															// LAYOUT_TEXT_ONLY enthält kein Icon, daher null bei KEY_ICON
-		groupItems.add(otherSettingsData);					
+		groupItems.add(otherSettingsData);		
+		
 	}
 
-	public void setChildGroupData() {	
+	public void setChildGroupData() {
 		// Gruppenverwaltung
-		ArrayList<String> groupSettingsChild = new ArrayList<String>();
-		groupSettingsChild.add(getString(R.string.string_navigationdrawer_groupsummary));
-		groupSettingsChild.add(getString(R.string.string_navigationdrawer_creategroup));
-		groupSettingsChild.add(getString(R.string.string_navigationdrawer_searchgroup));
-		childItems.add(groupSettingsChild);
+		ArrayList<HashMap<String, Object>> groupSettingsChildren = new ArrayList<HashMap<String, Object>>(); // Array-List für alle Elemente der Gruppenverwaltung		
+		HashMap<String, Object> groupSummaryData = new HashMap<String, Object>();					// HashMap für Gruppenübersicht-Element		
+		groupSummaryData.put("KEY_TITLE", getString(R.string.string_navigationdrawer_groupsummary));
+		groupSummaryData.put("KEY_ICON", R.drawable.ic_navdraw_allgroups);
+		groupSettingsChildren.add(groupSummaryData);												// Gruppenübersicht => Gruppenverwaltung
 		
-		// Gruppen aufklappen   --> Wird später dynamisch aus der AllGroupsActivity aufgerufen
-		ArrayList<String> expandGroupsChild = new ArrayList<String>();
+		HashMap<String, Object> createGroupChild = new HashMap<String, Object>();					// HashMap für Gruppe erstellen
+		createGroupChild.put("KEY_TITLE", getString(R.string.string_navigationdrawer_creategroup));
+		createGroupChild.put("KEY_ICON", R.drawable.ic_navdraw_creategroup);
+		groupSettingsChildren.add(createGroupChild);
+		
+		HashMap<String, Object> searchGroupChild = new HashMap<String, Object>();					// HashMap für Gruppe beitreten
+		searchGroupChild.put("KEY_TITLE", getString(R.string.string_navigationdrawer_searchgroup));
+		searchGroupChild.put("KEY_ICON", R.drawable.ic_navdraw_searchgroup);
+		groupSettingsChildren.add(searchGroupChild);
+		
+		childItems.add(groupSettingsChildren);														// In die Gesamt-Array-Liste packen
+		// -------------------------------------------------------------------------------------------------------------------------------------------
+		// ############################# AUSKOMMENTIERT, WEIL FOLGENDE SCHLEIFE ZU VIEL SPEICHER VERBRAUCHT ###########################################
+		// Gruppen ausklappen	- SONDERFALL: keine Icons notwendig, weil es immer dasselbe ist. Wird im Adapter festgelegt.
+		/*
+		ArrayList<HashMap<String, Object>> individualUserGroupChildren = new ArrayList<HashMap<String, Object>>(); // Array-List für alle Usergruppen
+		HashMap<String, Object> individualUserGroup;
+		for (int i = 0; this.getIndividualGroupsOfUser().size() > i; i++) {
+			individualUserGroup = new HashMap<String, Object>();											// HashMap für persönliche Gruppe
+			individualUserGroup.put("KEY_TITLE", this.getIndividualGroupsOfUser().get(i));					// Namen aus Array-Liste lesen
+			individualUserGroup.put("KEY_ICON", null);														// Icon wird hier nicht benötigt, bereits als Standard
+			individualUserGroupChildren.add(searchGroupChild);
+		}
+		childItems.add(individualUserGroupChildren); 
+		*/	
+		// -------------------------------------------------------------------------------------------------------------------------------------------
+		// Accountverwaltung
+		ArrayList<HashMap<String, Object>> accountSettingsChildren = new ArrayList<HashMap<String, Object>>(); // Array-List für Accountsetting-Elemente	
+		HashMap<String, Object> changeAccountDataChild = new HashMap<String, Object>();						// HashMap für Gruppenübersicht-Element		
+		changeAccountDataChild.put("KEY_TITLE", getString(R.string.string_navigationdrawer_changeaccountdata));
+		changeAccountDataChild.put("KEY_ICON", R.drawable.ic_navdraw_changepassword);
+		accountSettingsChildren.add(changeAccountDataChild);												// Accountdaten ändern => Accountverwaltung
+			
+		HashMap<String, Object> logoutChild = new HashMap<String, Object>();								// HashMap für Logout-Element		
+		logoutChild.put("KEY_TITLE", getString(R.string.string_navigationdrawer_logout));
+		logoutChild.put("KEY_ICON", R.drawable.ic_navdraw_logout);
+		accountSettingsChildren.add(logoutChild);															// Logout => Accountverwaltung	
+		
+		childItems.add(accountSettingsChildren);															// In die Gesamt-Array-Liste packen
+		// -------------------------------------------------------------------------------------------------------------------------------------------
+		// sonstige Einstellungen
+		ArrayList<HashMap<String, Object>> otherSettingsChildren = new ArrayList<HashMap<String, Object>>();// Array-List für sonstige Einstellungen-Elemente		
+		HashMap<String, Object> settingsChild = new HashMap<String, Object>();								// HashMap für Einstellungen-Element		
+		settingsChild.put("KEY_TITLE", getString(R.string.string_navigationdrawer_settings));
+		settingsChild.put("KEY_ICON", R.drawable.ic_navdraw_settings);
+		otherSettingsChildren.add(settingsChild);															// Einstellungen => sonstige Einstellungen	
+		
+		HashMap<String, Object> faqChild = new HashMap<String, Object>();									// HashMap für FAQ-Element		
+		faqChild.put("KEY_TITLE", getString(R.string.string_navigationdrawer_faq));
+		faqChild.put("KEY_ICON", R.drawable.ic_navdraw_faq);
+		otherSettingsChildren.add(faqChild);																// FAQ => sonstige Einstellungen	
+		
+		HashMap<String, Object> developerInfoChild = new HashMap<String, Object>();							// HashMap für Info-Element		
+		developerInfoChild.put("KEY_TITLE", getString(R.string.string_navigationdrawer_developerinfo));
+		developerInfoChild.put("KEY_ICON", R.drawable.ic_navdraw_developerinfo);
+		otherSettingsChildren.add(developerInfoChild);														// Info => sonstige Einstellungen
+		
+		childItems.add(otherSettingsChildren);																// In die Gesamt-Array-Liste packen
+		
+	}
+	
+	public ArrayList<String> getIndividualGroupsOfUser(){
 		expandGroupsChild.add("Gruppe 1");
 		expandGroupsChild.add("Gruppe 2");
 		expandGroupsChild.add("Gruppe 3");
 		expandGroupsChild.add("Gruppe 4");
 		expandGroupsChild.add("Gruppe 5");
-		childItems.add(expandGroupsChild); 
-		
-		// Accountverwaltung
-		ArrayList<String> accountSettingsChild = new ArrayList<String>();
-		accountSettingsChild.add(getString(R.string.string_navigationdrawer_changeaccountdata));
-		accountSettingsChild.add(getString(R.string.string_navigationdrawer_logout));
-		childItems.add(accountSettingsChild);
-		
-		// sonstige Einstellungen
-		ArrayList<String> otherSettingsChild = new ArrayList<String>();
-		otherSettingsChild.add(getString(R.string.string_navigationdrawer_settings));
-		otherSettingsChild.add(getString(R.string.string_navigationdrawer_faq));
-		otherSettingsChild.add(getString(R.string.string_navigationdrawer_developerinfo));
-		childItems.add(otherSettingsChild);
-		
+		return expandGroupsChild;
 	}
 	
 
