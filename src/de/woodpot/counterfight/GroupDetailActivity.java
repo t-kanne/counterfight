@@ -42,7 +42,7 @@ public class GroupDetailActivity extends ListActivity {
 	ListAdapter adapter;
 	
 	Button increaseCounterButton;
-	TextView groupName;
+	TextView groupNameTextView;
 	
 	final Context context = this;
 	
@@ -79,7 +79,7 @@ public class GroupDetailActivity extends ListActivity {
 		
 		setContentView(R.layout.activity_group_detail);
 		
-		groupName = (TextView) findViewById(R.id.group_name);
+		groupNameTextView = (TextView) findViewById(R.id.group_name);
 		increaseCounterButton = (Button) findViewById(R.id.increase_button);
 		
         contactList = new ArrayList<HashMap<String, String>>();
@@ -122,7 +122,7 @@ public class GroupDetailActivity extends ListActivity {
 			groupNameIntent = extras.getString("groupName");	
 			Log.d("GroupDetailActivity", "intent groupId: " + groupIdIntent);
 			Log.d("GroupDetailActivity,", "intent groupName: " + groupNameIntent);
-			groupName.setText(groupNameIntent);
+			groupNameTextView.setText(groupNameIntent);
 		}
 		else{
 			Log.d("GroupDetailActivity, Intent von AllGroups:", "extras: fail");	

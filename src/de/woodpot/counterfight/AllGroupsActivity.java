@@ -39,6 +39,8 @@ public class AllGroupsActivity extends ListActivity  {
 		JSONParser jParser = new JSONParser();
 		SessionManager sm;
 		
+		ListAdapter adapter;
+		
 		private ProgressDialog pDialog;
 		
 		ArrayList<String> searchList = new ArrayList<String>();
@@ -74,9 +76,11 @@ public class AllGroupsActivity extends ListActivity  {
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
 				
-			if (savedInstanceState == null) {
-			}
+			
 			Toast.makeText(this, "AllGroupsActivity", Toast.LENGTH_LONG).show();
+			
+			contactList = new ArrayList<HashMap<String, String>>();
+			
 			new LoadAllUserCounter().execute();
 			
 			registerForContextMenu(getListView());
@@ -269,7 +273,7 @@ public class AllGroupsActivity extends ListActivity  {
 						Log.d("AllGroupsActivityFragment JSON: ", "Adapterusers: " + users.toString());
 						setListAdapter (adapter);
 						
-						 pDialog.dismiss();
+						pDialog.dismiss();
 					}
 				}); 
 			}
@@ -283,6 +287,7 @@ public class AllGroupsActivity extends ListActivity  {
 
             @SuppressWarnings("unchecked")
 			HashMap<String,String> map=(HashMap<String, String>) list.getItemAtPosition(position);
+            Log.d("GroupDetailActivity:", "hashmap map:" + map);
             groupId = map.get(TAG_GROUPID);
             groupName = map.get(TAG_GROUPNAME);
             

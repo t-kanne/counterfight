@@ -33,7 +33,8 @@ public class LoginActivity extends ActionBarActivity {
 	
 	private String usernameString;
 	private String passwordString;
-	private String groupId;
+	private String groupIdIntent;
+	private String groupNameIntent;
 	
 	// Objekt vom SessionManager erstellen
 	SessionManager sessionManager;
@@ -51,6 +52,7 @@ public class LoginActivity extends ActionBarActivity {
 	private static final String TAG_USERNAME = "username";
 	private static final String TAG_PASSWORD = "password";
 	private static final String TAG_GROUPID = "groupId";
+	private static final String TAG_GROUPNAME = "groupName";
 	
 	// JSON Arrays
 	JSONArray userData = null;
@@ -129,8 +131,10 @@ public class LoginActivity extends ActionBarActivity {
 					// Erstellen der Session
 					sessionManager.createSession(usernameString, passwordString);
 					
-					groupId = json.getString("groupId");
-					Log.d("LoginActivity: ", "groupId Json: " + groupId);
+					groupIdIntent = json.getString("groupId");
+					Log.d("LoginActivity: ", "groupId Json: " + groupIdIntent);
+					groupNameIntent = json.getString("groupName");
+					Log.d("LoginActivity: ", "groupName Json: " + groupNameIntent);
 				}
 				else {
 					LoginActivity.this.runOnUiThread(new Runnable() {
@@ -228,8 +232,9 @@ public class LoginActivity extends ActionBarActivity {
 			
 			if (noOfGroupsInt == 1) {
 				Intent intent = new Intent(this, GroupDetailActivity.class);
-				intent.putExtra("groupId", groupId);
-				Log.d("LoginActivity", "groupId: " + groupId);
+				intent.putExtra("groupId", groupIdIntent);
+				intent.putExtra("groupName", groupNameIntent);
+				Log.d("LoginActivity", "groupId: " + groupIdIntent +groupNameIntent);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
 				startActivity(intent);
 				finish();
