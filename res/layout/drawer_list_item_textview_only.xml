@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!--   <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/title_linearlayout"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:clickable="true"
-    android:background="?attr/selectableItemBackground" > -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/textview_navigationdrawer_textviewonly_row"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="5sp"
+    android:textColor="#FFF"
+    android:textSize="18sp" >
 
-	<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:id="@+id/textview_navigationdrawer_grouptitle"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:textSize="20sp"
-	    android:textColor="#FFF" >
-	</TextView>
-<!--  </ScrollView> -->
+</TextView>

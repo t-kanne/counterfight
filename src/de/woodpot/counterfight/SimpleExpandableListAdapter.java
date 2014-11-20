@@ -20,17 +20,17 @@ import android.widget.TextView;
 
 class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 	private Context context;
-	public ArrayList<ArrayList<HashMap<String, Object>>> childItems;
-	public ArrayList<HashMap<String, Object>> childItem;
-	ArrayList<HashMap<String, Object>> groupItems;
-	HashMap<String, Object> groupData;
-	HashMap<String, Object> childData;
+	public ArrayList<DrawerItem[]> childItems;
+	public DrawerItem[] childItem;
+	ArrayList<DrawerItem> groupItems;
+	DrawerItem groupData;
+	DrawerItem childData;
 	ArrayList<String> individualGroups;
 	public LayoutInflater inflater;
 	public Activity activity;
 	public View viewHolder;
 
-	public SimpleExpandableListAdapter(Context context, ArrayList<HashMap<String, Object>> groupItems, ArrayList<ArrayList<HashMap<String, Object>>> childItems) {
+	public SimpleExpandableListAdapter(Context context, ArrayList<DrawerItem> groupItems, ArrayList<DrawerItem[]> childItems) {
 		super();
 		this.context = context;
 		this.groupItems = groupItems;
@@ -38,8 +38,8 @@ class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 			
 		Log.d("SimpleExpListAdapter", "Konstruktor ausgeführt");
 		Log.d("SimpleExpListAdapter", "Context: " + context.toString());
-		Log.d("SimpleExpListAdapter", "groupItem: " + groupItems.get(0));
-		Log.d("SimpleExpListAdapter", "childItem: " + childItems.get(0));
+		Log.d("SimpleExpListAdapter", "groupItems: " + groupItems.toString());
+		Log.d("SimpleExpListAdapter", "childItem: " + childItems.toString());
 	}
 	
 
@@ -57,7 +57,13 @@ class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 		Log.d("SimpleExpAdapter: ", "getChildView() ausgeführt");
 		
 		childItem = childItems.get(groupPosition);
-		childData = childItem.get(childPosition);
+		Log.d("SimpleExpListAdapter", "childItems.get(" + groupPosition + ") groupPosition");
+		
+		if (childPosition < childItem.length) {
+			childData = childItem[childPosition];
+		}
+
+		Log.d("SimpleExpListAdapter", "gchildItem[" + childPosition + "] childPosition");
 		
 		View v = convertView;
 		
@@ -67,9 +73,9 @@ class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 	        v = inflater.inflate(R.layout.drawer_list_item, parent, false);
 		}
 		TextView childText = (TextView) v.findViewById(R.id.textview_navigationdrawer_row);
-		childText.setText(childData.get("KEY_TITLE").toString());
+		childText.setText(childData.getTitle());
 		ImageView childImage = (ImageView) v.findViewById(R.id.imageview_navigationdrawer_row);
-		childImage.setImageResource((int) childData.get("KEY_ICON"));
+		childImage.setImageResource(childData.getIcon());
 		
 		
 		viewHolder = v;
@@ -80,7 +86,7 @@ class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 	public int getChildrenCount(int groupPosition) {
 		int count = 0;
 		try {
-			count = childItems.get(groupPosition).size();
+			count = childItems.get(groupPosition).length;
 		} catch (IndexOutOfBoundsException | NullPointerException e) {
 			Log.d("SimpleExpListAdapter", "keine Child-Elemente");
 			return count;
@@ -128,7 +134,7 @@ class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 		Log.d("SimpleExpListAdapter", "getGroupView groupPos: " + groupPosition);
 		
 		groupData = groupItems.get(groupPosition);
-		int layoutCase = (int) groupData.get("KEY_LAYOUT");				// Nummer des bevorzugten Layouts auslesen
+		int layoutCase = (int) groupData.getLayoutType();				// Nummer des bevorzugten Layouts auslesen
 		
 		if (convertView == null) {
 			switch (layoutCase) {				
@@ -154,21 +160,21 @@ class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 		switch (layoutCase) {	
 			case 1: 
 				mGroupText = (TextView) v.findViewById(R.id.textview_navigationdrawer_sectiontitle);
-				Log.d("SimpleExpListAdapter", "case1 KEY_TITLE: " + groupData.get("KEY_TITLE").toString());
-				mGroupText.setText(groupData.get("KEY_TITLE").toString());
+				Log.d("SimpleExpListAdapter", "case1 KEY_TITLE: " + groupData.getTitle());
+				mGroupText.setText(groupData.getTitle());
 				break;
 					
 			case 2:
 				mGroupText = (TextView) v.findViewById(R.id.textview_navigationdrawer_row);
-				mGroupText.setText(groupData.get("KEY_TITLE").toString());
+				mGroupText.setText(groupData.getTitle());
 				mGroupIcon = (ImageView) v.findViewById(R.id.imageview_navigationdrawer_row);
-				mGroupIcon.setImageResource((int) groupData.get("KEY_ICON"));
+				mGroupIcon.setImageResource(groupData.getIcon());
 				break;
 					
 			case 3:
-				mGroupText = (TextView) v.findViewById(R.id.textview_navigationdrawer_grouptitle);
-				Log.d("SimpleExpListAdapter", "case3 KEY_TITLE: " + groupData.get("KEY_TITLE").toString());
-				mGroupText.setText(groupData.get("KEY_TITLE").toString());	
+				mGroupText = (TextView) v.findViewById(R.id.textview_navigationdrawer_textviewonly_row);
+				Log.d("SimpleExpListAdapter", "case3 KEY_TITLE: " + groupData.getTitle());
+				mGroupText.setText(groupData.getTitle());	
 				break;
 		};
 		
