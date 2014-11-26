@@ -27,6 +27,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
+import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -65,7 +66,23 @@ public class MainActivity extends ActionBarActivity implements OnChildClickListe
 		setGroupData();
 		setChildGroupData();
 		initializeDrawer();
-
+		
+		// Gruppen standardmäßig ausklappen
+		allgroupsListView.expandGroup(0);																	
+		allgroupsListView.expandGroup(2);																	
+		allgroupsListView.expandGroup(3);	
+		
+		allgroupsListView.setOnGroupClickListener(new OnGroupClickListener() {
+			@Override
+			public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) { 
+				if (groupPosition == 1) {		// Nur Gruppe 1 (Einzelgruppen) kann eingeklappt werden
+					return false;	
+				} else {
+					return true; // Gruppen können nicht eingeklappt werden
+				}	
+			}
+		});		
+		
 		getSupportActionBar();
 		getSupportActionBar().setHomeButtonEnabled(true);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -85,7 +102,6 @@ public class MainActivity extends ActionBarActivity implements OnChildClickListe
 		// Adapter verbinden
 		expListAdapter = new SimpleExpandableListAdapter(this, groupItems, childItems);
 		allgroupsListView.setAdapter(expListAdapter);
-		
 	
 		// OnClickListener für die NavigationDrawer-ARRAY-Items (einzelne Gruppen)
 		//allgroupsListView.setOnItemClickListener(new DrawerItemClickListener());
@@ -101,6 +117,7 @@ public class MainActivity extends ActionBarActivity implements OnChildClickListe
 		DrawerItem groupSettingsChild = new DrawerItem();													// DrawerItem-Object für Gruppenverwaltung
 		groupSettingsChild.setTitle(getString(R.string.string_navigationdrawer_groupsettings));				// Titel
 		groupSettingsChild.setLayoutType(LAYOUT_SECTION_TITLE);												// Section-Layout enthält kein Icon
+		groupSettingsChild.setIcon(R.drawable.ic_navdraw_onegroup);
 		groupItems.add(groupSettingsChild);																	// ab in die Group-ArrayList damit
 		
 		// Gruppen aufklappen (1)
@@ -113,13 +130,13 @@ public class MainActivity extends ActionBarActivity implements OnChildClickListe
 		DrawerItem accountSettingsChild = new DrawerItem();
 		accountSettingsChild.setTitle(getString(R.string.string_navigationdrawer_accountsettings));			// Titel
 		accountSettingsChild.setLayoutType(LAYOUT_SECTION_TITLE);											
-		groupItems.add(accountSettingsChild);															
+		groupItems.add(accountSettingsChild);
 		
 		// sonstige Einstellungen (3)
 		DrawerItem otherSettingsChild = new DrawerItem();		
 		otherSettingsChild.setTitle(getString(R.string.string_navigationdrawer_othersettings));				// Titel
 		otherSettingsChild.setLayoutType(LAYOUT_SECTION_TITLE);												// Layout
-		groupItems.add(otherSettingsChild);				
+		groupItems.add(otherSettingsChild);			
 	}
 
 	public void setChildGroupData() {
@@ -142,7 +159,7 @@ public class MainActivity extends ActionBarActivity implements OnChildClickListe
 		
 		childItems.add(groupSettingsChildren);	
 		// -------------------------------------------------------------------------------------------------------------------------------------------
-		// Gruppen ausklappen	- SONDERFALL: keine Icons notwendig, weil es immer dasselbe ist. Wird im Adapter festgelegt.
+		// Gruppen ausklappen	- SONDERFALL: für jedes Element wird hier dasselbe Icon verwendet
 		
 		DrawerItem[] individualUserGroupChildren = new DrawerItem[getIndividualGroupsOfUser().size()]; // Array-List für alle Usergruppen
 		Log.d("MainActivity: ", "getIndividualGroupsOfUser().size() = " + getIndividualGroupsOfUser().size());
@@ -150,6 +167,7 @@ public class MainActivity extends ActionBarActivity implements OnChildClickListe
 		for (int i = 0; this.getIndividualGroupsOfUser().size() > i; i++) {
 			individualUserGroup = new DrawerItem();													// DrawerItem-Object für persönliche Gruppe
 			individualUserGroup.setTitle(this.getIndividualGroupsOfUser().get(i));					// Namen aus Array-Liste lesen
+			individualUserGroup.setIcon(R.drawable.ic_navdraw_onegroup);
 			individualUserGroupChildren[i] = individualUserGroup;
 		}
 		childItems.add(individualUserGroupChildren); 

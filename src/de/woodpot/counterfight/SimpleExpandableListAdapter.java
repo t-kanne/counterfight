@@ -28,7 +28,8 @@ class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 	ArrayList<String> individualGroups;
 	public LayoutInflater inflater;
 	public Activity activity;
-	public View viewHolder;
+	int layoutCase;
+	ViewHolderItem viewHolder;
 
 	public SimpleExpandableListAdapter(Context context, ArrayList<DrawerItem> groupItems, ArrayList<DrawerItem[]> childItems) {
 		super();
@@ -54,31 +55,41 @@ class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 
 	@Override
 	public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-		Log.d("SimpleExpAdapter: ", "getChildView() ausgeführt");
-		
-		childItem = childItems.get(groupPosition);
-		Log.d("SimpleExpListAdapter", "childItems.get(" + groupPosition + ") groupPosition");
-		
-		if (childPosition < childItem.length) {
-			childData = childItem[childPosition];
-		}
-
-		Log.d("SimpleExpListAdapter", "gchildItem[" + childPosition + "] childPosition");
-		
+		Log.d("SimpleExpAdapter: ", "getChildView() ausgeführt");		
 		View v = convertView;
+		Log.d("SimpleExpListAdapter", "childItems.get(" + groupPosition + ") groupPosition");
+				
+		v = convertView;
 		
 		if (convertView == null) {
 			Log.d("SimpleExpListAdapter", "getChildView childPos: " + childPosition);
+			
+			// inflate the layout
 			inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	        v = inflater.inflate(R.layout.drawer_list_item, parent, false);
+	        
+	        // set up the viewHolder
+			viewHolder = new ViewHolderItem();
+			viewHolder.childText = (TextView) v.findViewById(R.id.textview_navigationdrawer_row);
+			viewHolder.childIcon = (ImageView) v.findViewById(R.id.imageview_navigationdrawer_row);
+			
+			// store the holder with the view
+			v.setTag(viewHolder);
+		} else {
+			viewHolder = (ViewHolderItem) convertView.getTag();
 		}
-		TextView childText = (TextView) v.findViewById(R.id.textview_navigationdrawer_row);
-		childText.setText(childData.getTitle());
-		ImageView childImage = (ImageView) v.findViewById(R.id.imageview_navigationdrawer_row);
-		childImage.setImageResource(childData.getIcon());
-		
-		
-		viewHolder = v;
+
+		if (childPosition < childItem.length) {
+			childData = childItem[childPosition];
+			
+			if (childData != null) {
+				// use viewHolder for TextView
+				viewHolder.childText.setText(childData.getTitle());
+				viewHolder.childText.setTag(groupData.getTitle());
+				viewHolder.childIcon.setImageResource(childData.getIcon());
+			}
+		}
+		Log.d("SimpleExpListAdapter", "gchildItem[" + childPosition + "] childPosition");
 		return v;
 	}
 
@@ -126,59 +137,63 @@ class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 
 	@Override
 	public View getGroupView(int groupPosition, boolean isExpanded,	View convertView, ViewGroup parent) {
-
 		View v = convertView;
-		TextView mGroupText;
-		ImageView mGroupIcon;
-		
 		Log.d("SimpleExpListAdapter", "getGroupView groupPos: " + groupPosition);
 		
 		groupData = groupItems.get(groupPosition);
-		int layoutCase = (int) groupData.getLayoutType();				// Nummer des bevorzugten Layouts auslesen
+		layoutCase = groupData.getLayoutType();				// Nummer des bevorzugten Layouts auslesen
 		
 		if (convertView == null) {
+	        viewHolder = new ViewHolderItem();
+	        
 			switch (layoutCase) {				
 				case 1: 
 					inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			        v = inflater.inflate(R.layout.drawer_section_title, parent, false);
+			        v = inflater.inflate(R.layout.drawer_section_title, parent, false);			        
+			        viewHolder.groupText = (TextView) v.findViewById(R.id.textview_navigationdrawer_sectiontitle);
 					break;
 					
 				case 2:
 					Log.d("SimpleExpListAdapter", "LayoutCase: " + layoutCase);
 					inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			        v = inflater.inflate(R.layout.drawer_list_item, parent, false);
+			        viewHolder.groupText = (TextView) v.findViewById(R.id.textview_navigationdrawer_row);
+					viewHolder.groupIcon = (ImageView) v.findViewById(R.id.imageview_navigationdrawer_row);
 			        break;
 					
 				case 3: 
 					Log.d("SimpleExpListAdapter", "LayoutCase: " + layoutCase);
 					inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			        v = inflater.inflate(R.layout.drawer_list_item_textview_only, parent, false);
+			        viewHolder.groupText = (TextView) v.findViewById(R.id.textview_navigationdrawer_textviewonly_row);
 			        break;
-			};
+			}
+			v.setTag(viewHolder);			
+		} else {
+			viewHolder = (ViewHolderItem) v.getTag();
 		}
-			
-		switch (layoutCase) {	
-			case 1: 
-				mGroupText = (TextView) v.findViewById(R.id.textview_navigationdrawer_sectiontitle);
-				Log.d("SimpleExpListAdapter", "case1 KEY_TITLE: " + groupData.getTitle());
-				mGroupText.setText(groupData.getTitle());
-				break;
-					
-			case 2:
-				mGroupText = (TextView) v.findViewById(R.id.textview_navigationdrawer_row);
-				mGroupText.setText(groupData.getTitle());
-				mGroupIcon = (ImageView) v.findViewById(R.id.imageview_navigationdrawer_row);
-				mGroupIcon.setImageResource(groupData.getIcon());
-				break;
-					
-			case 3:
-				mGroupText = (TextView) v.findViewById(R.id.textview_navigationdrawer_textviewonly_row);
-				Log.d("SimpleExpListAdapter", "case3 KEY_TITLE: " + groupData.getTitle());
-				mGroupText.setText(groupData.getTitle());	
-				break;
-		};
+		
+		if (groupData != null) {
+			switch (layoutCase) {	
+				case 1: 				
+					viewHolder.groupText.setText(groupData.getTitle());	
+					Log.d("SimpleExpListAdapter", "case1 KEY_TITLE: " + groupData.getTitle());				
+					break;
+						
+				case 2:
+					viewHolder.groupText.setText(groupData.getTitle());
+					viewHolder.groupIcon.setImageResource(groupData.getIcon());
+					break;
+						
+				case 3:
+					viewHolder.groupText.setText(groupData.getTitle());
+					Log.d("SimpleExpListAdapter", "case3 KEY_TITLE: " + groupData.getTitle());
+					break;
+			}
+		}
 		
 		Log.d("SimpleExpListAdapter", "View: " + v);
+		childItem = childItems.get(groupPosition);
 		return v;
 	}
 
@@ -190,6 +205,13 @@ class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 	@Override
 	public boolean isChildSelectable(int groupPosition, int childPosition) {
 		return false;
+	}
+	
+	static class ViewHolderItem {
+		TextView childText;
+		TextView groupText;	
+		ImageView childIcon;
+		ImageView groupIcon;
 	}
 
 }
