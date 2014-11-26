@@ -34,9 +34,9 @@
 	   	tools:context=".RelativeLayout"
 	   	android:background="#3D3D3D" >
 		
-	    <!--  ListView mit allen Gruppen des Nutzers -->
+	    <!--  ListView, die gesamtes Menü umfasst -->
 	    <ExpandableListView
-            android:id="@+id/listview_navigationdrawer_allgroups"
+            android:id="@+id/listview_navigationdrawer_mainmenu"
             android:layout_width="260dp"
             android:layout_height="match_parent"
             android:layout_gravity="start"

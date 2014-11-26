@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -32,9 +33,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
-public class MainActivity extends ActionBarActivity implements OnChildClickListener {
+public class MainActivity extends ActionBarActivity {
 	
 	/** Die MainActivity ist für den Nutzer im Prinzip nicht sichtbar. Sie entscheidet nur,
 	 * wohin der Nutzer geleitet werden soll und ist Layout für den NavigationDrawer
@@ -44,7 +46,7 @@ public class MainActivity extends ActionBarActivity implements OnChildClickListe
 	private DrawerLayout drawer;
 	private ActionBarDrawerToggle toggle;
 	SimpleExpandableListAdapter expListAdapter;
-	private ExpandableListView allgroupsListView;
+	private ExpandableListView expListView;
 	
 	// Layout-Konstanten
 	private static int LAYOUT_SECTION_TITLE = 1;
@@ -62,32 +64,40 @@ public class MainActivity extends ActionBarActivity implements OnChildClickListe
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		getSupportActionBar();
+		getSupportActionBar().setHomeButtonEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		setGroupData();
 		setChildGroupData();
 		initializeDrawer();
 		
-		// Gruppen standardmäßig ausklappen
-		allgroupsListView.expandGroup(0);																	
-		allgroupsListView.expandGroup(2);																	
-		allgroupsListView.expandGroup(3);	
 		
-		allgroupsListView.setOnGroupClickListener(new OnGroupClickListener() {
+		// ***************************************************************************************
+		// AB HIER: ClickListener für den NavigationDrawer
+		// ***************************************************************************************
+		
+		expListView.setOnGroupClickListener(new OnGroupClickListener() {
 			@Override
 			public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) { 
-				if (groupPosition == 1) {		// Nur Gruppe 1 (Einzelgruppen) kann eingeklappt werden
+				if (getIndividualGroupsOfUser().size() > 0 && groupPosition == 1) {		// Nur Gruppe 1 (Einzelgruppen) kann eingeklappt werden
 					return false;	
 				} else {
 					return true; // Gruppen können nicht eingeklappt werden
 				}	
 			}
-		});		
+		});	
 		
-		getSupportActionBar();
-		getSupportActionBar().setHomeButtonEnabled(true);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-	
-		
+		expListView.setOnChildClickListener(new OnChildClickListener() {
+			
+			@Override
+			public boolean onChildClick(ExpandableListView parent, View v,
+					int groupPosition, int childPosition, long id) {
+					return false;
+			}
+		});
+			
 	}
 	
 	public void initializeDrawer(){
@@ -97,15 +107,20 @@ public class MainActivity extends ActionBarActivity implements OnChildClickListe
 		drawer.setDrawerListener(toggle);
 		
 		// ExpandableListView finden
-		allgroupsListView = (ExpandableListView) findViewById(R.id.listview_navigationdrawer_allgroups);
+		expListView = (ExpandableListView) findViewById(R.id.listview_navigationdrawer_mainmenu);
 		
 		// Adapter verbinden
 		expListAdapter = new SimpleExpandableListAdapter(this, groupItems, childItems);
-		allgroupsListView.setAdapter(expListAdapter);
-	
-		// OnClickListener für die NavigationDrawer-ARRAY-Items (einzelne Gruppen)
-		//allgroupsListView.setOnItemClickListener(new DrawerItemClickListener());
-		//allgroupsListView.setOnChildClickListener(this);	
+		expListView.setAdapter(expListAdapter);
+		
+		// Gruppen standardmäßig ausklappen
+		expListView.expandGroup(0);
+		if (getIndividualGroupsOfUser().size() < 1) {
+			expListView.expandGroup(1);	
+		}
+		expListView.expandGroup(2);																	
+		expListView.expandGroup(3);	
+		expListView.setGroupIndicator(null);	
 	}
 	
 	// ######### WICHTIG #############
@@ -120,12 +135,15 @@ public class MainActivity extends ActionBarActivity implements OnChildClickListe
 		groupSettingsChild.setIcon(R.drawable.ic_navdraw_onegroup);
 		groupItems.add(groupSettingsChild);																	// ab in die Group-ArrayList damit
 		
-		// Gruppen aufklappen (1)
-		DrawerItem expandGroupData = new DrawerItem();	
-		expandGroupData.setTitle(getString(R.string.string_navigationdrawer_expandgroups));			// Titel
-		expandGroupData.setLayoutType(LAYOUT_TEXT_ONLY);												// Layout															// LAYOUT_TEXT_ONLY enthält kein Icon, daher null bei KEY_ICON
-		groupItems.add(expandGroupData);	
-		
+		if (getIndividualGroupsOfUser().size() > 0) {														// "Gruppen aufklappen" nur zeigen, wenn vorhanden
+			// Gruppen aufklappen (1)
+			DrawerItem expandGroupData = new DrawerItem();	
+			expandGroupData.setTitle(getString(R.string.string_navigationdrawer_expandgroups));					// Titel
+			expandGroupData.setLayoutType(LAYOUT_TEXT_ONLY);													// Layout // LAYOUT_TEXT_ONLY enthält kein Icon, daher null bei KEY_ICON
+			expandGroupData.setExtras(R.string.string_navigationdrawer_collapsegroups);							// Extra: zusätzlicher Titel bei ausgeklapptem Menü
+			groupItems.add(expandGroupData);
+		}
+			
 		// Accountverwaltung (2)
 		DrawerItem accountSettingsChild = new DrawerItem();
 		accountSettingsChild.setTitle(getString(R.string.string_navigationdrawer_accountsettings));			// Titel
@@ -160,17 +178,18 @@ public class MainActivity extends ActionBarActivity implements OnChildClickListe
 		childItems.add(groupSettingsChildren);	
 		// -------------------------------------------------------------------------------------------------------------------------------------------
 		// Gruppen ausklappen	- SONDERFALL: für jedes Element wird hier dasselbe Icon verwendet
-		
-		DrawerItem[] individualUserGroupChildren = new DrawerItem[getIndividualGroupsOfUser().size()]; // Array-List für alle Usergruppen
-		Log.d("MainActivity: ", "getIndividualGroupsOfUser().size() = " + getIndividualGroupsOfUser().size());
-		DrawerItem individualUserGroup;
-		for (int i = 0; this.getIndividualGroupsOfUser().size() > i; i++) {
-			individualUserGroup = new DrawerItem();													// DrawerItem-Object für persönliche Gruppe
-			individualUserGroup.setTitle(this.getIndividualGroupsOfUser().get(i));					// Namen aus Array-Liste lesen
-			individualUserGroup.setIcon(R.drawable.ic_navdraw_onegroup);
-			individualUserGroupChildren[i] = individualUserGroup;
+		if (getIndividualGroupsOfUser().size() > 0) {
+			DrawerItem[] individualUserGroupChildren = new DrawerItem[getIndividualGroupsOfUser().size()]; // Array-List für alle Usergruppen
+			Log.d("MainActivity: ", "getIndividualGroupsOfUser().size() = " + getIndividualGroupsOfUser().size());
+			DrawerItem individualUserGroup;
+			for (int i = 0; this.getIndividualGroupsOfUser().size() > i; i++) {
+				individualUserGroup = new DrawerItem();													// DrawerItem-Object für persönliche Gruppe
+				individualUserGroup.setTitle(this.getIndividualGroupsOfUser().get(i));					// Namen aus Array-Liste lesen
+				individualUserGroup.setIcon(R.drawable.ic_navdraw_onegroup);
+				individualUserGroupChildren[i] = individualUserGroup;
+			}
+			childItems.add(individualUserGroupChildren); 
 		}
-		childItems.add(individualUserGroupChildren); 
 		// -------------------------------------------------------------------------------------------------------------------------------------------
 		// Accountverwaltung
 		DrawerItem[] accountSettingsChildren = new DrawerItem[2];
@@ -213,6 +232,7 @@ public class MainActivity extends ActionBarActivity implements OnChildClickListe
 		expandGroupsChild.add("Gruppe 3");
 		expandGroupsChild.add("Gruppe 4");
 		expandGroupsChild.add("Gruppe 5");
+		
 		return expandGroupsChild;
 	}
 	
@@ -256,6 +276,8 @@ public class MainActivity extends ActionBarActivity implements OnChildClickListe
 		return super.onOptionsItemSelected(item);
 	}
 	
+
+	
 	private class DrawerItemClickListener implements ListView.OnItemClickListener {
 	    @Override
 	    public void onItemClick(AdapterView parent, View view, int position, long id) {
@@ -268,12 +290,5 @@ public class MainActivity extends ActionBarActivity implements OnChildClickListe
 	    		startActivity(intent);
 	    	}
 	    }
-	}
-
-	@Override
-	public boolean onChildClick(ExpandableListView parent, View v,
-			int groupPosition, int childPosition, long id) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 }

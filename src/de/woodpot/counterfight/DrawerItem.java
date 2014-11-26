@@ -6,6 +6,7 @@ public class DrawerItem {
 	private String title;
 	private int icon;
 	private int layoutType;
+	private Object extras;
 	
 	public DrawerItem() {
 		
@@ -33,6 +34,15 @@ public class DrawerItem {
 	
 	public int getLayoutType() {
 		return this.layoutType;
+	}
+	
+	// Extras können verschiedene Dinge sein: z.B. zusätzliche Icons/Strings für bestimmte Fallunterscheidungen
+	public void setExtras(int extras) {
+		this.extras = extras;
+	}
+	
+	public Object getExtras() {
+		return this.extras;
 	}
 	
 }

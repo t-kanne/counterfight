@@ -85,11 +85,12 @@ class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 			if (childData != null) {
 				// use viewHolder for TextView
 				viewHolder.childText.setText(childData.getTitle());
-				viewHolder.childText.setTag(groupData.getTitle());
+				viewHolder.childText.setTag(childData.getTitle());
 				viewHolder.childIcon.setImageResource(childData.getIcon());
 			}
 		}
 		Log.d("SimpleExpListAdapter", "gchildItem[" + childPosition + "] childPosition");
+		v.setClickable(false); 													// false setzen, damit onChildClickListener() funktioniert
 		return v;
 	}
 
@@ -119,13 +120,12 @@ class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 	@Override
 	public void onGroupCollapsed(int groupPosition) {
 		super.onGroupCollapsed(groupPosition);
-		
+
 	}
 
 	@Override
 	public void onGroupExpanded(int groupPosition) {
 		super.onGroupExpanded(groupPosition);
-			
 	}
 	
 
@@ -186,7 +186,11 @@ class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 					break;
 						
 				case 3:
-					viewHolder.groupText.setText(groupData.getTitle());
+					if (isExpanded) {
+						viewHolder.groupText.setText(context.getString((int) groupData.getExtras()));
+					} else {
+						viewHolder.groupText.setText(groupData.getTitle());
+					}					
 					Log.d("SimpleExpListAdapter", "case3 KEY_TITLE: " + groupData.getTitle());
 					break;
 			}
@@ -194,6 +198,7 @@ class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 		
 		Log.d("SimpleExpListAdapter", "View: " + v);
 		childItem = childItems.get(groupPosition);
+		v.setClickable(false);							// false setzen, damit onGroupClickListener() funktioniert
 		return v;
 	}
 
@@ -204,7 +209,8 @@ class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 
 	@Override
 	public boolean isChildSelectable(int groupPosition, int childPosition) {
-		return false;
+		// es muss true zurückgegeben werden, damit onChildClickListener() funktionieren kann
+		return true;
 	}
 	
 	static class ViewHolderItem {
