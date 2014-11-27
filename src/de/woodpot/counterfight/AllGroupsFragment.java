@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,7 +37,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class AllGroupsActivity extends ListActivity  {
+public class AllGroupsFragment extends ListFragment  {
 
 	// JSONParser Objekt erstellen
 		JSONParser jParser = new JSONParser();
@@ -45,7 +46,7 @@ public class AllGroupsActivity extends ListActivity  {
 		ListAdapter adapter;
 		
 		CheckInternetConnection checkInternet;	
-		final Context context = this;
+		Context context = getActivity();
 		
 		private ProgressDialog pDialog;
 		
@@ -88,22 +89,25 @@ public class AllGroupsActivity extends ListActivity  {
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
-				
-			setContentView(R.layout.activity_all_groups);
-			
-			testNameTextView = (TextView) findViewById(R.id.group_name);
-			
-			Toast.makeText(this, "AllGroupsActivity", Toast.LENGTH_LONG).show();
+			//sm = new SessionManager(context);	
 			
 			contactList = new ArrayList<HashMap<String, String>>();
 			
 			new LoadAllUserCounter().execute();
 			
-			registerForContextMenu(getListView());
+			//registerForContextMenu(getListView());
 
 		}
 		
-		
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			
+			View layout = inflater.inflate(R.layout.fragment_all_groups, null);
+			testNameTextView = (TextView)layout.findViewById(R.id.group_name);
+			
+			return layout;
+		}
 		
 		
 		
@@ -111,11 +115,12 @@ public class AllGroupsActivity extends ListActivity  {
 		public boolean onOptionsItemSelected(MenuItem item) {
 			
 		checkInternet = new CheckInternetConnection();		
-			
+		
+		/*
 		//ohne Funktion
 		switch (item.getItemId()) {
 			case R.id.action_settings:
-			Intent intent = new Intent(this, SettingsActivity.class);
+			Intent intent = new Intent(this.get, SettingsActivity.class);
 			startActivity(intent);
 	        return true;
 	            
@@ -124,7 +129,7 @@ public class AllGroupsActivity extends ListActivity  {
 				if(checkInternet.haveNetworkConnection(context)){
 					Log.d("GroupDetailActivity: ", "hasConnection() true!");	
 						
-					Intent intent2 = new Intent(this, AllGroupsActivity.class);
+					Intent intent2 = new Intent(this, AllGroupsFragment.class);
 					finish();
 					startActivity(intent2);
 					return true;
@@ -135,10 +140,12 @@ public class AllGroupsActivity extends ListActivity  {
 			}
 			
 			default:
-	        return super.onOptionsItemSelected(item);
-	    }			
+			*/
+	        return super.onOptionsItemSelected(item);	
+	    	
 		}
 		
+		/*
 		@Override
 		public boolean onCreateOptionsMenu(Menu menu) {
 		    // Inflate the menu items for use in the action bar
@@ -146,20 +153,8 @@ public class AllGroupsActivity extends ListActivity  {
 		    inflater.inflate(R.menu.reload_groups, menu);
 		    return super.onCreateOptionsMenu(menu);
 		}
-		
-		
-		/*
-		 * Wieder auskommentiert, weil auf dem Weg zu dieser Activity beim Intent ein Flag gesetzt wird
-		 * 
-		 
-		@Override
-		public void onBackPressed() {
-		    Intent startMain = new Intent(Intent.ACTION_MAIN);      
-	        startMain.addCategory(Intent.CATEGORY_HOME);                        
-	        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);          
-	        startActivity(startMain); 
-		}
 		*/
+		
 
 		public static class PlaceholderFragment extends Fragment {
 
@@ -179,18 +174,18 @@ public class AllGroupsActivity extends ListActivity  {
 		class LoadAllUserCounter extends AsyncTask<String, String, String> {
 			
 			protected void onPreExecute() {
-				pDialog = new ProgressDialog(AllGroupsActivity.this);
-				pDialog.setMessage(AllGroupsActivity.this.getString(R.string.string_allact_loading));
+				pDialog = new ProgressDialog(getActivity());
+				pDialog.setMessage(AllGroupsFragment.this.getString(R.string.string_allact_loading));
 				pDialog.setIndeterminate(false);
 				pDialog.setCancelable(false);
 				pDialog.show();
 			}
 			@Override
 			protected String doInBackground(String... args) {
+				
 				// Building Parameters	
-					
+					/*
 					String username = null;
-					sm = new SessionManager(getApplicationContext());
 					if (sm.isLoggedIn() == true) {
 						username = sm.getUsername();
 					}
@@ -199,7 +194,7 @@ public class AllGroupsActivity extends ListActivity  {
 					params.add(new BasicNameValuePair(TAG_USERNAME, username));
 					Log.d("AllGroupsActivity post: ", params.toString());
 					JSONObject json = null;
-				
+					
 					 
 					
 					try {
@@ -246,7 +241,7 @@ public class AllGroupsActivity extends ListActivity  {
 							
 							if (isCancelled()) break;
 						}
-						*/
+						
 						for (int i = 0; i < counterData.length(); i++) {
 							JSONObject c = counterData.getJSONObject(i);
 							
@@ -276,7 +271,8 @@ public class AllGroupsActivity extends ListActivity  {
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-				return null;
+				*/
+				return null;			
 			}
 						
 			
@@ -286,13 +282,13 @@ public class AllGroupsActivity extends ListActivity  {
 				// dismiss the dialog after getting all products
 				//pDialog.dismiss();
 				// updating UI from Background Thread
-				runOnUiThread(new Runnable() {
+				AllGroupsFragment.this.getActivity().runOnUiThread(new Runnable() {
 					public void run() {
 						/**
 						 * Updating parsed JSON data into ListView
 						 * */
 						BaseAdapter adapter = new SimpleAdapter(
-								AllGroupsActivity.this, contactList,
+								AllGroupsFragment.this.getActivity(), contactList,
 								R.layout.all_groups_list_item, new String[] { TAG_GROUPNAME, TAG_USERFIRST,
 										TAG_OWNPLACE }, new int[] { R.id.user_row_groupName,
 										R.id.user_row_first_place, R.id.user_row_own_place });
@@ -309,7 +305,7 @@ public class AllGroupsActivity extends ListActivity  {
 		}	
 		
 		
-		protected void onListItemClick(ListView list, View view, int position, long id) {
+		public void onListItemClick(ListView list, View view, int position, long id) {
 		    super.onListItemClick(list, view, position, id);	 
 
             @SuppressWarnings("unchecked")
@@ -320,7 +316,7 @@ public class AllGroupsActivity extends ListActivity  {
             
             Log.d("GroupDetailActivity:", "groupId: " + groupId);
             Log.d("GroupDetailActivity:", "groupName: " + groupName);
-            Intent intent = new Intent(getApplicationContext(), GroupDetailActivity.class);
+            Intent intent = new Intent(context, GroupDetailActivity.class);
 		    intent.putExtra("groupId", groupId);
 		    intent.putExtra("groupName", groupName);
 	
@@ -328,6 +324,7 @@ public class AllGroupsActivity extends ListActivity  {
 			    
 		    }
 		
+
 		public void showFailConnection(){
 			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
 			alertDialogBuilder.setTitle(R.string.string_groupdetailact_fail_alerttitle);

@@ -112,7 +112,7 @@ public class GroupDetailActivity extends ListActivity {
 		@Override
 		protected void onPreExecute() {
 			pDialog = new ProgressDialog(GroupDetailActivity.this);
-			pDialog.setMessage(GroupDetailActivity.this.getString(R.string.string_loginact_loading));
+			pDialog.setMessage(GroupDetailActivity.this.getString(R.string.string_allact_loading));
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(false);
 			pDialog.show();

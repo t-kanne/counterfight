@@ -1,46 +1,83 @@
 package de.woodpot.counterfight;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.content.res.TypedArray;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends FragmentActivity {
 	
 	/** Die MainActivity ist für den Nutzer im Prinzip nicht sichtbar. Sie entscheidet nur,
 	 * wohin der Nutzer geleitet werden soll und ist Layout für den NavigationDrawer
 	 */
+	
+	private ProgressDialog pDialog;
+	private String usernameString;
+	private String passwordString;
+	private String groupIdIntent;
+	private String groupNameIntent;
+	
+	// Objekt vom SessionManager erstellen
+	SessionManager sessionManager;
+	
+	// JSONParser Objekt erstellen
+	JSONParser jParser = new JSONParser();
+	
+	// Server-Urls
+	private static String url_check_user = "http://www.counterfight.net/login_user.php";
+	private static String url_count_user_groups = "http://www.counterfight.net/count_user_groups.php";
+	
+	// JSON Node names
+	private static final String TAG_SUCCESS = "success";
+	private static final String TAG_USER = "user";
+	private static final String TAG_USERNAME = "username";
+	private static final String TAG_PASSWORD = "password";
+	private static final String TAG_GROUPID = "groupId";
+	private static final String TAG_GROUPNAME = "groupName";
+
+	
+	// JSON Arrays
+	JSONArray userData = null;
+	String noOfGroups = null;
+	Boolean correctUserdata = false;
+	
+	// JSON parser class
+	JSONParser jsonParser = new JSONParser();
+	
+	Context context;
+	
+	// Fragmente
+	private RegisterFragment registerFragment;
+	private AllGroupsFragment allGroupsFragment;
 	
 	// Variablen für den NavigationDrawer
 	private DrawerLayout drawer;
@@ -65,14 +102,34 @@ public class MainActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		getSupportActionBar();
-		getSupportActionBar().setHomeButtonEnabled(true);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		// SessionManager-Object benötigt, um Login-Status abzurufen
+		sessionManager = new SessionManager(getApplicationContext());
+		
+		// Fragmente instanziieren
+		registerFragment = (RegisterFragment) Fragment.instantiate(this, RegisterFragment.class.getName(), null);
+		allGroupsFragment = (AllGroupsFragment) Fragment.instantiate(this, AllGroupsFragment.class.getName(), null);
+		
+		//FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+		//fragmentTransaction.add(R.id.main_activity_content, allGroupsFragment);
+		//fragmentTransaction.commit();
+		
+		getActionBar();
+		getActionBar().setHomeButtonEnabled(true);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		setGroupData();
 		setChildGroupData();
 		initializeDrawer();
 		
+		
+		if (sessionManager.isLoggedIn() == false) {					// Login-Status des Nutzers überprüfen.
+			Intent intent = new Intent(this, LoginActivity.class); 
+			startActivityForResult(intent, 0);
+			
+		} else {
+			new CountUserGroups().execute();						// Gruppen des Users zählen, um ihn zur entsprechenden Activity weiterzuleiten
+		}
+				
 		
 		// ***************************************************************************************
 		// AB HIER: ClickListener für den NavigationDrawer
@@ -276,19 +333,111 @@ public class MainActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 	
+	@Override
+	protected void onActivityResult(int arg0, int arg1, Intent arg2) {
+		super.onActivityResult(arg0, arg1, arg2);
+		Log.d("MainActivity", "onActivityResult ausgeführt. arg0: " + arg0);
+		
+		if (sessionManager.isLoggedIn() == false) {					// Login-Status des Nutzers überprüfen.
+			Intent intent = new Intent(this, LoginActivity.class); 
+			startActivityForResult(intent, 0);
+			
+		} else {
+			new CountUserGroups().execute();						// Gruppen des Users zählen, um ihn zur entsprechenden Activity weiterzuleiten
+		}
+	}
 
 	
-	private class DrawerItemClickListener implements ListView.OnItemClickListener {
-	    @Override
-	    public void onItemClick(AdapterView parent, View view, int position, long id) {
-	        selectItem(position);
-	    }
-	    
-	    public void selectItem(int position){
-	    	if (position == 0) {
-	    		Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-	    		startActivity(intent);
-	    	}
-	    }
+	class CountUserGroups extends AsyncTask <String, String, String> {
+		
+		protected void onPreExecute() {
+			pDialog = new ProgressDialog(MainActivity.this);
+			pDialog.setMessage(MainActivity.this.getString(R.string.string_allact_loading));
+			pDialog.setIndeterminate(false);
+			pDialog.setCancelable(false);
+			pDialog.show();
+		}
+		
+		protected String doInBackground(String... args) {
+			Log.d("LoginAcitivty: ", "CountUserGroups");
+			final List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair(TAG_USERNAME, sessionManager.getUsername()));
+			JSONObject json = null;
+			
+			try {
+				json = jParser.makeHttpRequest(url_count_user_groups, "POST", params);
+				Log.d("LoginActivity", "JSON countusergroups post ");
+			} catch (Exception e){
+				Log.e("LoginActivity", "JSON (UserGroups): " + e.getMessage());
+			}
+			
+			try {
+				int success = json.getInt(TAG_SUCCESS);
+				
+				if (success == 1) {
+					
+					noOfGroups = json.getString("noOfGroups");
+					Log.d("LoginActivity: ", "noOfGroups: " + noOfGroups + " for user " + sessionManager.getUsername());
+				
+				}
+				else {
+					MainActivity.this.runOnUiThread(new Runnable() {
+						  public void run() {
+						    Toast.makeText(MainActivity.this, "Anzahl der Gruppen nicht ermittelt", Toast.LENGTH_LONG).show();
+						  }
+					});
+				}
+				
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(String result){
+			if (sessionManager.isLoggedIn() == true){
+				pDialog.dismiss();
+				startGroupDependingActivity(noOfGroups);
+			}
+		}		
+	}
+	
+	public void startGroupDependingActivity(String noOfGroups) {
+		int noOfGroupsInt;
+		
+		try {
+			noOfGroupsInt = Integer.valueOf(noOfGroups);
+			Log.d("LoginActivity: ", "Anzahl Gruppen: " + noOfGroupsInt);
+			
+			if (noOfGroupsInt == 0) {
+				Intent intent = new Intent(this, NoGroupActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+				startActivity(intent);
+				finish();
+			}
+			
+			if (noOfGroupsInt == 1) {
+				Intent intent = new Intent(this, GroupDetailActivity.class);
+				intent.putExtra("groupId", groupIdIntent);
+				intent.putExtra("groupName", groupNameIntent);
+				Log.d("LoginActivity", "groupId: " + groupIdIntent +groupNameIntent);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+				startActivity(intent);
+				finish();
+			}
+			if (noOfGroupsInt > 1) {
+				Intent intent = new Intent(this, AllGroupsActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+				startActivity(intent);
+				finish();
+			}
+		} catch (NumberFormatException e) {
+			Intent intent = new Intent(this, NoGroupActivity.class);
+			startActivity(intent);
+			finish();
+		}
+				
 	}
 }

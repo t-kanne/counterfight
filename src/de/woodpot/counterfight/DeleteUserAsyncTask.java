@@ -42,7 +42,7 @@ class DeleteUserAsyncTask extends AsyncTask<String, Boolean, Boolean> {
 	@Override
 	protected void onPreExecute() {
 			
-		pDialog.setMessage(this.context.getResources().getString(R.string.string_loginact_loading));
+		pDialog.setMessage(this.context.getResources().getString(R.string.string_allact_loading));
 		pDialog.setIndeterminate(false);
 		pDialog.setCancelable(false);
 		pDialog.show();
