@@ -42,11 +42,11 @@ public class AllGroupsFragment extends ListFragment  {
 	// JSONParser Objekt erstellen
 		JSONParser jParser = new JSONParser();
 		SessionManager sm;
+		Context context;
 		
 		ListAdapter adapter;
 		
 		CheckInternetConnection checkInternet;	
-		Context context = getActivity();
 		
 		private ProgressDialog pDialog;
 		
@@ -59,6 +59,7 @@ public class AllGroupsFragment extends ListFragment  {
 		private String groupId;
 		
 		TextView testNameTextView;
+		ListView ls;
 			
 		// JSON Node names
 		private static final String TAG_SUCCESS = "success";
@@ -89,14 +90,13 @@ public class AllGroupsFragment extends ListFragment  {
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
-			//sm = new SessionManager(context);	
+			context = getActivity();
+			sm = new SessionManager(context);	
+			setHasOptionsMenu(true);
 			
 			contactList = new ArrayList<HashMap<String, String>>();
 			
 			new LoadAllUserCounter().execute();
-			
-			//registerForContextMenu(getListView());
-
 		}
 		
 		@Override
@@ -104,7 +104,11 @@ public class AllGroupsFragment extends ListFragment  {
 				Bundle savedInstanceState) {
 			
 			View layout = inflater.inflate(R.layout.fragment_all_groups, null);
+			
+			ls = (ListView) layout.findViewById(android.R.id.list);
 			testNameTextView = (TextView)layout.findViewById(R.id.group_name);
+			
+			registerForContextMenu(ls);
 			
 			return layout;
 		}
@@ -116,45 +120,42 @@ public class AllGroupsFragment extends ListFragment  {
 			
 		checkInternet = new CheckInternetConnection();		
 		
-		/*
-		//ohne Funktion
-		switch (item.getItemId()) {
-			case R.id.action_settings:
-			Intent intent = new Intent(this.get, SettingsActivity.class);
-			startActivity(intent);
-	        return true;
-	            
-			case R.id.action_reload:
+		
+			//ohne Funktion
+			switch (item.getItemId()) {
+				case R.id.action_settings:
+				Intent intent = new Intent(context, SettingsActivity.class);
+				startActivity(intent);
+		        return true;
+		            
+				case R.id.action_reload:
+					
+					if(checkInternet.haveNetworkConnection(context)){
+						Log.d("GroupDetailActivity: ", "hasConnection() true!");	
+							
+						//Intent intent2 = new Intent(this, AllGroupsFragment.class);
+						//finish();
+						//startActivity(intent2);
+						return true;
+				}
+				else{
+					Log.d("GroupDetailActivity: ", "hasConnection() false!");	
+					showFailConnection();
+				}
 				
-				if(checkInternet.haveNetworkConnection(context)){
-					Log.d("GroupDetailActivity: ", "hasConnection() true!");	
-						
-					Intent intent2 = new Intent(this, AllGroupsFragment.class);
-					finish();
-					startActivity(intent2);
-					return true;
+				default:
+				
+		        return super.onOptionsItemSelected(item);	
+		    	
 			}
-			else{
-				Log.d("GroupDetailActivity: ", "hasConnection() false!");	
-				showFailConnection();
-			}
-			
-			default:
-			*/
-	        return super.onOptionsItemSelected(item);	
-	    	
+				
 		}
 		
-		/*
 		@Override
-		public boolean onCreateOptionsMenu(Menu menu) {
-		    // Inflate the menu items for use in the action bar
-		    MenuInflater inflater = getMenuInflater();
-		    inflater.inflate(R.menu.reload_groups, menu);
-		    return super.onCreateOptionsMenu(menu);
+		public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+			inflater.inflate(R.menu.reload_groups, menu);
+			super.onCreateOptionsMenu(menu, inflater);
 		}
-		*/
-		
 
 		public static class PlaceholderFragment extends Fragment {
 
@@ -184,7 +185,7 @@ public class AllGroupsFragment extends ListFragment  {
 			protected String doInBackground(String... args) {
 				
 				// Building Parameters	
-					/*
+					
 					String username = null;
 					if (sm.isLoggedIn() == true) {
 						username = sm.getUsername();
@@ -229,7 +230,7 @@ public class AllGroupsFragment extends ListFragment  {
 
 						counterData = json2.getJSONArray(TAG_COUNTER);
 						Log.d("AllGroupsActivityFragment JSON: ", "counterDataLenght: " + counterData.length());
-						/*
+						
 						// looping through All items
 						for (int i = 0; i < counterData.length(); i++) {
 							JSONObject c = counterData.getJSONObject(i);
@@ -271,7 +272,7 @@ public class AllGroupsFragment extends ListFragment  {
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-				*/
+				
 				return null;			
 			}
 						
@@ -280,7 +281,7 @@ public class AllGroupsFragment extends ListFragment  {
 			protected void onPostExecute(String file_url) {
 				
 				// dismiss the dialog after getting all products
-				//pDialog.dismiss();
+				pDialog.dismiss();
 				// updating UI from Background Thread
 				AllGroupsFragment.this.getActivity().runOnUiThread(new Runnable() {
 					public void run() {
@@ -300,13 +301,12 @@ public class AllGroupsFragment extends ListFragment  {
 					}
 				}); 
 			}
+		}
 					
-				
-		}	
-		
-		
+						
 		public void onListItemClick(ListView list, View view, int position, long id) {
-		    super.onListItemClick(list, view, position, id);	 
+		    super.onListItemClick(list, view, position, id);	
+			Context context = getActivity();
 
             @SuppressWarnings("unchecked")
 			HashMap<String,String> map=(HashMap<String, String>) list.getItemAtPosition(position);
@@ -322,10 +322,11 @@ public class AllGroupsFragment extends ListFragment  {
 	
 			startActivity(intent);	
 			    
-		    }
+		}
 		
 
 		public void showFailConnection(){
+			Context context = getActivity();
 			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
 			alertDialogBuilder.setTitle(R.string.string_groupdetailact_fail_alerttitle);
 			alertDialogBuilder.setMessage(R.string.string_groupdetailact_fail_alerttext);

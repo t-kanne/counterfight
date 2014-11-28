@@ -96,17 +96,6 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 				return true;
 			}
     	});
-    	
-    	allGroupsActPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				
-				Intent intent = new Intent(SettingsActivity.this, AllGroupsActivity.class);
-				startActivity(intent);
-				return true;
-			}
-    	});
-   
     }
 	
 	public void deleteAccount() {

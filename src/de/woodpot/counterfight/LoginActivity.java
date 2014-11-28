@@ -7,6 +7,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,7 +28,6 @@ public class LoginActivity extends ActionBarActivity {
 	private EditText passwordEditText;
 	private Button loginButton;
 	private TextView registerTextView;
-	boolean userLoginSuccessful;
 	
 	private String usernameString;
 	private String passwordString;
@@ -95,8 +96,6 @@ public class LoginActivity extends ActionBarActivity {
 	class GetUser extends AsyncTask<String, String, Boolean> {
 		
 		protected Boolean doInBackground(String... args) {	
-			userLoginSuccessful = false;
-			
 			final List<NameValuePair> params = new ArrayList<NameValuePair>();
 			params.add(new BasicNameValuePair(TAG_USERNAME, usernameString));
 			params.add(new BasicNameValuePair(TAG_PASSWORD, passwordString)); 
@@ -116,7 +115,7 @@ public class LoginActivity extends ActionBarActivity {
 					LoginActivity.this.runOnUiThread(new Runnable() {
 						  public void run() {
 						    Toast.makeText(LoginActivity.this, "Username " + usernameString + " gefunden", Toast.LENGTH_SHORT).show();
-						    finish();
+						    goBackToMainActivity();
 						  }
 					});
 					// Erstellen der Session
@@ -125,7 +124,6 @@ public class LoginActivity extends ActionBarActivity {
 					Log.d("LoginActivity: ", "groupId Json: " + groupIdIntent);
 					groupNameIntent = json.getString("groupName");
 					Log.d("LoginActivity: ", "groupName Json: " + groupNameIntent);
-					return userLoginSuccessful;
 				}
 				else {
 					LoginActivity.this.runOnUiThread(new Runnable() {
@@ -138,11 +136,16 @@ public class LoginActivity extends ActionBarActivity {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-			return userLoginSuccessful;
+			return true;
 		}		
 	}
 	
-
+	public void goBackToMainActivity() {
+		Intent intent = new Intent(this, MainActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+		startActivity(intent);
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.

@@ -14,9 +14,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.media.audiofx.BassBoost.Settings;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -78,12 +80,30 @@ public class MainActivity extends FragmentActivity {
 	// Fragmente
 	private RegisterFragment registerFragment;
 	private AllGroupsFragment allGroupsFragment;
+	private InfoFragment infoFragment;
+	private FAQFragment faqFragment;
 	
 	// Variablen für den NavigationDrawer
 	private DrawerLayout drawer;
 	private ActionBarDrawerToggle toggle;
 	SimpleExpandableListAdapter expListAdapter;
 	private ExpandableListView expListView;
+	
+	// Gruppenposition-Konstanten
+	private static int GROUP_POS_GROUPMGMT = 0;
+	private static int GROUP_POS_ALLGROUPS = 1;
+	private static int GROUP_POS_ACCOUNT = 2;
+	private static int GROUP_POS_OTHER = 3;
+	
+	// Child-Position-Konstanten
+	private static final int CHILD_POS_GROUPSUMMARY = 0;
+	private static final int CHILD_POS_CREATE_GROUP = 1;
+	private static final int CHILD_POS_SEARCH_GROUP = 2;
+	private static final int CHILD_POS_CHANGE_ACCOUNT_DATA = 0;
+	private static final int CHILD_POS_LOGOUT = 1;
+	private static final int CHILD_POS_SETTINGS = 0;
+	private static final int CHILD_POS_FAQ = 1;
+	private static final int CHILD_POS_DEVELOPERINFO = 2;
 	
 	// Layout-Konstanten
 	private static int LAYOUT_SECTION_TITLE = 1;
@@ -108,11 +128,9 @@ public class MainActivity extends FragmentActivity {
 		// Fragmente instanziieren
 		registerFragment = (RegisterFragment) Fragment.instantiate(this, RegisterFragment.class.getName(), null);
 		allGroupsFragment = (AllGroupsFragment) Fragment.instantiate(this, AllGroupsFragment.class.getName(), null);
-		
-		//FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-		//fragmentTransaction.add(R.id.main_activity_content, allGroupsFragment);
-		//fragmentTransaction.commit();
-		
+		infoFragment = (InfoFragment) Fragment.instantiate(this, InfoFragment.class.getName(), null);
+		faqFragment = (FAQFragment) Fragment.instantiate(this, FAQFragment.class.getName(), null);
+
 		getActionBar();
 		getActionBar().setHomeButtonEnabled(true);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -135,6 +153,7 @@ public class MainActivity extends FragmentActivity {
 		// AB HIER: ClickListener für den NavigationDrawer
 		// ***************************************************************************************
 		
+		// Der OnGroupClickListener sorgt nur dafür, dass die Gruppen nicht einklappbar sind. Sie führen zu keinem Fragment
 		expListView.setOnGroupClickListener(new OnGroupClickListener() {
 			@Override
 			public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) { 
@@ -146,12 +165,74 @@ public class MainActivity extends FragmentActivity {
 			}
 		});	
 		
+		// Die Child-Elemente sind die Fragmente und Activities, auf die der Nutzer zugreifen kann
 		expListView.setOnChildClickListener(new OnChildClickListener() {
 			
 			@Override
 			public boolean onChildClick(ExpandableListView parent, View v,
 					int groupPosition, int childPosition, long id) {
-					return false;
+				
+					FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+					
+					if (groupPosition == GROUP_POS_GROUPMGMT) {
+						switch(childPosition) {
+							case CHILD_POS_GROUPSUMMARY:
+								fragmentTransaction.replace(R.id.main_activity_content, allGroupsFragment);
+								fragmentTransaction.commit();
+								drawer.closeDrawers();
+								break;
+								
+							case CHILD_POS_CREATE_GROUP:
+								Toast.makeText(MainActivity.this, "Funktion noch nicht verfügbar", Toast.LENGTH_SHORT).show();
+								break;
+							
+							case CHILD_POS_SEARCH_GROUP:
+								Toast.makeText(MainActivity.this, "Funktion noch nicht verfügbar", Toast.LENGTH_SHORT).show();
+								break;
+						}
+					}
+					
+					if (groupPosition == GROUP_POS_ALLGROUPS) {
+							Toast.makeText(MainActivity.this, "Funktion noch nicht verfügbar", Toast.LENGTH_SHORT).show();
+					}
+					
+					if (groupPosition == GROUP_POS_ACCOUNT) {
+						switch(childPosition) {
+							case CHILD_POS_CHANGE_ACCOUNT_DATA:
+								Toast.makeText(MainActivity.this, "Funktion noch nicht verfügbar", Toast.LENGTH_SHORT).show();
+								break;
+								
+							case CHILD_POS_LOGOUT:							
+								if (sessionManager.isLoggedIn() == true) {
+									sessionManager.clearSession();
+								}
+								Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+								intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+								startActivity(intent);
+						}
+					}
+					
+					if (groupPosition == GROUP_POS_OTHER){					
+						switch(childPosition) {
+							case CHILD_POS_SETTINGS:
+								Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+								startActivity(intent);
+								break;
+								
+							case CHILD_POS_FAQ:
+								fragmentTransaction.replace(R.id.main_activity_content, faqFragment);
+								fragmentTransaction.commit();
+								drawer.closeDrawers();
+								break;
+								
+							case CHILD_POS_DEVELOPERINFO:
+								fragmentTransaction.replace(R.id.main_activity_content, infoFragment);
+								fragmentTransaction.commit();
+								drawer.closeDrawers();
+								break;
+						}				
+					}
+					return false;											
 			}
 		});
 			
@@ -334,15 +415,15 @@ public class MainActivity extends FragmentActivity {
 	}
 	
 	@Override
-	protected void onActivityResult(int arg0, int arg1, Intent arg2) {
-		super.onActivityResult(arg0, arg1, arg2);
-		Log.d("MainActivity", "onActivityResult ausgeführt. arg0: " + arg0);
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		Log.d("MainActivity", "onActivityResult ausgeführt. requestCode: " + requestCode);
 		
 		if (sessionManager.isLoggedIn() == false) {					// Login-Status des Nutzers überprüfen.
 			Intent intent = new Intent(this, LoginActivity.class); 
-			startActivityForResult(intent, 0);
+			startActivityForResult(intent, 0);	
 			
-		} else {
+		} else if (resultCode == RESULT_OK) {
 			new CountUserGroups().execute();						// Gruppen des Users zählen, um ihn zur entsprechenden Activity weiterzuleiten
 		}
 	}
@@ -428,10 +509,10 @@ public class MainActivity extends FragmentActivity {
 				finish();
 			}
 			if (noOfGroupsInt > 1) {
-				Intent intent = new Intent(this, AllGroupsActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-				startActivity(intent);
-				finish();
+				FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+				fragmentTransaction.replace(R.id.main_activity_content,	allGroupsFragment);
+				fragmentTransaction.commit();
+				drawer.closeDrawers();
 			}
 		} catch (NumberFormatException e) {
 			Intent intent = new Intent(this, NoGroupActivity.class);

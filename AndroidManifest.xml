@@ -5,8 +5,8 @@
     android:versionName="1.0" >
 
     <uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <uses-sdk
         android:minSdkVersion="9"
         android:targetSdkVersion="21" />
@@ -60,6 +60,14 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" >
+        </activity>
+        <activity
+            android:name=".InfoFragment"
+            android:label="@string/title_activity_info_fragment" >
+        </activity>
+        <activity
+            android:name=".FAQFragment"
+            android:label="@string/title_activity_faqfragment" >
         </activity>
     </application>
 

@@ -50,5 +50,7 @@
     <string name="string_groupdetailact_fail_alerttext">Du hast momentan leider keine Interverbindung..</string>
     <string name="string_groupdetailact_fail_alertokay">OK</string>
     <string name="string_allact_loading">Lädt...</string>
+    <string name="title_activity_info_fragment">InfoFragment</string>
+    <string name="title_activity_faqfragment">FAQFragment</string>
 
 </resources>
