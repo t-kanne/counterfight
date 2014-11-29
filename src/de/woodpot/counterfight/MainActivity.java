@@ -84,6 +84,7 @@ public class MainActivity extends FragmentActivity {
 	private InfoFragment infoFragment;
 	private FAQFragment faqFragment;
 	private CreateGroupDialog createGroupDialog;
+	private SearchGroupDialog searchGroupDialog;
 	
 	// Variablen für den NavigationDrawer
 	private DrawerLayout drawer;
@@ -133,6 +134,7 @@ public class MainActivity extends FragmentActivity {
 		infoFragment = (InfoFragment) Fragment.instantiate(this, InfoFragment.class.getName(), null);
 		faqFragment = (FAQFragment) Fragment.instantiate(this, FAQFragment.class.getName(), null);
 		createGroupDialog = (CreateGroupDialog) Fragment.instantiate(this, CreateGroupDialog.class.getName(), null);
+		searchGroupDialog = (SearchGroupDialog) Fragment.instantiate(this, SearchGroupDialog.class.getName(), null);
 
 		getActionBar();
 		getActionBar().setHomeButtonEnabled(true);
@@ -186,13 +188,13 @@ public class MainActivity extends FragmentActivity {
 								break;
 								
 							case CHILD_POS_CREATE_GROUP:
-								fragmentTransaction.replace(R.id.main_activity_content, createGroupDialog);
-								fragmentTransaction.commit();
+								createGroupDialog.show(fragmentTransaction, "Dialog Fragment");
 								drawer.closeDrawers();
 								break;
 							
 							case CHILD_POS_SEARCH_GROUP:
-								Toast.makeText(MainActivity.this, "Funktion noch nicht verfügbar", Toast.LENGTH_SHORT).show();
+								searchGroupDialog.show(fragmentTransaction, "Dialog Fragment");
+								drawer.closeDrawers();
 								break;
 						}
 					}

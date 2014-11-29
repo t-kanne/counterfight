@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -59,14 +60,15 @@ public class CreateGroupDialog extends DialogFragment {
 		super.onCreate(savedInstanceState);
 		
 		context = getActivity();
-		
-		int style = DialogFragment.STYLE_NORMAL, theme = 0;
-		setStyle(style, theme);
+		setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle);
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View layout = inflater.inflate(R.layout.fragment_create_group_dialog, container, false);
+		
+		// thisDialog = getDialog();
+		//thisDialog.setTitle("Gruppe erstellen");
 		
 		adviceTextView = (TextView)layout.findViewById(R.id.textview_creategroupdialog_advice);
 		groupNameEditText = (EditText)layout.findViewById(R.id.edittext_creategroupdialog_groupname);
@@ -130,7 +132,8 @@ public class CreateGroupDialog extends DialogFragment {
 						    Toast.makeText(CreateGroupDialog.this.getActivity(), "Gruppe " + newGroup + " erfolgreich erstellt.", Toast.LENGTH_SHORT).show();
 						  }
 					});
-					
+					// Hier soll der NUtzer in die GroupDetails geschickt werden
+					dismiss();
 					
 				} else {
 					CreateGroupDialog.this.getActivity().runOnUiThread(new Runnable() {

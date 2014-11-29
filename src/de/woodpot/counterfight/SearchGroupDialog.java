@@ -9,26 +9,32 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SearchGroupDialog extends ActionBarActivity {
+public class SearchGroupDialog extends DialogFragment {
 	
 	private TextView adviceTextView;
 	private EditText groupIdEditText;
 	private Button okayButton;
 	SessionManager sm;
 	private String groupIdString;
+	Context context;
 	
 	// JSONParser Objekt erstellen
 	JSONParser jParser = new JSONParser();
@@ -53,15 +59,22 @@ public class SearchGroupDialog extends ActionBarActivity {
 	JSONArray groupTable = null;
 	String groupName = null;
 	
-
+	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_search_group_dialog);
 		
-		adviceTextView = (TextView)findViewById(R.id.textview_searchgroupdialog_advice);
-		groupIdEditText = (EditText)findViewById(R.id.edittext_searchgroupdialog_groupid);
-		okayButton = (Button)findViewById(R.id.button_searchgroupdialog_ok);
+		context = getActivity();
+		setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle);
+	}
+	
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View layout = inflater.inflate(R.layout.fragment_search_group_dialog, container, false);
+		
+		adviceTextView = (TextView)layout.findViewById(R.id.textview_searchgroupdialog_advice);
+		groupIdEditText = (EditText)layout.findViewById(R.id.edittext_searchgroupdialog_groupid);
+		okayButton = (Button)layout.findViewById(R.id.button_searchgroupdialog_ok);
 		
 		okayButton.setOnClickListener(new OnClickListener() {
 						
@@ -74,11 +87,14 @@ public class SearchGroupDialog extends ActionBarActivity {
 				}
 			}
 		});
+		
+		return layout;
 	}
+	
 	
 	public boolean checkGroupIdEditText() {
 		if (groupIdString.length() != 5){
-			Toast.makeText(this,R.string.string_searchgroupdialog_wronggroupid, Toast.LENGTH_SHORT).show();
+			Toast.makeText(this.getActivity(),R.string.string_searchgroupdialog_wronggroupid, Toast.LENGTH_SHORT).show();
 			return false;
 		} else {
 			return true;
@@ -92,7 +108,7 @@ public class SearchGroupDialog extends ActionBarActivity {
 			String usernameString = null;
 			final String groupName;
 			
-			sm = new SessionManager(getApplicationContext());
+			sm = new SessionManager(context);
 			if (sm.isLoggedIn() == true) {
 				usernameString = sm.getUsername();
 			}
@@ -115,26 +131,28 @@ public class SearchGroupDialog extends ActionBarActivity {
 					Log.d("SearchGroupDialog JSON: ", json.toString());
 					groupName = json.getJSONArray(TAG_GROUPDETAILS).getString(0);
 					
-					SearchGroupDialog.this.runOnUiThread(new Runnable() {
+					SearchGroupDialog.this.getActivity().runOnUiThread(new Runnable() {
 						  public void run() {
-						    Toast.makeText(SearchGroupDialog.this, "Gruppe " + groupName + " erfolgreich beigetreten.", Toast.LENGTH_SHORT).show();
+						    Toast.makeText(SearchGroupDialog.this.getActivity(), "Gruppe " + groupName + " erfolgreich beigetreten.", Toast.LENGTH_SHORT).show();
 						  }
 					});
-					finish();
+					// Hier soll der Nutzer direkt in die GroupDetails zu der entsprechenden Gruppe gelangen
+					dismiss();
+					
 					
 				} else {
 					mysqlError = json.getString(TAG_ERRORCODE);
 					if (mysqlError.equals(MYSQL_ERRORCODE_GROUP_ALREADY_JOINED)) {
-						SearchGroupDialog.this.runOnUiThread(new Runnable() {
+						SearchGroupDialog.this.getActivity().runOnUiThread(new Runnable() {
 							public void run() {
-								Toast.makeText(SearchGroupDialog.this, R.string.mysqlerror_group_already_joined, Toast.LENGTH_SHORT).show();
+								Toast.makeText(SearchGroupDialog.this.getActivity(), R.string.mysqlerror_group_already_joined, Toast.LENGTH_SHORT).show();
 							}
 						});
 					}
 					if (mysqlError.equals(MYSQL_ERRORCODE_GROUP_DOES_NOT_EXIST)) {
-						SearchGroupDialog.this.runOnUiThread(new Runnable() {
+						SearchGroupDialog.this.getActivity().runOnUiThread(new Runnable() {
 							public void run() {
-								Toast.makeText(SearchGroupDialog.this, R.string.mysqlerror_group_does_not_exist, Toast.LENGTH_SHORT).show();
+								Toast.makeText(SearchGroupDialog.this.getActivity(), R.string.mysqlerror_group_does_not_exist, Toast.LENGTH_SHORT).show();
 							}
 						});
 					}
@@ -149,23 +167,5 @@ public class SearchGroupDialog extends ActionBarActivity {
 			return null;
 		}
 
-	}
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.search_group_dialog, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
 	}
 }

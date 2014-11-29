@@ -6,13 +6,13 @@
     tools:context=".CreateGroupDialog" >
 
     <TextView
-        android:id="@+id/textview_creategroupdialog_advice"
+        android:id="@+id/textview_searchgroupdialog_advice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="3sp"
         android:layout_marginRight="3sp"
         android:layout_marginBottom="5sp"
-        android:text="@string/string_creategroupdialog_advice" />
+        android:text="@string/string_searchgroupdialog_advice" />
 
     <LinearLayout
         android:id="@+id/linear"
@@ -22,20 +22,20 @@
         android:orientation="horizontal" >
 
         <EditText
-            android:id="@+id/edittext_creategroupdialog_groupname"
+            android:id="@+id/edittext_searchgroupdialog_groupid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/string_creategroupdialog_groupnamehint"
-            android:inputType="text" >
+            android:hint="@string/string_searchgroupdialog_groupidhint"
+            android:inputType="number" >
 
             <requestFocus />
         </EditText>
 
         <Button
-            android:id="@+id/button_creategroupdialog_ok"
+            android:id="@+id/button_searchgroupdialog_ok"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/string_creategroupdialog_ok" />
+            android:text="@string/string_searchgroupdialog_ok" />
     </LinearLayout>
 
 </LinearLayout>

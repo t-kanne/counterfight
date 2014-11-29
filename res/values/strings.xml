@@ -19,7 +19,8 @@
     <string name="string_nogroupact_advice">Um die App nutzen zu können, musst du Mitglied in mindestens einer Gruppe sein. Was möchtest du tun?</string>
     <string name="string_nogroupact_createGroup">Gruppe gründen</string>
     <string name="string_nogroupact_searchGroup">Gruppe beitreten</string>
-    <string name="string_creategroupdialog_advice">Gruppenname: </string>
+    <string name="string_creategroupdialog_advice">Bitte gib deinen gewünschten Gruppennamen ein: </string>
+    <string name="string_creategroupdialog_groupnamehint">Gruppenname</string>
     <string name="string_creategroupdialog_ok">OK</string>
     <string name="string_searchgroupdialog_advice">Wenn du von einem anderen Counterfight-Nutzer eine Gruppen-Id bekommen hast, kannst du dich damit hier in der Gruppe anmelden.</string>
     <string name="string_searchgroupdialog_ok">Beitreten</string>
