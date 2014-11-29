@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -82,6 +83,7 @@ public class MainActivity extends FragmentActivity {
 	private AllGroupsFragment allGroupsFragment;
 	private InfoFragment infoFragment;
 	private FAQFragment faqFragment;
+	private CreateGroupDialog createGroupDialog;
 	
 	// Variablen für den NavigationDrawer
 	private DrawerLayout drawer;
@@ -130,6 +132,7 @@ public class MainActivity extends FragmentActivity {
 		allGroupsFragment = (AllGroupsFragment) Fragment.instantiate(this, AllGroupsFragment.class.getName(), null);
 		infoFragment = (InfoFragment) Fragment.instantiate(this, InfoFragment.class.getName(), null);
 		faqFragment = (FAQFragment) Fragment.instantiate(this, FAQFragment.class.getName(), null);
+		createGroupDialog = (CreateGroupDialog) Fragment.instantiate(this, CreateGroupDialog.class.getName(), null);
 
 		getActionBar();
 		getActionBar().setHomeButtonEnabled(true);
@@ -183,7 +186,9 @@ public class MainActivity extends FragmentActivity {
 								break;
 								
 							case CHILD_POS_CREATE_GROUP:
-								Toast.makeText(MainActivity.this, "Funktion noch nicht verfügbar", Toast.LENGTH_SHORT).show();
+								fragmentTransaction.replace(R.id.main_activity_content, createGroupDialog);
+								fragmentTransaction.commit();
+								drawer.closeDrawers();
 								break;
 							
 							case CHILD_POS_SEARCH_GROUP:
@@ -414,20 +419,26 @@ public class MainActivity extends FragmentActivity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		Log.d("MainActivity", "onActivityResult ausgeführt. requestCode: " + requestCode);
-		
-		if (sessionManager.isLoggedIn() == false) {					// Login-Status des Nutzers überprüfen.
-			Intent intent = new Intent(this, LoginActivity.class); 
-			startActivityForResult(intent, 0);	
-			
-		} else if (resultCode == RESULT_OK) {
-			new CountUserGroups().execute();						// Gruppen des Users zählen, um ihn zur entsprechenden Activity weiterzuleiten
-		}
-	}
+	/**
+	void showDialog() {
+	    //mStackLevel++;
 
+	    // DialogFragment.show() will take care of adding the fragment
+	    // in a transaction.  We also want to remove any currently showing
+	    // dialog, so make our own transaction and take care of that here.
+	    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+	    Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
+	    if (prev != null) {
+	        ft.remove(prev);
+	    }
+	    ft.addToBackStack(null);
+
+	    // Create and show the dialog.
+	    DialogFragment newFragment = CreateGroupDialog.newInstance();
+	    newFragment.show(ft, "dialog");
+	}
+	*/
+	
 	
 	class CountUserGroups extends AsyncTask <String, String, String> {
 		

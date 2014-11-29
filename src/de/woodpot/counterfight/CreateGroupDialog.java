@@ -9,25 +9,32 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class CreateGroupDialog extends ActionBarActivity {
+public class CreateGroupDialog extends DialogFragment {
 	
 	private TextView adviceTextView;
 	private EditText groupNameEditText;
 	private Button okayButton;
 	SessionManager sm;
+	Context context;
 	
 	// JSONParser Objekt erstellen
 	JSONParser jParser = new JSONParser();
@@ -48,18 +55,27 @@ public class CreateGroupDialog extends ActionBarActivity {
 	JSONParser jsonParser = new JSONParser();
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_create_group_dialog);
 		
-		adviceTextView = (TextView)findViewById(R.id.textview_creategroupdialog_advice);
-		groupNameEditText = (EditText)findViewById(R.id.edittext_creategroupdialog_groupname);
-		okayButton = (Button)findViewById(R.id.button_creategroupdialog_ok);
+		context = getActivity();
+		
+		int style = DialogFragment.STYLE_NORMAL, theme = 0;
+		setStyle(style, theme);
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View layout = inflater.inflate(R.layout.fragment_create_group_dialog, container, false);
+		
+		adviceTextView = (TextView)layout.findViewById(R.id.textview_creategroupdialog_advice);
+		groupNameEditText = (EditText)layout.findViewById(R.id.edittext_creategroupdialog_groupname);
+		okayButton = (Button)layout.findViewById(R.id.button_creategroupdialog_ok);
 		
 		okayButton.setOnClickListener(new OnClickListener() {
-						
+			
 			@Override
-			public void onClick(View v) {		
+			public void onClick(View v) {	
 				int editTextLength = groupNameEditText.getText().toString().length();
 				Log.d("CreateGroupDialog:","editTextLength: " + editTextLength);
 				
@@ -67,12 +83,13 @@ public class CreateGroupDialog extends ActionBarActivity {
 					new CreateGroup().execute();
 				}
 				else {
-					Toast.makeText(getApplicationContext(), "Der Gruppenname muss aus mind. 3 Zeichen bestehen", Toast.LENGTH_SHORT).show();
+					Toast.makeText(context, "Der Gruppenname muss aus mind. 3 Zeichen bestehen", Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
+		
+		return layout;
 	}
-
 	
 	class CreateGroup extends AsyncTask<String, String, String> {
 		
@@ -83,7 +100,7 @@ public class CreateGroupDialog extends ActionBarActivity {
 
 			// SessionManager nach aktuellen Usernamen fragen
 			String username = null;
-			sm = new SessionManager(getApplicationContext());
+			sm = new SessionManager(context);
 			if (sm.isLoggedIn() == true) {
 				username = sm.getUsername();
 			}
@@ -108,17 +125,17 @@ public class CreateGroupDialog extends ActionBarActivity {
 					// successfully updated
 					Log.d("CreateGroupDialog JSON: ", json.toString());
 					
-					CreateGroupDialog.this.runOnUiThread(new Runnable() {
+					CreateGroupDialog.this.getActivity().runOnUiThread(new Runnable() {
 						  public void run() {
-						    Toast.makeText(CreateGroupDialog.this, "Gruppe " + newGroup + " erfolgreich erstellt.", Toast.LENGTH_SHORT).show();
+						    Toast.makeText(CreateGroupDialog.this.getActivity(), "Gruppe " + newGroup + " erfolgreich erstellt.", Toast.LENGTH_SHORT).show();
 						  }
 					});
-					finish();
+					
 					
 				} else {
-					CreateGroupDialog.this.runOnUiThread(new Runnable() {
+					CreateGroupDialog.this.getActivity().runOnUiThread(new Runnable() {
 						  public void run() {
-						    Toast.makeText(CreateGroupDialog.this, "Gruppe konnte nicht erstellt werden.", Toast.LENGTH_SHORT).show();
+						    Toast.makeText(CreateGroupDialog.this.getActivity(), "Gruppe konnte nicht erstellt werden.", Toast.LENGTH_SHORT).show();
 						  }
 					});
 				}
@@ -133,22 +150,5 @@ public class CreateGroupDialog extends ActionBarActivity {
 		}
 
 	}
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.create_group_dialog, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+	
 }
