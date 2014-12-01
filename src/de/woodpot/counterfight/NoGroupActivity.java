@@ -2,6 +2,9 @@ package de.woodpot.counterfight;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +18,7 @@ public class NoGroupActivity extends ActionBarActivity {
 	private TextView adviceTextView;
 	private Button createGroupButton;
 	private Button searchGroupButton;
+	FragmentManager fm;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -25,12 +29,14 @@ public class NoGroupActivity extends ActionBarActivity {
 		createGroupButton = (Button)findViewById(R.id.button_nogroupact_createGroup);
 		searchGroupButton = (Button)findViewById(R.id.button_nogroupact_searchGroup);
 		
+		fm = getSupportFragmentManager();
+		
 		createGroupButton.setOnClickListener(new OnClickListener(){
 
 			@Override
-			public void onClick(View arg0) {
-				Intent intent = new Intent(getBaseContext(), CreateGroupDialog.class);
-				startActivity(intent);
+			public void onClick(View arg0) {		
+				CreateGroupDialog createGroupDialog = (CreateGroupDialog) Fragment.instantiate(getBaseContext(), CreateGroupDialog.class.getName(), null);
+				createGroupDialog.show(fm, "CreateGroupDialog");			
 			}
 			
 		});
@@ -38,10 +44,9 @@ public class NoGroupActivity extends ActionBarActivity {
 		searchGroupButton.setOnClickListener(new OnClickListener() {
 			
 			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(getBaseContext(), SearchGroupDialog.class);
-				startActivity(intent);
-				
+			public void onClick(View v) {			
+				SearchGroupDialog searchGroupDialog = (SearchGroupDialog) Fragment.instantiate(getBaseContext(), SearchGroupDialog.class.getName(), null);
+				searchGroupDialog.show(fm, "SearchGroupDialog");
 			}
 		});
 	}

@@ -36,11 +36,6 @@ class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 		this.context = context;
 		this.groupItems = groupItems;
 		this.childItems = childItems;
-			
-		Log.d("SimpleExpListAdapter", "Konstruktor ausgeführt");
-		Log.d("SimpleExpListAdapter", "Context: " + context.toString());
-		Log.d("SimpleExpListAdapter", "groupItems: " + groupItems.toString());
-		Log.d("SimpleExpListAdapter", "childItem: " + childItems.toString());
 	}
 	
 
@@ -57,13 +52,10 @@ class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 	public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 		Log.d("SimpleExpAdapter: ", "getChildView() ausgeführt");		
 		View v = convertView;
-		Log.d("SimpleExpListAdapter", "childItems.get(" + groupPosition + ") groupPosition");
 				
 		v = convertView;
 		
-		if (convertView == null) {
-			Log.d("SimpleExpListAdapter", "getChildView childPos: " + childPosition);
-			
+		if (convertView == null) {	
 			// inflate the layout
 			inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	        v = inflater.inflate(R.layout.drawer_list_item, parent, false);
@@ -89,7 +81,6 @@ class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 				viewHolder.childIcon.setImageResource(childData.getIcon());
 			}
 		}
-		Log.d("SimpleExpListAdapter", "gchildItem[" + childPosition + "] childPosition");
 		v.setClickable(false); 													// false setzen, damit onChildClickListener() funktioniert
 		return v;
 	}
@@ -100,7 +91,6 @@ class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 		try {
 			count = childItems.get(groupPosition).length;
 		} catch (IndexOutOfBoundsException | NullPointerException e) {
-			Log.d("SimpleExpListAdapter", "keine Child-Elemente");
 			return count;
 		}
 		return count;
@@ -138,7 +128,6 @@ class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 	@Override
 	public View getGroupView(int groupPosition, boolean isExpanded,	View convertView, ViewGroup parent) {
 		View v = convertView;
-		Log.d("SimpleExpListAdapter", "getGroupView groupPos: " + groupPosition);
 		
 		groupData = groupItems.get(groupPosition);
 		layoutCase = groupData.getLayoutType();				// Nummer des bevorzugten Layouts auslesen
@@ -154,7 +143,6 @@ class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 					break;
 					
 				case 2:
-					Log.d("SimpleExpListAdapter", "LayoutCase: " + layoutCase);
 					inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			        v = inflater.inflate(R.layout.drawer_list_item, parent, false);
 			        viewHolder.groupText = (TextView) v.findViewById(R.id.textview_navigationdrawer_row);
@@ -162,7 +150,6 @@ class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 			        break;
 					
 				case 3: 
-					Log.d("SimpleExpListAdapter", "LayoutCase: " + layoutCase);
 					inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			        v = inflater.inflate(R.layout.drawer_list_item_textview_only, parent, false);
 			        viewHolder.groupText = (TextView) v.findViewById(R.id.textview_navigationdrawer_textviewonly_row);
@@ -176,8 +163,7 @@ class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 		if (groupData != null) {
 			switch (layoutCase) {	
 				case 1: 				
-					viewHolder.groupText.setText(groupData.getTitle());	
-					Log.d("SimpleExpListAdapter", "case1 KEY_TITLE: " + groupData.getTitle());				
+					viewHolder.groupText.setText(groupData.getTitle());				
 					break;
 						
 				case 2:
@@ -191,12 +177,9 @@ class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 					} else {
 						viewHolder.groupText.setText(groupData.getTitle());
 					}					
-					Log.d("SimpleExpListAdapter", "case3 KEY_TITLE: " + groupData.getTitle());
 					break;
 			}
 		}
-		
-		Log.d("SimpleExpListAdapter", "View: " + v);
 		childItem = childItems.get(groupPosition);
 		v.setClickable(false);							// false setzen, damit onGroupClickListener() funktioniert
 		return v;

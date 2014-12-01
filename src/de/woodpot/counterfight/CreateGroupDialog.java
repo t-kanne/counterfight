@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -133,6 +134,7 @@ public class CreateGroupDialog extends DialogFragment {
 						  }
 					});
 					// Hier soll der NUtzer in die GroupDetails geschickt werden
+					reloadFragment();
 					dismiss();
 					
 				} else {
@@ -152,6 +154,27 @@ public class CreateGroupDialog extends DialogFragment {
 			return null;
 		}
 
+	}
+	public void reloadFragment() {
+		Fragment frg = null;
+		//frg = getFragmentManager().findFragmentByTag("tag_allgroups_fragment");
+		final List<Fragment> fragmentList = getFragmentManager().getFragments();
+		
+		//frg = getFragmentManager().findFragmentById(arg0)
+
+		Log.d("CreateGroupDialog", "BackStackCount: " + getFragmentManager().getBackStackEntryCount());
+		Log.d("CreateGroupDialog", "BackStackEntry idx 0: " + getFragmentManager().getBackStackEntryAt(0));
+		
+		String frgId = getFragmentManager().getBackStackEntryAt(0).getName();
+		
+		for (int i = 0; i < fragmentList.size(); i++) {
+			Log.d("CreateGroupDialog", "Fragment " + fragmentList.get(i));
+		}
+		FragmentTransaction ft = getFragmentManager().beginTransaction();
+		frg = getFragmentManager().getFragments().get(0);
+		ft.detach(frg);
+		ft.attach(frg);
+		ft.commit();
 	}
 	
 }

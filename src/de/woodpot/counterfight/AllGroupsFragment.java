@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +29,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView.FindListener;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -85,16 +87,19 @@ public class AllGroupsFragment extends ListFragment  {
 
 		// JSON parser class
 		JSONParser jsonParser = new JSONParser();
-		
 
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
 			context = getActivity();
-			sm = new SessionManager(context);	
+			sm = new SessionManager(context);
 			setHasOptionsMenu(true);
 			
 			contactList = new ArrayList<HashMap<String, String>>();
+			
+			FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+			fragmentTransaction.addToBackStack("tag_allgroups_fragment");
+			fragmentTransaction.commit();
 			
 			new LoadAllUserCounter().execute();
 		}
@@ -280,8 +285,6 @@ public class AllGroupsFragment extends ListFragment  {
 			@Override
 			protected void onPostExecute(String file_url) {
 				
-				// dismiss the dialog after getting all products
-				pDialog.dismiss();
 				// updating UI from Background Thread
 				AllGroupsFragment.this.getActivity().runOnUiThread(new Runnable() {
 					public void run() {
@@ -307,6 +310,9 @@ public class AllGroupsFragment extends ListFragment  {
 		public void onListItemClick(ListView list, View view, int position, long id) {
 		    super.onListItemClick(list, view, position, id);	
 			Context context = getActivity();
+			
+			Fragment groupDetailFragment = (GroupDetailFragment) Fragment.instantiate(this.context, GroupDetailFragment.class.getName(), null);
+			FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
 
             @SuppressWarnings("unchecked")
 			HashMap<String,String> map=(HashMap<String, String>) list.getItemAtPosition(position);
@@ -316,12 +322,17 @@ public class AllGroupsFragment extends ListFragment  {
             
             Log.d("GroupDetailActivity:", "groupId: " + groupId);
             Log.d("GroupDetailActivity:", "groupName: " + groupName);
-            Intent intent = new Intent(context, GroupDetailActivity.class);
-		    intent.putExtra("groupId", groupId);
-		    intent.putExtra("groupName", groupName);
-	
-			startActivity(intent);	
-			    
+            
+            //Intent intent = new Intent(context, GroupDetailActivity.class);
+		    //intent.putExtra("groupId", groupId);
+		    //intent.putExtra("groupName", groupName);
+            		
+			Bundle fragmentData = new Bundle();
+			fragmentData.putString("groupId", groupId);
+			fragmentData.putString("groupName", groupName);
+			groupDetailFragment.setArguments(fragmentData);
+			fragmentTransaction.replace(R.id.main_activity_content, groupDetailFragment);
+			fragmentTransaction.commit();    
 		}
 		
 
@@ -334,6 +345,14 @@ public class AllGroupsFragment extends ListFragment  {
 			alertDialogBuilder.setPositiveButton(R.string.string_groupdetailact_fail_alertokay, null); 
 			AlertDialog alertDialog = alertDialogBuilder.create();
 			alertDialog.show();
+		}
+		
+		@Override
+		public void onResume() {
+			// TODO Auto-generated method stub
+			super.onResume();
+
+			Log.d("AllGroupsFragment", "onResume() ausgeführt");
 		}
 		    
    
