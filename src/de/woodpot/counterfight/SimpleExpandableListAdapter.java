@@ -49,8 +49,7 @@ class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 	}
 
 	@Override
-	public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-		Log.d("SimpleExpAdapter: ", "getChildView() ausgeführt");		
+	public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {	
 		View v = convertView;
 				
 		v = convertView;
@@ -202,6 +201,10 @@ class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
 		ImageView childIcon;
 		ImageView groupIcon;
 	}
+	
+
+		
+	
 
 }
 

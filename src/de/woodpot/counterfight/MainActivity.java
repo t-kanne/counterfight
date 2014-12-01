@@ -81,6 +81,7 @@ public class MainActivity extends FragmentActivity {
 	// Fragmente
 	private RegisterFragment registerFragment;
 	private AllGroupsFragment allGroupsFragment;
+	private GroupDetailFragment groupDetailFragment;
 	private InfoFragment infoFragment;
 	private FAQFragment faqFragment;
 	private CreateGroupDialog createGroupDialog;
@@ -131,6 +132,7 @@ public class MainActivity extends FragmentActivity {
 		// Fragmente instanziieren
 		registerFragment = (RegisterFragment) Fragment.instantiate(this, RegisterFragment.class.getName(), null);
 		allGroupsFragment = (AllGroupsFragment) Fragment.instantiate(this, AllGroupsFragment.class.getName(), null);
+		groupDetailFragment = (GroupDetailFragment) Fragment.instantiate(this, GroupDetailFragment.class.getName(), null);
 		infoFragment = (InfoFragment) Fragment.instantiate(this, InfoFragment.class.getName(), null);
 		faqFragment = (FAQFragment) Fragment.instantiate(this, FAQFragment.class.getName(), null);
 		createGroupDialog = (CreateGroupDialog) Fragment.instantiate(this, CreateGroupDialog.class.getName(), null);
@@ -471,8 +473,12 @@ public class MainActivity extends FragmentActivity {
 				if (success == 1) {
 					
 					noOfGroups = json.getString("noOfGroups");
-					Log.d("LoginActivity: ", "noOfGroups: " + noOfGroups + " for user " + sessionManager.getUsername());
-				
+					Log.d("LoginActivity: ", "noOfGroups: " + noOfGroups + " for user " + sessionManager.getUsername());				
+				}
+				if (success == 2) {
+					groupIdIntent = json.getString("groupId");
+					groupNameIntent = json.getString("groupName");
+					noOfGroups = json.getString("noOfGroups");
 				}
 				else {
 					MainActivity.this.runOnUiThread(new Runnable() {
@@ -504,6 +510,7 @@ public class MainActivity extends FragmentActivity {
 		try {
 			noOfGroupsInt = Integer.valueOf(noOfGroups);
 			Log.d("LoginActivity: ", "Anzahl Gruppen: " + noOfGroupsInt);
+			FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 			
 			if (noOfGroupsInt == 0) {
 				Intent intent = new Intent(this, NoGroupActivity.class);
@@ -513,16 +520,16 @@ public class MainActivity extends FragmentActivity {
 			}
 			
 			if (noOfGroupsInt == 1) {
-				Intent intent = new Intent(this, GroupDetailActivity.class);
-				intent.putExtra("groupId", groupIdIntent);
-				intent.putExtra("groupName", groupNameIntent);
+				Bundle fragmentData = new Bundle();
+				fragmentData.putString("groupId", groupIdIntent);
+				fragmentData.putString("groupName", groupNameIntent);
+				groupDetailFragment.setArguments(fragmentData);
+				fragmentTransaction.replace(R.id.main_activity_content, groupDetailFragment);
+				fragmentTransaction.commit(); 
 				Log.d("LoginActivity", "groupId: " + groupIdIntent +groupNameIntent);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-				startActivity(intent);
-				finish();
+				
 			}
 			if (noOfGroupsInt > 1) {
-				FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 				fragmentTransaction.replace(R.id.main_activity_content,	allGroupsFragment);
 				fragmentTransaction.commit();
 				drawer.closeDrawers();

@@ -119,16 +119,13 @@ public class GroupDetailFragment extends ListFragment {
 			public void onClick(View v) {
 				GroupDetailFragment gdf = new GroupDetailFragment();
 				new UpdateCounterValue().execute();	
-				FragmentTransaction ft = getFragmentManager().beginTransaction();
-				ft.replace(R.id.main_activity_content, (GroupDetailFragment) gdf);
-				//ft.commit();
 			}	
 		});
 		
 		return layout;
 	}
 	
-	
+
 	class LoadGroupUser extends AsyncTask<String, String, String> {
 	
 		@Override
@@ -324,8 +321,10 @@ public class GroupDetailFragment extends ListFragment {
 				public void run() {
 					/**
 					 * Updating parsed JSON data into ListView
-					 * */			
-					showCountConfirmation();
+					 * */
+					if (refresh() == true) {
+						showCountConfirmation();
+					}					
 				}
 			}); 
 		}
@@ -343,9 +342,6 @@ public class GroupDetailFragment extends ListFragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		
-	checkInternet = new CheckInternetConnection();		
-	
-	
 	switch (item.getItemId()) {
 		case R.id.action_settings:
 			Intent intent = new Intent(getActivity(), SettingsActivity.class);
@@ -353,28 +349,7 @@ public class GroupDetailFragment extends ListFragment {
 			return true;
         
 		case R.id.action_reload:
-			
-
-			if(checkInternet.haveNetworkConnection(context)){
-				Log.d("GroupDetailActivity: ", "hasConnection() true!");	
-				
-				new LoadGroupUser().execute();
-				BaseAdapter adapter = new SimpleAdapter(
-					GroupDetailFragment.this.getActivity(), contactList,
-	                R.layout.group_detail_list_item, new String[] { TAG_USERNAME, TAG_COUNTERVALUE }, 
-	                new int[] { R.id.user_row_username, R.id.user_countervalue });
-
-			contactList.clear();
-			Log.d("GroupDetailActivity: ", "alte ListView gecleart");	
-			adapter.notifyDataSetChanged();
-			Log.d("GroupDetailActivity: ", "neue ListView erstellt");	
-	        return true;
-	
-			}
-			else{
-				Log.d("GroupDetailActivity: ", "hasConnection() false!");	
-				showFailConnection();
-			}
+			refresh();
 			
 		default:
 	        return super.onOptionsItemSelected(item);
@@ -382,7 +357,29 @@ public class GroupDetailFragment extends ListFragment {
 		}			
 	}
 	
-	
+	public boolean refresh() {
+		checkInternet = new CheckInternetConnection();	
+		if(checkInternet.haveNetworkConnection(context)){
+			Log.d("GroupDetailActivity: ", "hasConnection() true!");	
+			
+			new LoadGroupUser().execute();
+			BaseAdapter adapter = new SimpleAdapter(
+				GroupDetailFragment.this.getActivity(), contactList,
+                R.layout.group_detail_list_item, new String[] { TAG_USERNAME, TAG_COUNTERVALUE }, 
+                new int[] { R.id.user_row_username, R.id.user_countervalue });
+
+			contactList.clear();
+			Log.d("GroupDetailActivity: ", "alte ListView gecleart");
+			adapter.notifyDataSetChanged();
+			Log.d("GroupDetailActivity: ", "neue ListView erstellt");
+			return true;
+		}
+		else{
+			Log.d("GroupDetailActivity: ", "hasConnection() false!");	
+			showFailConnection();
+			return false;
+		}
+	}
 	
 	public void showCountConfirmation(){
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
