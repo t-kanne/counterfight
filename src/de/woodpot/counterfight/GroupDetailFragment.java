@@ -20,6 +20,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -88,8 +90,6 @@ public class GroupDetailFragment extends ListFragment {
 		setHasOptionsMenu(true);
 	
         contactList = new ArrayList<HashMap<String, String>>();
-
-		new LoadGroupUser().execute();
 	}
 
 	@Override
@@ -112,10 +112,16 @@ public class GroupDetailFragment extends ListFragment {
 			Log.d("GroupDetailActivity, Intent von AllGroups:", "extras: fail");	
 		}
 		
+		new LoadGroupUser().execute();
+		
 		increaseCounterButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				new UpdateCounterValue().execute();		
+				GroupDetailFragment gdf = new GroupDetailFragment();
+				new UpdateCounterValue().execute();	
+				FragmentTransaction ft = getFragmentManager().beginTransaction();
+				ft.replace(R.id.main_activity_content, (GroupDetailFragment) gdf);
+				//ft.commit();
 			}	
 		});
 		
@@ -274,7 +280,7 @@ public class GroupDetailFragment extends ListFragment {
 		
 			//groupId aus AllGroupsActivity übergeben
 			String username = null;
-			String groupId = null;
+			//String groupId = null;
 			
 			sm = new SessionManager(context);
 			if (sm.isLoggedIn() == true) {
@@ -326,15 +332,13 @@ public class GroupDetailFragment extends ListFragment {
 		
 	}
 	
-	/*
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-	    // Inflate the menu items for use in the action bar
-	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.reload_groups, menu);
-	    return super.onCreateOptionsMenu(menu);
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.reload_groups, menu);
+	    return;
 	}
-	*/
+
+	
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -381,7 +385,7 @@ public class GroupDetailFragment extends ListFragment {
 	
 	
 	public void showCountConfirmation(){
-		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
 		alertDialogBuilder.setTitle(R.string.string_groupdetailact_alerttitle);
 		alertDialogBuilder.setMessage(R.string.string_groupdetailact_alerttext);
 		alertDialogBuilder.setCancelable(false);
@@ -391,7 +395,7 @@ public class GroupDetailFragment extends ListFragment {
 	}
 	
 	public void showFailConnection(){
-		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
 		alertDialogBuilder.setTitle(R.string.string_groupdetailact_fail_alerttitle);
 		alertDialogBuilder.setMessage(R.string.string_groupdetailact_fail_alerttext);
 		alertDialogBuilder.setCancelable(false);
