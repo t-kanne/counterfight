@@ -480,13 +480,6 @@ public class MainActivity extends FragmentActivity {
 					groupNameIntent = json.getString("groupName");
 					noOfGroups = json.getString("noOfGroups");
 				}
-				else {
-					MainActivity.this.runOnUiThread(new Runnable() {
-						  public void run() {
-						    Toast.makeText(MainActivity.this, "Anzahl der Gruppen nicht ermittelt", Toast.LENGTH_LONG).show();
-						  }
-					});
-				}
 				
 			} catch (JSONException e) {
 				e.printStackTrace();
