@@ -331,7 +331,7 @@ public class AllGroupsFragment extends ListFragment  {
 			fragmentData.putString("groupId", groupId);
 			fragmentData.putString("groupName", groupName);
 			groupDetailFragment.setArguments(fragmentData);
-			fragmentTransaction.replace(R.id.main_activity_content, groupDetailFragment);
+			fragmentTransaction.replace(R.id.main_activity_content, groupDetailFragment).addToBackStack("GroupDetailsFragment");
 			fragmentTransaction.commit();    
 		}
 		

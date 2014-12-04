@@ -87,6 +87,8 @@ public class MainActivity extends FragmentActivity {
 	private CreateGroupDialog createGroupDialog;
 	private SearchGroupDialog searchGroupDialog;
 	
+	FragmentTransaction fragmentTransaction;
+	
 	// Variablen für den NavigationDrawer
 	private DrawerLayout drawer;
 	private ActionBarDrawerToggle toggle;
@@ -179,7 +181,7 @@ public class MainActivity extends FragmentActivity {
 			public boolean onChildClick(ExpandableListView parent, View v,
 					int groupPosition, int childPosition, long id) {
 				
-					FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+					fragmentTransaction = getSupportFragmentManager().beginTransaction();
 					
 					if (groupPosition == GROUP_POS_GROUPMGMT) {
 						switch(childPosition) {
@@ -421,6 +423,16 @@ public class MainActivity extends FragmentActivity {
 		}
 	
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public void onBackPressed() {
+		int fragCount = getSupportFragmentManager().getBackStackEntryCount();
+		if (fragCount == 0) {
+			super.onBackPressed();
+		} else {
+			getSupportFragmentManager().popBackStack();
+		}
 	}
 	
 	/**

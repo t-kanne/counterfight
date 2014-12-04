@@ -125,6 +125,7 @@ public class GroupDetailFragment extends ListFragment {
 		return layout;
 	}
 	
+	
 
 	class LoadGroupUser extends AsyncTask<String, String, String> {
 	
