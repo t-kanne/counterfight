@@ -37,6 +37,7 @@ class LeaveGroupAsyncTask extends AsyncTask<String, Boolean, Boolean> {
 	public LeaveGroupAsyncTask(Context context, String groupId) {
 		this.context = context;
 		this.groupId = groupId;
+		Log.d("LeaveGroupAsyncTask", "Gruppen-Id: " + this.groupId);
 		sm = new SessionManager(this.context.getApplicationContext());
 		pDialog = new ProgressDialog(this.context);
 	};
@@ -62,7 +63,7 @@ class LeaveGroupAsyncTask extends AsyncTask<String, Boolean, Boolean> {
 				
 		try {
 			json = jParser.makeHttpRequest(url_leave_group, "POST", params);
-			Log.d("DeleteUserAsyncTask: ", "json: " + json);
+			Log.d("LeaveGroupAsyncTask: ", "json: " + json);
 			int success = json.getInt(TAG_SUCCESS);
 			if (success == 1) {
 				// Session beenden, damit User ausgeloggt wird
@@ -84,6 +85,12 @@ class LeaveGroupAsyncTask extends AsyncTask<String, Boolean, Boolean> {
 		super.onPostExecute(result);
 		Log.d("LeaveGroupAsyncTask", "onPostExecute() ausgeführt");
 		pDialog.dismiss();
+		
+		if (result == true) {
+			Toast.makeText(context, R.string.string_leavegroupasynctask_success, Toast.LENGTH_SHORT).show();
+		} else {
+			Toast.makeText(context, R.string.string_leavegroupasynctask_fail, Toast.LENGTH_SHORT).show();
+		}
 		
 		
 	}

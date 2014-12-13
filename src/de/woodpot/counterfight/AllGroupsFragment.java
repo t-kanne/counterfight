@@ -12,6 +12,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import de.woodpot.counterfight.GroupDetailFragment.LoadGroupUser;
+
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -19,16 +21,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.webkit.WebView.FindListener;
 import android.widget.Adapter;
 import android.widget.AdapterView;
@@ -38,6 +43,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class AllGroupsFragment extends ListFragment  {
 
@@ -112,13 +118,16 @@ public class AllGroupsFragment extends ListFragment  {
 			
 			ls = (ListView) layout.findViewById(android.R.id.list);
 			testNameTextView = (TextView)layout.findViewById(R.id.group_name);
-			
-			registerForContextMenu(ls);
-			
+					
 			return layout;
 		}
 		
-		
+		@Override
+		public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+			// TODO Auto-generated method stub
+			super.onActivityCreated(savedInstanceState);
+			registerForContextMenu(ls);			
+		}
 		
 		@Override
 		public boolean onOptionsItemSelected(MenuItem item) {
@@ -137,10 +146,7 @@ public class AllGroupsFragment extends ListFragment  {
 					
 					if(checkInternet.haveNetworkConnection(context)){
 						Log.d("GroupDetailActivity: ", "hasConnection() true!");	
-							
-						//Intent intent2 = new Intent(this, AllGroupsFragment.class);
-						//finish();
-						//startActivity(intent2);
+						refresh();
 						return true;
 				}
 				else{
@@ -160,6 +166,34 @@ public class AllGroupsFragment extends ListFragment  {
 		public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 			inflater.inflate(R.menu.reload_groups, menu);
 			super.onCreateOptionsMenu(menu, inflater);
+			
+		}
+		
+		@Override
+		public void onCreateContextMenu(ContextMenu menu, View v,
+				ContextMenuInfo menuInfo) {
+			super.onCreateContextMenu(menu, v, menuInfo);
+			
+			MenuInflater inflater = getActivity().getMenuInflater();
+			inflater.inflate(R.menu.all_groups_context, menu);
+			Log.i("infos", "Kontextmenü erstellt");
+		}
+		
+		@Override
+		public boolean onContextItemSelected(MenuItem item) {
+		    AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		    switch (item.getItemId()) {
+		        case R.id.context_allgroups_leavegroup:
+		            new LeaveGroupAsyncTask(context, groupId).execute();
+		            refresh();  
+		            return true;
+		        
+		        case R.id.context_allgroups_deletegroup:
+		            
+		            return true;
+		        default:
+		            return super.onContextItemSelected(item);
+		    }
 		}
 
 		public static class PlaceholderFragment extends Fragment {
@@ -305,7 +339,8 @@ public class AllGroupsFragment extends ListFragment  {
 				}); 
 			}
 		}
-					
+		
+		
 						
 		public void onListItemClick(ListView list, View view, int position, long id) {
 		    super.onListItemClick(list, view, position, id);	
@@ -335,6 +370,31 @@ public class AllGroupsFragment extends ListFragment  {
 			fragmentTransaction.commit();    
 		}
 		
+		public boolean refresh() {
+			checkInternet = new CheckInternetConnection();	
+			if(checkInternet.haveNetworkConnection(context)){
+				Log.d("GroupDetailActivity: ", "hasConnection() true!");	
+				
+				new LoadAllUserCounter().execute();
+				BaseAdapter adapter = new SimpleAdapter(
+						AllGroupsFragment.this.getActivity(), contactList,
+						R.layout.all_groups_list_item, new String[] { TAG_GROUPNAME, TAG_USERFIRST,
+								TAG_OWNPLACE }, new int[] { R.id.user_row_groupName,
+								R.id.user_row_first_place, R.id.user_row_own_place });
+				setListAdapter (adapter);
+				contactList.clear();
+				Log.d("AllGroupsFragment: ", "alte ListView gecleart");
+				adapter.notifyDataSetChanged();
+				Log.d("AllGroupsFragment: ", "neue ListView erstellt");
+				return true;
+			}
+			else{
+				Log.d("GroupDetailActivity: ", "hasConnection() false!");	
+				showFailConnection();
+				return false;
+			}
+		}
+		
 
 		public void showFailConnection(){
 			Context context = getActivity();
@@ -351,9 +411,10 @@ public class AllGroupsFragment extends ListFragment  {
 		public void onResume() {
 			// TODO Auto-generated method stub
 			super.onResume();
-
 			Log.d("AllGroupsFragment", "onResume() ausgeführt");
 		}
+		
+		
 		    
    
 		}

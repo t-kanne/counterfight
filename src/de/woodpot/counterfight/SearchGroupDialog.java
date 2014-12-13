@@ -101,9 +101,9 @@ public class SearchGroupDialog extends DialogFragment {
 		}
 	}
 	
-	class SearchGroup extends AsyncTask<String, String, String> {
+	class SearchGroup extends AsyncTask<String, Boolean, Boolean> {
 		
-		protected String doInBackground(String... args) {
+		protected Boolean doInBackground(String... args) {
 			// SessionManager nach aktuellen Usernamen fragen
 			String usernameString = null;
 			final String groupName;
@@ -138,7 +138,7 @@ public class SearchGroupDialog extends DialogFragment {
 					});
 					// Hier soll der Nutzer direkt in die GroupDetails zu der entsprechenden Gruppe gelangen
 					dismiss();
-					
+					return true;
 					
 				} else {
 					mysqlError = json.getString(TAG_ERRORCODE);
@@ -156,6 +156,7 @@ public class SearchGroupDialog extends DialogFragment {
 							}
 						});
 					}
+					return false;
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -165,6 +166,13 @@ public class SearchGroupDialog extends DialogFragment {
 			}
 
 			return null;
+		}
+		
+		@Override
+		protected void onPostExecute (Boolean result) {
+			super.onPostExecute(result);
+			
+			
 		}
 
 	}

@@ -546,4 +546,12 @@ public class MainActivity extends FragmentActivity {
 		}
 				
 	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		
+		Log.d("MainActivity", "onResume() ausgeführt");
+	}
 }

@@ -9,6 +9,8 @@
     <string name="title_activity_all_groups">AllGroupsActivity</string>
     <string name="title_activity_group_detail">GroupDetailActivity</string>
     <string name="title_activity_search_group_dialog">SearchGroupDialog</string>
+    <string name="title_activity_info_fragment">InfoFragment</string>
+    <string name="title_activity_faqfragment">FAQFragment</string>
     <string name="app_name">counterfight</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -51,7 +53,10 @@
     <string name="string_groupdetailact_fail_alerttext">Du hast momentan leider keine Interverbindung..</string>
     <string name="string_groupdetailact_fail_alertokay">OK</string>
     <string name="string_allact_loading">Lädt...</string>
-    <string name="title_activity_info_fragment">InfoFragment</string>
-    <string name="title_activity_faqfragment">FAQFragment</string>
+    <string name="string_context_leavegroup">Gruppe verlassen</string>
+    <string name="string_context_deletegroup">Gruppe löschen</string>
+    <string name="string_leavegroupasynctask_success">Gruppe erfolgreich verlassen</string>
+    <string name="string_leavegroupasynctask_fail">Gruppe konnte nicht verlassen werden</string>
+
 
 </resources>
