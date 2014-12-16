@@ -187,8 +187,9 @@ public class SearchGroupDialog extends DialogFragment {
 		protected void onPostExecute (Boolean result) {
 			super.onPostExecute(result);
 			
-		}
-
+		}		
+	}
+	
 	public void goToNextFragment() {
 		Bundle fragmentData = new Bundle();
 		fragmentData.putString("groupId", groupIdString);
@@ -196,7 +197,5 @@ public class SearchGroupDialog extends DialogFragment {
 		
 		GroupDetailFragment fragment = new GroupDetailFragment();
 		fragmentSwitcher.replaceFragment(fragmentData, fragment); 
-	}
-		
 	}
 }

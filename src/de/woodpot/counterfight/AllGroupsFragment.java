@@ -51,6 +51,7 @@ public class AllGroupsFragment extends ListFragment  {
 		JSONParser jParser = new JSONParser();
 		SessionManager sm;
 		Context context;
+		FragmentSwitcher fragmentSwitcher;
 		
 		ListAdapter adapter;
 		
@@ -126,7 +127,8 @@ public class AllGroupsFragment extends ListFragment  {
 		public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 			// TODO Auto-generated method stub
 			super.onActivityCreated(savedInstanceState);
-			registerForContextMenu(ls);			
+			registerForContextMenu(ls);		
+			fragmentSwitcher = (FragmentSwitcher) getActivity();
 		}
 		
 		@Override
@@ -314,6 +316,12 @@ public class AllGroupsFragment extends ListFragment  {
 							contactList.add(contact);
 						}
 					
+					} else {
+						AllGroupsFragment.this.getActivity().runOnUiThread(new Runnable() {
+							  public void run() {
+							    fragmentSwitcher.startGroupDependingActivity("0");
+							  }
+						});
 					}
 				} catch (JSONException e) {
 					e.printStackTrace();

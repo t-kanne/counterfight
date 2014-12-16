@@ -35,9 +35,6 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         Preference deleteUserPref = findPreference("account_delete");
         Preference loginLogoutUserPref = findPreference("account_loginlogout");
         Preference loginActPref = findPreference("settings_activity_login");
-        Preference noGroupActPref = findPreference("settings_activity_nogroup");
-        Preference groupDetailActPref = findPreference("settings_activity_groupdetail");
-        Preference allGroupsActPref = findPreference("settings_activity_allgroups");
         
         if (sm.isLoggedIn() == false) {
         	deleteUserPref.setEnabled(false);
@@ -77,16 +74,6 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 			}
     	});
  
-    	
-    	groupDetailActPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				
-				Intent intent = new Intent(SettingsActivity.this, GroupDetailActivity.class);
-				startActivity(intent);
-				return true;
-			}
-    	});
     }
 	
 	public void deleteAccount() {

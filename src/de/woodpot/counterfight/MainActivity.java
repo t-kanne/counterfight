@@ -91,6 +91,12 @@ public class MainActivity extends FragmentActivity implements FragmentSwitcher {
 	
 	FragmentTransaction fragmentTransaction;
 	
+	// Instanziieren des FragmentSwitcher Interfaces
+	FragmentSwitcher fragmentSwitcher;
+	
+	// Internetverbindung ständig überprüfen können
+	CheckInternetConnection checkInternetConnection;
+	
 	// Variablen für den NavigationDrawer
 	private DrawerLayout drawer;
 	private ActionBarDrawerToggle toggle;
@@ -132,6 +138,7 @@ public class MainActivity extends FragmentActivity implements FragmentSwitcher {
 		
 		// SessionManager-Object benötigt, um Login-Status abzurufen
 		sessionManager = new SessionManager(getApplicationContext());
+		fragmentSwitcher = (FragmentSwitcher) this;
 		
 		// Fragmente instanziieren
 		registerFragment = (RegisterFragment) Fragment.instantiate(this, RegisterFragment.class.getName(), null);
@@ -487,12 +494,43 @@ public class MainActivity extends FragmentActivity implements FragmentSwitcher {
 		protected void onPostExecute(String result){
 			if (sessionManager.isLoggedIn() == true){
 				pDialog.dismiss();
-				startGroupDependingActivity(noOfGroups);
+				fragmentSwitcher.startGroupDependingActivity(noOfGroups);
 				
 			}
 		}		
 	}
 	
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		
+		Log.d("MainActivity", "onResume() ausgeführt");
+	}
+	
+	
+	// Überschriebene Methode vom Interface "FragmentSwitcher"
+	// Wird von CreateGroupDialog() und SearchGroupDialog() aufgerufen, um Weiterleitung auf das GroupDetailFragment zu ermöglichen
+	@Override
+	public void replaceFragment(Bundle fragmentData, Fragment fragment) {
+			
+		Bundle newFragmentData = new Bundle();
+		newFragmentData.putString("groupId", fragmentData.getString("groupId"));
+		newFragmentData.putString("groupName", fragmentData.getString("groupName") + " (Id: " + fragmentData.getString("groupId") + ")");
+		Log.d("MainActivity respond: ", "FragmentName: " + fragmentData.getString("fragmentName"));
+		fragment.setArguments(newFragmentData);
+		
+		FragmentManager fm = getSupportFragmentManager();
+		FragmentTransaction fragmentTransaction = fm.beginTransaction();
+		
+		fragmentTransaction.replace(R.id.main_activity_content, fragment, fragment.toString());
+		fragmentTransaction.commit(); 
+		Log.d("LoginActivity", "RESPOND groupId: " + groupIdIntent +groupNameIntent);
+		
+	}
+
+	@Override
 	public void startGroupDependingActivity(String noOfGroups) {
 		int noOfGroupsInt;
 		
@@ -526,32 +564,6 @@ public class MainActivity extends FragmentActivity implements FragmentSwitcher {
 			//startActivity(intent);
 			finish();
 		}
-				
-	}
-	
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		
-		Log.d("MainActivity", "onResume() ausgeführt");
-	}
-
-	@Override
-	public void replaceFragment(Bundle fragmentData, Fragment fragment) {
-			
-		Bundle newFragmentData = new Bundle();
-		newFragmentData.putString("groupId", fragmentData.getString("groupId"));
-		newFragmentData.putString("groupName", fragmentData.getString("groupName") + " (Id: " + fragmentData.getString("groupId") + ")");
-		Log.d("MainActivity respond: ", "FragmentName: " + fragmentData.getString("fragmentName"));
-		fragment.setArguments(newFragmentData);
-		
-		FragmentManager fm = getSupportFragmentManager();
-		FragmentTransaction fragmentTransaction = fm.beginTransaction();
-		
-		fragmentTransaction.replace(R.id.main_activity_content, fragment, fragment.toString());
-		fragmentTransaction.commit(); 
-		Log.d("LoginActivity", "RESPOND groupId: " + groupIdIntent +groupNameIntent);
 		
 	}
 	
