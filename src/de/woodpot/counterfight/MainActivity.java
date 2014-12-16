@@ -23,6 +23,7 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -508,7 +509,7 @@ public class MainActivity extends FragmentActivity implements FragmentSwitcher {
 			if (noOfGroupsInt == 1) {
 				Bundle fragmentData = new Bundle();
 				fragmentData.putString("groupId", groupIdIntent);
-				fragmentData.putString("groupName", groupNameIntent);
+				fragmentData.putString("groupName", groupNameIntent + " (Id: " + groupIdIntent + ")");
 				groupDetailFragment.setArguments(fragmentData);
 				fragmentTransaction.replace(R.id.main_activity_content, groupDetailFragment);
 				fragmentTransaction.commit(); 
@@ -537,8 +538,20 @@ public class MainActivity extends FragmentActivity implements FragmentSwitcher {
 	}
 
 	@Override
-	public void respond(int index) {
-		// TODO Auto-generated method stub
+	public void replaceFragment(Bundle fragmentData, Fragment fragment) {
+			
+		Bundle newFragmentData = new Bundle();
+		newFragmentData.putString("groupId", fragmentData.getString("groupId"));
+		newFragmentData.putString("groupName", fragmentData.getString("groupName") + " (Id: " + fragmentData.getString("groupId") + ")");
+		Log.d("MainActivity respond: ", "FragmentName: " + fragmentData.getString("fragmentName"));
+		fragment.setArguments(newFragmentData);
+		
+		FragmentManager fm = getSupportFragmentManager();
+		FragmentTransaction fragmentTransaction = fm.beginTransaction();
+		
+		fragmentTransaction.replace(R.id.main_activity_content, fragment, fragment.toString());
+		fragmentTransaction.commit(); 
+		Log.d("LoginActivity", "RESPOND groupId: " + groupIdIntent +groupNameIntent);
 		
 	}
 	

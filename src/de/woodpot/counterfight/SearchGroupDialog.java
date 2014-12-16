@@ -38,6 +38,7 @@ public class SearchGroupDialog extends DialogFragment {
 	private String groupIdString;
 	Context context;
 	
+	FragmentSwitcher fragmentSwitcher;
 	private GroupDetailFragment groupDetailFragment;
 	
 	// JSONParser Objekt erstellen
@@ -70,6 +71,14 @@ public class SearchGroupDialog extends DialogFragment {
 		
 		context = getActivity();
 		setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle);
+	}
+	
+	@Override
+	public void onActivityCreated(Bundle arg0) {
+		// TODO Auto-generated method stub
+		super.onActivityCreated(arg0);
+		
+		fragmentSwitcher = (FragmentSwitcher) getActivity();
 	}
 	
 	@Override
@@ -110,7 +119,6 @@ public class SearchGroupDialog extends DialogFragment {
 		protected Boolean doInBackground(String... args) {
 			// SessionManager nach aktuellen Usernamen fragen
 			String usernameString = null;
-			final String groupName;
 			
 			sm = new SessionManager(context);
 			if (sm.isLoggedIn() == true) {
@@ -138,10 +146,13 @@ public class SearchGroupDialog extends DialogFragment {
 					SearchGroupDialog.this.getActivity().runOnUiThread(new Runnable() {
 						  public void run() {
 						    Toast.makeText(SearchGroupDialog.this.getActivity(), "Gruppe " + groupName + " erfolgreich beigetreten.", Toast.LENGTH_SHORT).show();
+						    goToNextFragment();
 						  }
 					});
 					// Hier soll der Nutzer direkt in die GroupDetails zu der entsprechenden Gruppe gelangen
 					dismiss();
+					
+					
 					return true;
 					
 				} else {
@@ -176,17 +187,16 @@ public class SearchGroupDialog extends DialogFragment {
 		protected void onPostExecute (Boolean result) {
 			super.onPostExecute(result);
 			
-			
-//			groupDetailFragment = (GroupDetailFragment) Fragment.instantiate(getActivity(), GroupDetailFragment.class.getName(), null);
-//
-//			FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
-//			Bundle fragmentData = new Bundle();
-//			fragmentData.putString("groupId", groupIdString);
-//			fragmentData.putString("groupName", groupName);
-//			groupDetailFragment.setArguments(fragmentData);
-//			fragmentTransaction.attach(groupDetailFragment).addToBackStack("GroupDetailFragment");
-//			fragmentTransaction.commit(); 
 		}
 
+	public void goToNextFragment() {
+		Bundle fragmentData = new Bundle();
+		fragmentData.putString("groupId", groupIdString);
+		fragmentData.putString("groupName", groupName);
+		
+		GroupDetailFragment fragment = new GroupDetailFragment();
+		fragmentSwitcher.replaceFragment(fragmentData, fragment); 
+	}
+		
 	}
 }

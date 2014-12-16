@@ -37,6 +37,7 @@ public class CreateGroupDialog extends DialogFragment {
 	private Button okayButton;
 	SessionManager sm;
 	Context context;
+	FragmentSwitcher fragmentSwitcher;
 	
 	// JSONParser Objekt erstellen
 	JSONParser jParser = new JSONParser();
@@ -48,10 +49,12 @@ public class CreateGroupDialog extends DialogFragment {
 	private static final String TAG_SUCCESS = "success";
 	private static final String TAG_GROUPNAME = "groupName";
 	private static final String TAG_GROUPADMIN = "admin";
+	private static final String TAG_GROUPID = "groupId";
 	
 	// JSONArray für Counterdaten
 	JSONArray groupTable = null;
-	String groupName;
+	String groupName, newGroup;
+	String groupId;
 	
 	// JSON parser class
 	JSONParser jsonParser = new JSONParser();
@@ -94,12 +97,20 @@ public class CreateGroupDialog extends DialogFragment {
 		return layout;
 	}
 	
+	@Override
+	public void onActivityCreated(Bundle arg0) {
+		// TODO Auto-generated method stub
+		super.onActivityCreated(arg0);
+		
+		fragmentSwitcher = (FragmentSwitcher) getActivity();
+	}
+	
 	class CreateGroup extends AsyncTask<String, String, String> {
 		
 		protected String doInBackground(String... args) {
 
 			// Gruppenname vom EditText holen
-			final String newGroup = groupNameEditText.getText().toString();
+			newGroup = groupNameEditText.getText().toString();
 
 			// SessionManager nach aktuellen Usernamen fragen
 			String username = null;
@@ -123,6 +134,7 @@ public class CreateGroupDialog extends DialogFragment {
 			try {
 				json = jsonParser.makeHttpRequest(url_create_group, "POST", params);
 				int success = json.getInt(TAG_SUCCESS);
+				groupId = json.getString(TAG_GROUPID);
 				
 				if (success == 1) {
 					// successfully updated
@@ -130,11 +142,10 @@ public class CreateGroupDialog extends DialogFragment {
 					
 					CreateGroupDialog.this.getActivity().runOnUiThread(new Runnable() {
 						  public void run() {
-						    Toast.makeText(CreateGroupDialog.this.getActivity(), "Gruppe " + newGroup + " erfolgreich erstellt.", Toast.LENGTH_SHORT).show();
+							  Toast.makeText(CreateGroupDialog.this.getActivity(), "Gruppe " + newGroup + " erfolgreich erstellt.", Toast.LENGTH_SHORT).show();
+							  goToNextFragment();
 						  }
 					});
-					// Hier soll der NUtzer in die GroupDetails geschickt werden
-					reloadFragment();
 					dismiss();
 					
 				} else {
@@ -155,26 +166,16 @@ public class CreateGroupDialog extends DialogFragment {
 		}
 
 	}
-	public void reloadFragment() {
-		Fragment frg = null;
-		//frg = getFragmentManager().findFragmentByTag("tag_allgroups_fragment");
-		final List<Fragment> fragmentList = getFragmentManager().getFragments();
+	
+	public void goToNextFragment() {	
+		Bundle fragmentData = new Bundle();
+		//groupId = String.format("%05d", groupId);
 		
-		//frg = getFragmentManager().findFragmentById(arg0)
-
-		Log.d("CreateGroupDialog", "BackStackCount: " + getFragmentManager().getBackStackEntryCount());
-		Log.d("CreateGroupDialog", "BackStackEntry idx 0: " + getFragmentManager().getBackStackEntryAt(0));
+		fragmentData.putString("groupId", groupId);
+		fragmentData.putString("groupName", newGroup);
 		
-		String frgId = getFragmentManager().getBackStackEntryAt(0).getName();
-		
-		for (int i = 0; i < fragmentList.size(); i++) {
-			Log.d("CreateGroupDialog", "Fragment " + fragmentList.get(i));
-		}
-		FragmentTransaction ft = getFragmentManager().beginTransaction();
-		frg = getFragmentManager().getFragments().get(0);
-		ft.detach(frg);
-		ft.attach(frg);
-		ft.commit();
+		GroupDetailFragment fragment = new GroupDetailFragment();
+		fragmentSwitcher.replaceFragment(fragmentData, fragment); 
 	}
 	
 }
