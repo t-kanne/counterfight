@@ -76,16 +76,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 				return true;
 			}
     	});
-    	
-    	noGroupActPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				
-				Intent intent = new Intent(SettingsActivity.this, NoGroupActivity.class);
-				startActivity(intent);
-				return true;
-			}
-    	});
+ 
     	
     	groupDetailActPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override

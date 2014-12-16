@@ -14,6 +14,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,6 +37,8 @@ public class SearchGroupDialog extends DialogFragment {
 	SessionManager sm;
 	private String groupIdString;
 	Context context;
+	
+	private GroupDetailFragment groupDetailFragment;
 	
 	// JSONParser Objekt erstellen
 	JSONParser jParser = new JSONParser();
@@ -173,6 +177,15 @@ public class SearchGroupDialog extends DialogFragment {
 			super.onPostExecute(result);
 			
 			
+//			groupDetailFragment = (GroupDetailFragment) Fragment.instantiate(getActivity(), GroupDetailFragment.class.getName(), null);
+//
+//			FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
+//			Bundle fragmentData = new Bundle();
+//			fragmentData.putString("groupId", groupIdString);
+//			fragmentData.putString("groupName", groupName);
+//			groupDetailFragment.setArguments(fragmentData);
+//			fragmentTransaction.attach(groupDetailFragment).addToBackStack("GroupDetailFragment");
+//			fragmentTransaction.commit(); 
 		}
 
 	}

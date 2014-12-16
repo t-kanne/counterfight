@@ -176,12 +176,19 @@ public class AllGroupsFragment extends ListFragment  {
 			
 			MenuInflater inflater = getActivity().getMenuInflater();
 			inflater.inflate(R.menu.all_groups_context, menu);
+			
+			// Gruppe darf nur gelöscht werden, wenn löschende Person Admin der entsprechenden Gruppe ist
+			// Zusätzliche Abfrage im AsyncTask notwendig!
+			MenuItem deleteGroup = menu.findItem(R.id.context_allgroups_deletegroup);
+			deleteGroup.setEnabled(false);
 			Log.i("infos", "Kontextmenü erstellt");
 		}
 		
 		@Override
 		public boolean onContextItemSelected(MenuItem item) {
 		    AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+	
+		    
 		    switch (item.getItemId()) {
 		        case R.id.context_allgroups_leavegroup:
 		            new LeaveGroupAsyncTask(context, groupId).execute();
@@ -299,7 +306,7 @@ public class AllGroupsFragment extends ListFragment  {
 
 							// adding each child node to HashMap key => value
 							contact.put(TAG_GROUPID, groupId);
-							contact.put(TAG_GROUPNAME, groupName);
+							contact.put(TAG_GROUPNAME, groupName + " (Id: " + groupId + ")");
 							contact.put(TAG_USERFIRST, firstPlace);
 							contact.put(TAG_OWNPLACE, ownPlace);
 							

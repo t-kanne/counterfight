@@ -37,7 +37,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements FragmentSwitcher {
 	
 	/** Die MainActivity ist für den Nutzer im Prinzip nicht sichtbar. Sie entscheidet nur,
 	 * wohin der Nutzer geleitet werden soll und ist Layout für den NavigationDrawer
@@ -86,6 +86,7 @@ public class MainActivity extends FragmentActivity {
 	private FAQFragment faqFragment;
 	private CreateGroupDialog createGroupDialog;
 	private SearchGroupDialog searchGroupDialog;
+	private NoGroupFragment noGroupFragment;
 	
 	FragmentTransaction fragmentTransaction;
 	
@@ -139,6 +140,7 @@ public class MainActivity extends FragmentActivity {
 		faqFragment = (FAQFragment) Fragment.instantiate(this, FAQFragment.class.getName(), null);
 		createGroupDialog = (CreateGroupDialog) Fragment.instantiate(this, CreateGroupDialog.class.getName(), null);
 		searchGroupDialog = (SearchGroupDialog) Fragment.instantiate(this, SearchGroupDialog.class.getName(), null);
+		noGroupFragment = (NoGroupFragment) Fragment.instantiate(this, NoGroupFragment.class.getName(), null);
 
 		getActionBar();
 		getActionBar().setHomeButtonEnabled(true);
@@ -435,27 +437,7 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 	
-	/**
-	void showDialog() {
-	    //mStackLevel++;
 
-	    // DialogFragment.show() will take care of adding the fragment
-	    // in a transaction.  We also want to remove any currently showing
-	    // dialog, so make our own transaction and take care of that here.
-	    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-	    Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
-	    if (prev != null) {
-	        ft.remove(prev);
-	    }
-	    ft.addToBackStack(null);
-
-	    // Create and show the dialog.
-	    DialogFragment newFragment = CreateGroupDialog.newInstance();
-	    newFragment.show(ft, "dialog");
-	}
-	*/
-	
-	
 	class CountUserGroups extends AsyncTask <String, String, String> {
 		
 		protected void onPreExecute() {
@@ -505,6 +487,7 @@ public class MainActivity extends FragmentActivity {
 			if (sessionManager.isLoggedIn() == true){
 				pDialog.dismiss();
 				startGroupDependingActivity(noOfGroups);
+				
 			}
 		}		
 	}
@@ -518,10 +501,8 @@ public class MainActivity extends FragmentActivity {
 			FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 			
 			if (noOfGroupsInt == 0) {
-				Intent intent = new Intent(this, NoGroupActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-				startActivity(intent);
-				finish();
+				fragmentTransaction.replace(R.id.main_activity_content, noGroupFragment);
+				fragmentTransaction.commit();
 			}
 			
 			if (noOfGroupsInt == 1) {
@@ -540,8 +521,8 @@ public class MainActivity extends FragmentActivity {
 				drawer.closeDrawers();
 			}
 		} catch (NumberFormatException e) {
-			Intent intent = new Intent(this, NoGroupActivity.class);
-			startActivity(intent);
+			//Intent intent = new Intent(this, NoGroupActivity.class);
+			//startActivity(intent);
 			finish();
 		}
 				
@@ -554,4 +535,11 @@ public class MainActivity extends FragmentActivity {
 		
 		Log.d("MainActivity", "onResume() ausgeführt");
 	}
+
+	@Override
+	public void respond(int index) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }
