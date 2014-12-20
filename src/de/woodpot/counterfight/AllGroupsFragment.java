@@ -53,6 +53,8 @@ public class AllGroupsFragment extends ListFragment  {
 		Context context;
 		FragmentSwitcher fragmentSwitcher;
 		
+		MenuItem deleteGroup;
+		
 		ListAdapter adapter;
 		
 		CheckInternetConnection checkInternet;	
@@ -66,6 +68,7 @@ public class AllGroupsFragment extends ListFragment  {
 		
 		private String groupName;
 		private String groupId;
+		private String admin;
 		
 		TextView testNameTextView;
 		ListView ls;
@@ -77,6 +80,7 @@ public class AllGroupsFragment extends ListFragment  {
 		private static final String TAG_GROUPID = "groupId";
 		private static final String TAG_COUNTERVALUE = "counterValue";
 		private static final String TAG_GROUPNAME = "groupName";
+		private static final String TAG_ADMIN = "admin";
 		private static final String TAG_USERFIRST = "user_first";
 		private static final String TAG_OWNPLACE = "own_place";
 		private static final String TAG_USERNAME = "username";
@@ -179,18 +183,32 @@ public class AllGroupsFragment extends ListFragment  {
 			MenuInflater inflater = getActivity().getMenuInflater();
 			inflater.inflate(R.menu.all_groups_context, menu);
 			
-			// Gruppe darf nur gelöscht werden, wenn löschende Person Admin der entsprechenden Gruppe ist
-			// Zusätzliche Abfrage im AsyncTask notwendig!
-			MenuItem deleteGroup = menu.findItem(R.id.context_allgroups_deletegroup);
-			deleteGroup.setEnabled(false);
-			Log.i("infos", "Kontextmenü erstellt");
+			// Objekt vom deleteGroup Menüeintrag erstellen, um es inaktiv stellen zu können
+			deleteGroup = menu.findItem(R.id.context_allgroups_deletegroup);
+			
+			// AdapterContextMenuInfo besorgt die ListView, auf die Bezug genommen wird und die geklickte Position
+			AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
+	        int position = info.position;
+	        
+			// ListView-Objekt "ls" wird benötigt:	
+			@SuppressWarnings("unchecked")
+			HashMap<String,String> map=(HashMap<String, String>) ls.getItemAtPosition(position);
+            groupId = map.get(TAG_GROUPID);
+            admin = map.get(TAG_ADMIN);
+			
+            // Menüeintrag "Gruppe löschen" ausblenden, wenn angemeldeter User kein Admin der Gruppe ist
+			if (!(admin.equals(sm.getUsername()))) {
+				deleteGroup.setEnabled(false);
+
+			}		
 		}
 		
 		@Override
 		public boolean onContextItemSelected(MenuItem item) {
 		    AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-	
-		    
+			Log.d("AllGroupsFragment", "admin: " + admin + " username: " + sm.getUsername() + " groupId: " + groupId);
+			
+	    
 		    switch (item.getItemId()) {
 		        case R.id.context_allgroups_leavegroup:
 		            new LeaveGroupAsyncTask(context, groupId).execute();
@@ -198,7 +216,8 @@ public class AllGroupsFragment extends ListFragment  {
 		            return true;
 		        
 		        case R.id.context_allgroups_deletegroup:
-		            
+		            new DeleteGroupAsyncTask(context, groupId).execute();
+		            refresh();
 		            return true;
 		        default:
 		            return super.onContextItemSelected(item);
@@ -297,6 +316,7 @@ public class AllGroupsFragment extends ListFragment  {
 							//Parameter für Übergabe an GroupDetailActivity
 							groupId = c.getString(TAG_GROUPID);
 							groupName = c.getString(TAG_GROUPNAME);
+							admin = c.getString(TAG_ADMIN);
 							String firstPlace = c.getString(TAG_USERFIRST);
 							String ownPlace = c.getString(TAG_OWNPLACE);
 							
@@ -309,6 +329,7 @@ public class AllGroupsFragment extends ListFragment  {
 							// adding each child node to HashMap key => value
 							contact.put(TAG_GROUPID, groupId);
 							contact.put(TAG_GROUPNAME, groupName + " (Id: " + groupId + ")");
+							contact.put(TAG_ADMIN, admin);
 							contact.put(TAG_USERFIRST, firstPlace);
 							contact.put(TAG_OWNPLACE, ownPlace);
 							
@@ -369,6 +390,7 @@ public class AllGroupsFragment extends ListFragment  {
             Log.d("GroupDetailActivity:", "hashmap map:" + map);
             groupId = map.get(TAG_GROUPID);
             groupName = map.get(TAG_GROUPNAME);
+            admin = map.get(TAG_ADMIN);
             
             Log.d("GroupDetailActivity:", "groupId: " + groupId);
             Log.d("GroupDetailActivity:", "groupName: " + groupName);

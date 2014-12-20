@@ -58,6 +58,8 @@
     <string name="string_context_deletegroup">Gruppe löschen</string>
     <string name="string_leavegroupasynctask_success">Gruppe erfolgreich verlassen</string>
     <string name="string_leavegroupasynctask_fail">Gruppe konnte nicht verlassen werden</string>
+    <string name="string_deletegroupasynctask_success">Gruppe erfolgreich gelöscht</string>
+    <string name="string_deletegroupasynctask_fail">Gruppe konnte nicht gelöscht werden</string>
 
 
 </resources>
